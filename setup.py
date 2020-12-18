@@ -23,7 +23,7 @@ setup(
     ],
     keywords="orchestrator orchestration configurationmanagement",
     project_urls={
-        "Bug Tracker": "https://github.com/inmanta/inmanta/issues",
+        "Bug Tracker": "https://github.com/inmanta/inmanta-core/issues",
         "Documentation": "https://docs.inmanta.com/community/latest/",
     },
     install_requires=[
