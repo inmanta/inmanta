@@ -46,14 +46,6 @@ format:
 	$(isort)
 	$(black)
 
-.PHONY: build-pytest-inmanta-extensions
-build-pytest-inmanta-extensions:
-	pip install -c requirements.txt -U setuptools pip
-	git clone https://github.com/inmanta/inmanta.git inmanta-core
-	python3 inmanta-core/tests_common/copy_files_from_core.py
-	cd inmanta-core/tests_common/; python3 setup.py sdist --dist-dir ../../extra_dist
-	rm -rf inmanta-core
-
 .PHONY: pep8
 pep8:
 	pip install -c requirements.txt pep8-naming flake8-black flake8-isort
