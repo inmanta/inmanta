@@ -59,20 +59,7 @@ pep8:
 	pip install -c requirements.txt pep8-naming flake8-black flake8-isort
 	flake8 src tests
 
-.PHONY: mypy
-mypy:
-	MYPYPATH=src python -m mypy --html-report mypy -p inmanta_support
-
-.PHONY: test
-test:
-	pytest -vvv tests
-
-.PHONY: testcov
-testcov:
-	pytest --cov=inmanta_ext.inmanta-support --cov=inmanta_support --cov-report html:coverage --cov-report term -vvv tests
-
-.PHONY: all
-all: pep8 test mypy
+all: pep8
 
 .PHONY: clean
 clean:
@@ -119,11 +106,6 @@ upload-python-package: build
 	fi
 	devpi logoff
 
-# .PHONY: collect-dependencies
-# collect-dependencies: ensure-valid-release-type
-# 	mkdir -p dist
-# 	export PIP_INDEX_URL="https://artifacts.internal.inmanta.com/inmanta/$(RELEASE)"; python3 -m irt.main package-dependencies --package-dir . --constraint-file ./requirements.txt --destination "dist/deps-${VERSION}$(BUILDID).tar.gz"
-
 .PHONY: rpm
 rpm: ensure-valid-release-type build
 	rm -rf ${RPMDIR}
@@ -141,8 +123,8 @@ ifneq ("$(RELEASE)","stable")
 	sed -i '0,/^%define release.*/s/^%define release.*/%define release 0/' inmanta.spec
 endif
 
-	mock -r inmanta-and-epel-7-x86_64 --bootstrap-chroot --enablerepo="inmanta-oss-$(RELEASE),$(ISO_REPO)" --buildsrpm --spec inmanta.spec --sources dist --resultdir ${RPMDIR}
-	mock -r inmanta-and-epel-7-x86_64 --bootstrap-chroot --enablerepo="inmanta-oss-$(RELEASE),$(ISO_REPO)" --rebuild ${RPMDIR}/python3-inmanta-support-${VERSION}-*.src.rpm --resultdir ${RPMDIR}
+	mock -r inmanta-and-epel-7-x86_64 --no-bootstrap-chroot --enablerepo="inmanta-oss-$(RELEASE),$(ISO_REPO)" --buildsrpm --spec inmanta.spec --sources dist --resultdir ${RPMDIR}
+	mock -r inmanta-and-epel-7-x86_64 --no-bootstrap-chroot --enablerepo="inmanta-oss-$(RELEASE),$(ISO_REPO)" --rebuild ${RPMDIR}/python3-inmanta-${VERSION}-*.src.rpm --resultdir ${RPMDIR}
 
 .PHONY: upload
 upload: RPM := $(shell basename ${RPMDIR}/python3-inmanta-support-${VERSION}-*.x86_64.rpm)

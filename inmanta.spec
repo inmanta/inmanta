@@ -1,8 +1,8 @@
 # Use release 0 for prerelease version.
 %define release 0
 %define version 2020.6
-%define buildid .dev202012210926
-%define buildid_egg .dev202012210926
+%define buildid .dev202012211003
+%define buildid_egg .dev202012211003
 %define venv inmanta-venv
 %define _p3 %{venv}/bin/python3
 %define _unique_build_ids 0
