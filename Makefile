@@ -119,7 +119,7 @@ endif
 	mock -r inmanta-and-epel-7-x86_64 --bootstrap-chroot --enablerepo="inmanta-oss-$(RELEASE),$(ISO_REPO)" --rebuild ${RPMDIR}/python3-inmanta-${VERSION}-*.src.rpm --resultdir ${RPMDIR}
 
 .PHONY: upload
-upload: RPM := $(shell basename ${RPMDIR}/python3-inmanta-support-${VERSION}-*.x86_64.rpm)
+upload: RPM := $(shell basename ${RPMDIR}/python3-inmanta-${VERSION}-*.x86_64.rpm)
 
 .PHONY: upload
 upload: ensure-valid-release-type

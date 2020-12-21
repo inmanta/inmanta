@@ -1,5 +1,6 @@
 # Use release 0 for prerelease version.
-%define release 0
+# This value is set to 0 by the make file for dev releases
+%define release 1
 %define version 2020.6
 %define buildid .dev202012211003
 %define buildid_egg .dev202012211003
