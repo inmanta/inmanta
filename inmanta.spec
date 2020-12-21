@@ -49,7 +49,7 @@ chmod -x LICENSE
 site_packages_dir="inmanta-venv/lib/python3.6/site-packages"
 files=$(find "${site_packages_dir}" -maxdepth 1 -mindepth 1)
 
-# Install inmanta-license
+# Install inmanta
 %{_p3} -m pip install --no-index .
 
 # Only keep new packages
@@ -57,9 +57,6 @@ rm -rf ${files}
 
 mkdir -p %{buildroot}/opt/inmanta/
 cp -r inmanta-venv/lib/ %{buildroot}/opt/inmanta/
-mkdir -p %{buildroot}/etc/inmanta/inmanta.d/
-
-# Remove other code from env
 
 %clean
 rm -rf %{buildroot}
@@ -68,7 +65,6 @@ rm -rf %{buildroot}
 %defattr(-,root,root,-)
 %doc LICENSE
 /opt/inmanta/lib/
-/etc/inmanta
 
 %preun
 # Stop and disable the inmanta-server service before this package is uninstalled
