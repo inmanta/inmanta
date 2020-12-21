@@ -119,13 +119,13 @@ upload-python-package: build
 	fi
 	devpi logoff
 
-.PHONY: collect-dependencies
-collect-dependencies: ensure-valid-release-type
-	mkdir -p dist
-	export PIP_INDEX_URL="https://artifacts.internal.inmanta.com/inmanta/$(RELEASE)"; python3 -m irt.main package-dependencies --package-dir . --constraint-file ./requirements.txt --destination "dist/deps-${VERSION}$(BUILDID).tar.gz"
+# .PHONY: collect-dependencies
+# collect-dependencies: ensure-valid-release-type
+# 	mkdir -p dist
+# 	export PIP_INDEX_URL="https://artifacts.internal.inmanta.com/inmanta/$(RELEASE)"; python3 -m irt.main package-dependencies --package-dir . --constraint-file ./requirements.txt --destination "dist/deps-${VERSION}$(BUILDID).tar.gz"
 
 .PHONY: rpm
-rpm: ensure-valid-release-type build collect-dependencies
+rpm: ensure-valid-release-type build
 	rm -rf ${RPMDIR}
 	sed -i '0,/^%define version.*/s/^%define version.*/%define version ${VERSION}/' inmanta.spec
 
