@@ -123,8 +123,8 @@ ifneq ("$(RELEASE)","stable")
 	sed -i '0,/^%define release.*/s/^%define release.*/%define release 0/' inmanta.spec
 endif
 
-	mock -r inmanta-and-epel-7-x86_64 --no-bootstrap-chroot --enablerepo="inmanta-oss-$(RELEASE),$(ISO_REPO)" --buildsrpm --spec inmanta.spec --sources dist --resultdir ${RPMDIR}
-	mock -r inmanta-and-epel-7-x86_64 --no-bootstrap-chroot --enablerepo="inmanta-oss-$(RELEASE),$(ISO_REPO)" --rebuild ${RPMDIR}/python3-inmanta-${VERSION}-*.src.rpm --resultdir ${RPMDIR}
+	mock -r inmanta-and-epel-7-x86_64 --bootstrap-chroot --enablerepo="inmanta-oss-$(RELEASE),$(ISO_REPO)" --buildsrpm --spec inmanta.spec --sources dist --resultdir ${RPMDIR}
+	mock -r inmanta-and-epel-7-x86_64 --bootstrap-chroot --enablerepo="inmanta-oss-$(RELEASE),$(ISO_REPO)" --rebuild ${RPMDIR}/python3-inmanta-${VERSION}-*.src.rpm --resultdir ${RPMDIR}
 
 .PHONY: upload
 upload: RPM := $(shell basename ${RPMDIR}/python3-inmanta-support-${VERSION}-*.x86_64.rpm)
