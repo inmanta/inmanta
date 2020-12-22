@@ -1,2 +1,2 @@
-pipeline_template: ci/inmanta-core/Jenkinsfile-rpm
+pipeline_template: ci/inmanta-extensions/Jenkinsfile-rpm
 repo_name: inmanta
