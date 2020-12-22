@@ -4,7 +4,7 @@ isort = isort -rc src tests
 black = black src tests
 
 VERSION := $(shell python3 setup.py -V)
-RPMDIR := "$(shell pwd)/rpms"
+RPMDIR := "$(shell pwd)/rpms-el7"
 
 ifndef $(RELEASE)
 RELEASE := dev
@@ -117,6 +117,11 @@ endif
 
 	mock -r inmanta-and-epel-7-x86_64 --bootstrap-chroot --enablerepo="inmanta-oss-$(RELEASE),$(ISO_REPO)" --buildsrpm --spec inmanta.spec --sources dist --resultdir ${RPMDIR}
 	mock -r inmanta-and-epel-7-x86_64 --bootstrap-chroot --enablerepo="inmanta-oss-$(RELEASE),$(ISO_REPO)" --rebuild ${RPMDIR}/python3-inmanta-${VERSION}-*.src.rpm --resultdir ${RPMDIR}
+
+	RPMDIR := "$(shell pwd)/rpms-el8"
+	mock -r epel-8-x86_64 --bootstrap-chroot --enablerepo="inmanta-oss-$(RELEASE),$(ISO_REPO)" --buildsrpm --spec inmanta.spec --sources dist --resultdir ${RPMDIR}
+	mock -r epel-8-x86_64 --bootstrap-chroot --enablerepo="inmanta-oss-$(RELEASE),$(ISO_REPO)" --rebuild ${RPMDIR}/python3-inmanta-${VERSION}-*.src.rpm --resultdir ${RPMDIR}
+
 
 .PHONY: upload
 upload: RPM := $(shell basename ${RPMDIR}/python3-inmanta-${VERSION}-*.x86_64.rpm)
