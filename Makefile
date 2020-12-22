@@ -4,8 +4,7 @@ isort = isort -rc src tests
 black = black src tests
 
 VERSION := $(shell python3 setup.py -V)
-RPMDIR_EL7 := "$(shell pwd)/rpms-el7"
-RPMDIR_EL8 := "$(shell pwd)/rpms-el8"
+RPMDIR := "$(shell pwd)/rpms-el7"
 
 ifndef $(RELEASE)
 RELEASE := dev
@@ -101,8 +100,7 @@ upload-python-package: build
 
 .PHONY: rpm
 rpm: ensure-valid-release-type build
-	rm -rf ${RPMDIR_EL7}
-	rm -rf ${RPMDIR_EL8}
+	rm -rf ${RPMDIR}
 	sed -i '0,/^%define version.*/s/^%define version.*/%define version ${VERSION}/' inmanta.spec
 
 ifneq ($(BUILDID),)
@@ -117,17 +115,13 @@ ifneq ("$(RELEASE)","stable")
 	sed -i '0,/^%define release.*/s/^%define release.*/%define release 0/' inmanta.spec
 endif
 
-	mock -r inmanta-and-epel-7-x86_64 --bootstrap-chroot --enablerepo="inmanta-oss-$(RELEASE),$(ISO_REPO)" --buildsrpm --spec inmanta.spec --sources dist --resultdir ${RPMDIR_EL7}
-	mock -r inmanta-and-epel-7-x86_64 --bootstrap-chroot --enablerepo="inmanta-oss-$(RELEASE),$(ISO_REPO)" --rebuild ${RPMDIR_EL7}/python3-inmanta-${VERSION}-*.src.rpm --resultdir ${RPMDIR_EL7}
-
-	mock -r epel-8-x86_64 --bootstrap-chroot --enablerepo="inmanta-oss-$(RELEASE),$(ISO_REPO)" --buildsrpm --spec inmanta.spec --sources dist --resultdir ${RPMDIR_EL8}
-	mock -r epel-8-x86_64 --bootstrap-chroot --enablerepo="inmanta-oss-$(RELEASE),$(ISO_REPO)" --rebuild ${RPMDIR_EL8}/python3-inmanta-${VERSION}-*.src.rpm --resultdir ${RPMDIR_EL8}
-
+	mock -r inmanta-and-epel-7-x86_64 --bootstrap-chroot --enablerepo="inmanta-oss-$(RELEASE),$(ISO_REPO)" --buildsrpm --spec inmanta.spec --sources dist --resultdir ${RPMDIR}
+	mock -r inmanta-and-epel-7-x86_64 --bootstrap-chroot --enablerepo="inmanta-oss-$(RELEASE),$(ISO_REPO)" --rebuild ${RPMDIR}/python3-inmanta-${VERSION}-*.src.rpm --resultdir ${RPMDIR}
 
 .PHONY: upload
-upload: RPM := $(shell basename ${RPMDIR_EL7}/python3-inmanta-${VERSION}-*.x86_64.rpm)
+upload: RPM := $(shell basename ${RPMDIR}/python3-inmanta-${VERSION}-*.x86_64.rpm)
 
 .PHONY: upload
 upload: ensure-valid-release-type
 	@echo Uploading $(RPM)
-	ssh repomanager@artifacts.ii.inmanta.com "/usr/bin/repomanager --config /etc/repomanager.toml --repo $(REPOMANAGER_REPO) --distro el7 --file - --file-name ${RPM}" < ${RPMDIR_EL7}/${RPM}
+	ssh repomanager@artifacts.ii.inmanta.com "/usr/bin/repomanager --config /etc/repomanager.toml --repo $(REPOMANAGER_REPO) --distro el7 --file - --file-name ${RPM}" < ${RPMDIR}/${RPM}
