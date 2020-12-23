@@ -27,10 +27,10 @@ URL:            http://inmanta.com
 Source0:        inmanta-%{sourceversion_egg}.tar.gz
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
-BuildRequires:  python3-inmanta-core
+BuildRequires:  python3-inmanta-core = 4.0.0
 BuildRequires:  systemd
 
-Requires:  python3-inmanta-core
+Requires:  python3-inmanta-core = 4.0.0
 
 # Use the correct python for bycompiling
 %define __python %{_p3}
