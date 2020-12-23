@@ -4,7 +4,7 @@ isort = isort -rc src tests
 black = black src tests
 
 VERSION := $(shell python3 setup.py -V)
-RPMDIR := "$(shell pwd)/rpms"
+RPMDIR := "$(shell pwd)/rpms-el7"
 
 ifndef $(RELEASE)
 RELEASE := dev
