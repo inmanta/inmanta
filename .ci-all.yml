@@ -1,2 +1,0 @@
-pipeline_template: ci/inmanta-core/Jenkinsfile-build-all
-repo_name: inmanta
