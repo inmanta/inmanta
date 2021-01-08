@@ -128,8 +128,8 @@ endif
 	mock -r inmanta-and-epel-7-x86_64 --bootstrap-chroot --enablerepo="inmanta-oss-$(RELEASE),$(ISO_REPO)" --buildsrpm --spec inmanta.spec --sources dist --resultdir ${RPMDIR-EL7}
 	mock -r inmanta-and-epel-7-x86_64 --bootstrap-chroot --enablerepo="inmanta-oss-$(RELEASE),$(ISO_REPO)" --rebuild ${RPMDIR-EL7}/python3-inmanta-${VERSION}-*.src.rpm --resultdir ${RPMDIR-EL7}
 
-	mock -r epel-8-x86_64 --bootstrap-chroot --enablerepo="inmanta-oss-$(RELEASE),$(ISO_REPO)" --buildsrpm --spec inmanta.spec --sources dist --resultdir ${RPMDIR-EL8}
-	mock -r epel-8-x86_64 --bootstrap-chroot --enablerepo="inmanta-oss-$(RELEASE),$(ISO_REPO)" --rebuild ${RPMDIR-EL8}/python3-inmanta-${VERSION}-*.src.rpm --resultdir ${RPMDIR-EL8}
+	mock -r epel-8-x86_64 --bootstrap-chroot --buildsrpm --spec inmanta.spec --sources dist --resultdir ${RPMDIR-EL8}
+	mock -r epel-8-x86_64 --bootstrap-chroot --rebuild ${RPMDIR-EL8}/python3-inmanta-${VERSION}-*.src.rpm --resultdir ${RPMDIR-EL8}
 
 .PHONY: upload
 upload: ensure-valid-release-type
