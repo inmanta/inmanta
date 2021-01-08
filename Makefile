@@ -5,14 +5,13 @@ black = black src tests
 
 VERSION := $(shell python3 setup.py -V)
 RPMDIR-EL7 := "$(shell pwd)/rpms-el7"
-RPMDIR-EL8 := "$(shell pwd)/rpms-el8"
 
 ifndef $(RELEASE)
 RELEASE := dev
 endif
 
 ifndef $(ISO_MAJOR_VERSION)
-ISO_MAJOR_VERSION := 4
+ISO_MAJOR_VERSION := 3
 endif
 
 ifeq ($(BUILDID),)
@@ -129,13 +128,10 @@ endif
 	mock -r inmanta-and-epel-7-x86_64 --bootstrap-chroot --enablerepo="inmanta-oss-$(RELEASE),$(ISO_REPO)" --buildsrpm --spec inmanta.spec --sources dist --resultdir ${RPMDIR-EL7}
 	mock -r inmanta-and-epel-7-x86_64 --bootstrap-chroot --enablerepo="inmanta-oss-$(RELEASE),$(ISO_REPO)" --rebuild ${RPMDIR-EL7}/python3-inmanta-${VERSION}-*.src.rpm --resultdir ${RPMDIR-EL7}
 
-	mock -r epel-8-x86_64 --bootstrap-chroot --enablerepo="inmanta/oss-$(RELEASE)-el8/el/8" --buildsrpm --spec inmanta.spec --sources dist --resultdir ${RPMDIR-EL8}
-	mock -r epel-8-x86_64 --bootstrap-chroot --enablerepo="inmanta/oss-$(RELEASE)-el8/el/8" --rebuild ${RPMDIR-EL8}/python3-inmanta-${VERSION}-*.src.rpm --resultdir ${RPMDIR-EL8}
-
 .PHONY: upload
 upload: ensure-valid-release-type
 	pip3 install cloudsmith-cli
-	@for path_to_rpm in $(shell find rpms-el7 -name '*.x86_64.rpm'; find rpms-el8 -name '*.x86_64.rpm'); do \
+	@for path_to_rpm in $(shell find rpms-el7 -name '*.x86_64.rpm'); do \
 		rpm=$$(basename $$path_to_rpm) ; \
 		el_version=$$(echo $$rpm| rev| cut -d '.' -f 3| rev |tr -d 'el') ; \
 		if [ $${el_version} = "7" ] && [ $${ISO_MAJOR_VERSION} = 3 ]; then \
