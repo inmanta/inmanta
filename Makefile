@@ -10,6 +10,10 @@ ifndef $(RELEASE)
 RELEASE := dev
 endif
 
+ifndef $(ISO_MAJOR_VERSION)
+ISO_MAJOR_VERSION := 3
+endif
+
 ifeq ($(BUILDID),)
 TIMESTAMP := $(shell date --utc +%Y%m%d%H%M)
    ifeq ("$(RELEASE)","dev")
