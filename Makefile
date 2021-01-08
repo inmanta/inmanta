@@ -109,7 +109,8 @@ upload-python-package: build
 
 .PHONY: rpm
 rpm: ensure-valid-release-type build
-	rm -rf ${RPMDIR}
+	rm -rf ${RPMDIR-EL7}
+	rm -rf ${RPMDIR-EL8}
 	sed -i '0,/^%define version.*/s/^%define version.*/%define version ${VERSION}/' inmanta.spec
 
 ifneq ($(BUILDID),)
@@ -125,10 +126,10 @@ ifneq ("$(RELEASE)","stable")
 endif
 
 	mock -r inmanta-and-epel-7-x86_64 --bootstrap-chroot --enablerepo="inmanta-oss-$(RELEASE),$(ISO_REPO)" --buildsrpm --spec inmanta.spec --sources dist --resultdir ${RPMDIR-EL7}
-	mock -r inmanta-and-epel-7-x86_64 --bootstrap-chroot --enablerepo="inmanta-oss-$(RELEASE),$(ISO_REPO)" --rebuild ${RPMDIR}/python3-inmanta-${VERSION}-*.src.rpm --resultdir ${RPMDIR-EL7}
+	mock -r inmanta-and-epel-7-x86_64 --bootstrap-chroot --enablerepo="inmanta-oss-$(RELEASE),$(ISO_REPO)" --rebuild ${RPMDIR-EL7}/python3-inmanta-${VERSION}-*.src.rpm --resultdir ${RPMDIR-EL7}
 
 	mock -r epel-8-x86_64 --bootstrap-chroot --enablerepo="inmanta-oss-$(RELEASE),$(ISO_REPO)" --buildsrpm --spec inmanta.spec --sources dist --resultdir ${RPMDIR-EL8}
-	mock -r epel-8-x86_64 --bootstrap-chroot --enablerepo="inmanta-oss-$(RELEASE),$(ISO_REPO)" --rebuild ${RPMDIR}/python3-inmanta-${VERSION}-*.src.rpm --resultdir ${RPMDIR-EL8}
+	mock -r epel-8-x86_64 --bootstrap-chroot --enablerepo="inmanta-oss-$(RELEASE),$(ISO_REPO)" --rebuild ${RPMDIR-EL8}/python3-inmanta-${VERSION}-*.src.rpm --resultdir ${RPMDIR-EL8}
 
 .PHONY: upload
 upload: ensure-valid-release-type
