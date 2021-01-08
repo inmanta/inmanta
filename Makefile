@@ -129,6 +129,7 @@ endif
 
 .PHONY: upload
 upload: ensure-valid-release-type
+# Can be extended later with el8
 	pip3 install cloudsmith-cli
 	@for path_to_rpm in $(shell find rpms-el7 -name '*.x86_64.rpm'); do \
 		rpm=$$(basename $$path_to_rpm) ; \
@@ -150,8 +151,8 @@ upload: ensure-valid-release-type
 			fi ;\
         fi ; \
 	done
-	if [ "${RPM_REPOSITORY}" = "oss" ] && [ "${RELEASE}" = "stable" ]; then \
-		for el_version in '7' '8'; do \
+	@if [ "${RPM_REPOSITORY}" = "oss" ] && [ "${RELEASE}" = "stable" ]; then \
+		for el_version in '7'; do \
 			cloudsmith list packages inmanta/oss-stable-staging-el$${el_version} -F json | \
 			jq -r ".data[].identifier_perm" | \
 			xargs -I pkg_id cloudsmith copy inmanta/oss-stable-staging-el$${el_version}/pkg_id oss-stable-el$${el_version} ; \
