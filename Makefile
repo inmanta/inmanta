@@ -145,15 +145,15 @@ upload: ensure-valid-release-type
 		fi ; \
 		if [ "$${RPM_REPOSITORY}" = "oss" ]; then \
 			if [ "$${RELEASE}" = "stable" ]; then \
-				cloudsmith push rpm inmanta/oss-stable-staging-el$${el_version} $${path_to_rpm} ; \
+				cloudsmith push rpm inmanta/oss-stable-staging-el$${el_version}/el/$${el_version} $${path_to_rpm} ; \
 			else \
-				cloudsmith push rpm inmanta/oss-$${RELEASE}-el$${el_version} $${path_to_rpm} ;\
+				cloudsmith push rpm inmanta/oss-$${RELEASE}-el$${el_version}/el/$${el_version} $${path_to_rpm} ;\
 			fi ;\
 		else \
 			if [ "$${RELEASE}" = "stable" ]; then \
-				cloudsmith push rpm inmanta/inmanta-service-orchestrator-$${ISO_MAJOR_VERSION}-stable-staging $${path_to_rpm} ; \
+				cloudsmith push rpm inmanta/inmanta-service-orchestrator-$${ISO_MAJOR_VERSION}-stable-staging/el/$${el_version} $${path_to_rpm} ; \
 			else \
-				cloudsmith push rpm inmanta/inmanta-service-orchestrator-$${ISO_MAJOR_VERSION}-$${RELEASE} $${path_to_rpm} ;\
+				cloudsmith push rpm inmanta/inmanta-service-orchestrator-$${ISO_MAJOR_VERSION}-$${RELEASE}/el/$${el_version} $${path_to_rpm} ;\
 			fi ;\
 		fi ; \
 	done
