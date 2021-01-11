@@ -10,8 +10,10 @@ ifndef $(RELEASE)
 RELEASE := dev
 endif
 
-ifndef $(ISO_MAJOR_VERSION)
-ISO_MAJOR_VERSION := 5
+ifndef ISO_MAJOR_VERSION
+ifeq ($(RPM_REPOSITORY),iso)
+$(error ISO_MAJOR_VERSION should be set if RPM_REPOSITORY is set to iso)
+endif
 endif
 
 ifeq ($(BUILDID),)
@@ -109,7 +111,6 @@ upload-python-package: build
 .PHONY: rpm
 rpm: ensure-valid-release-type build
 	rm -rf ${RPMDIR-EL7}
-	rm -rf ${RPMDIR-EL8}
 	sed -i '0,/^%define version.*/s/^%define version.*/%define version ${VERSION}/' inmanta.spec
 
 ifneq ($(BUILDID),)
@@ -124,8 +125,13 @@ ifneq ("$(RELEASE)","stable")
 	sed -i '0,/^%define release.*/s/^%define release.*/%define release 0/' inmanta.spec
 endif
 
-	mock -r inmanta-and-epel-7-x86_64 --bootstrap-chroot --enablerepo="inmanta-oss-$(RELEASE),$(ISO_REPO)" --buildsrpm --spec inmanta.spec --sources dist --resultdir ${RPMDIR-EL7}
-	mock -r inmanta-and-epel-7-x86_64 --bootstrap-chroot --enablerepo="inmanta-oss-$(RELEASE),$(ISO_REPO)" --rebuild ${RPMDIR-EL7}/python3-inmanta-${VERSION}-*.src.rpm --resultdir ${RPMDIR-EL7}
+ifeq ($(RPM_REPOSITORY),oss)
+	mock -r inmanta-and-epel-7-x86_64 --bootstrap-chroot --enablerepo="inmanta-oss-$(RELEASE)" --buildsrpm --spec inmanta.spec --sources dist --resultdir ${RPMDIR-EL7}
+	mock -r inmanta-and-epel-7-x86_64 --bootstrap-chroot --enablerepo="inmanta-oss-$(RELEASE)" --rebuild ${RPMDIR-EL7}/python3-inmanta-${VERSION}-*.src.rpm --resultdir ${RPMDIR-EL7}
+else
+	mock -r inmanta-and-epel-7-x86_64 --bootstrap-chroot --enablerepo="$(ISO_REPO)" --buildsrpm --spec inmanta.spec --sources dist --resultdir ${RPMDIR-EL7}
+	mock -r inmanta-and-epel-7-x86_64 --bootstrap-chroot --enablerepo="$(ISO_REPO)" --rebuild ${RPMDIR-EL7}/python3-inmanta-${VERSION}-*.src.rpm --resultdir ${RPMDIR-EL7}
+endif
 
 .PHONY: upload
 upload: ensure-valid-release-type
@@ -139,9 +145,9 @@ upload: ensure-valid-release-type
 		fi ; \
 		if [ "$${RPM_REPOSITORY}" = "oss" ]; then \
 			if [ "$${RELEASE}" = "stable" ]; then \
-				cloudsmith push rpm inmanta/oss-stable-staging-el$${el_version}/el/$${el_version} $${path_to_rpm} ; \
+				cloudsmith push rpm inmanta/oss-stable-staging-el$${el_version} $${path_to_rpm} ; \
 			else \
-				cloudsmith push rpm inmanta/oss-$${RELEASE}-el$${el_version}/el/$${el_version} $${path_to_rpm} ;\
+				cloudsmith push rpm inmanta/oss-$${RELEASE}-el$${el_version} $${path_to_rpm} ;\
 			fi ;\
 		else \
 			if [ "$${RELEASE}" = "stable" ]; then \
