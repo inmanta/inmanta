@@ -145,9 +145,9 @@ upload: ensure-valid-release-type
 		fi ; \
 		if [ "$${RPM_REPOSITORY}" = "oss" ]; then \
 			if [ "$${RELEASE}" = "stable" ]; then \
-				cloudsmith push rpm inmanta/oss-stable-staging-el$${el_version}/el/$${el_version} $${path_to_rpm} ; \
+				cloudsmith push rpm inmanta/oss-stable-staging/el/$${el_version} $${path_to_rpm} ; \
 			else \
-				cloudsmith push rpm inmanta/oss-$${RELEASE}-el$${el_version}/el/$${el_version} $${path_to_rpm} ;\
+				cloudsmith push rpm inmanta/oss-$${RELEASE}/el/$${el_version} $${path_to_rpm} ;\
 			fi ;\
 		else \
 			if [ "$${RELEASE}" = "stable" ]; then \
@@ -158,9 +158,7 @@ upload: ensure-valid-release-type
 		fi ; \
 	done
 	@if [ "${RPM_REPOSITORY}" = "oss" ] && [ "${RELEASE}" = "stable" ]; then \
-		for el_version in '7'; do \
-			cloudsmith list packages inmanta/oss-stable-staging-el$${el_version} -F json | \
+		cloudsmith list packages inmanta/oss-stable-staging -F json | \
 			jq -r ".data[].identifier_perm" | \
-			xargs -I pkg_id cloudsmith copy inmanta/oss-stable-staging-el$${el_version}/pkg_id oss-stable-el$${el_version} ; \
-		done ;\
+			xargs -I pkg_id cloudsmith copy inmanta/oss-stable-staging/pkg_id oss-stable ; \
 	fi ;\
