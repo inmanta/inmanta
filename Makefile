@@ -148,7 +148,7 @@ upload: ensure-valid-release-type
 		rpm=$$(basename $$path_to_rpm) ; \
 		el_version=$$(echo $$rpm| rev| cut -d '.' -f 3| rev |tr -d 'el') ; \
 		if [ "$${RPM_REPOSITORY}" = "iso" ] && [ $${el_version} = "7" ] && [ $${ISO_MAJOR_VERSION} = "3" ]; then \
-			repomanager@artifacts.ii.inmanta.com "/usr/bin/repomanager --config /etc/repomanager.toml --repo ${REPOMANAGER_REPO} --distro el7 --file - --file-name $${rpm}" < $${path_to_rpm} ; \
+			ssh repomanager@artifacts.ii.inmanta.com "/usr/bin/repomanager --config /etc/repomanager.toml --repo ${REPOMANAGER_REPO} --distro el7 --file - --file-name $${rpm}" < $${path_to_rpm} ; \
 		fi ; \
 		if [ "$${RPM_REPOSITORY}" = "oss" ]; then \
 			if [ "$${RELEASE}" = "stable" ]; then \
