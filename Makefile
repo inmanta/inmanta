@@ -5,6 +5,7 @@ black = black src tests
 
 VERSION := $(shell python3 setup.py -V)
 RPMDIR-EL7 := "$(shell pwd)/rpms-el7"
+RPMDIR-EL8 := "$(shell pwd)/rpms-el8"
 
 ifndef $(RELEASE)
 RELEASE := dev
@@ -110,7 +111,7 @@ upload-python-package: build
 
 .PHONY: rpm
 rpm: ensure-valid-release-type build
-	rm -rf ${RPMDIR-EL7}
+	rm -rf ${RPMDIR-EL7} ${RPMDIR-EL8}
 	sed -i '0,/^%define version.*/s/^%define version.*/%define version ${VERSION}/' inmanta.spec
 
 ifneq ($(BUILDID),)
@@ -128,20 +129,26 @@ endif
 ifeq ($(RPM_REPOSITORY),oss)
 	mock -r inmanta-and-epel-7-x86_64 --bootstrap-chroot --enablerepo="inmanta-oss-$(RELEASE)" --buildsrpm --spec inmanta.spec --sources dist --resultdir ${RPMDIR-EL7}
 	mock -r inmanta-and-epel-7-x86_64 --bootstrap-chroot --enablerepo="inmanta-oss-$(RELEASE)" --rebuild ${RPMDIR-EL7}/python3-inmanta-${VERSION}-*.src.rpm --resultdir ${RPMDIR-EL7}
+
+	mock -r inmanta-and-epel-8-x86_64 --bootstrap-chroot --enablerepo="inmanta-oss-$(RELEASE)" --buildsrpm --spec inmanta.spec --sources dist --resultdir ${RPMDIR-EL8}
+	mock -r inmanta-and-epel-8-x86_64 --bootstrap-chroot --enablerepo="inmanta-oss-$(RELEASE)" --rebuild ${RPMDIR-EL8}/python3-inmanta-${VERSION}-*.src.rpm --resultdir ${RPMDIR-EL8}
 else
 	mock -r inmanta-and-epel-7-x86_64 --bootstrap-chroot --enablerepo="$(ISO_REPO)" --buildsrpm --spec inmanta.spec --sources dist --resultdir ${RPMDIR-EL7}
 	mock -r inmanta-and-epel-7-x86_64 --bootstrap-chroot --enablerepo="$(ISO_REPO)" --rebuild ${RPMDIR-EL7}/python3-inmanta-${VERSION}-*.src.rpm --resultdir ${RPMDIR-EL7}
+
+	mock -r inmanta-and-epel-8-x86_64 --bootstrap-chroot --enablerepo="$(ISO_REPO)" --buildsrpm --spec inmanta.spec --sources dist --resultdir ${RPMDIR-EL8}
+	mock -r inmanta-and-epel-8-x86_64 --bootstrap-chroot --enablerepo="$(ISO_REPO)" --rebuild ${RPMDIR-EL8}/python3-inmanta-${VERSION}-*.src.rpm --resultdir ${RPMDIR-EL8}
 endif
 
 .PHONY: upload
 upload: ensure-valid-release-type
 # Can be extended later with el8
 	pip3 install cloudsmith-cli
-	@for path_to_rpm in $(shell find rpms-el7 -name '*.x86_64.rpm'); do \
+	@for path_to_rpm in $(shell find ${RPMDIR-EL7} ${RPMDIR-EL8} -name '*.x86_64.rpm'); do \
 		rpm=$$(basename $$path_to_rpm) ; \
 		el_version=$$(echo $$rpm| rev| cut -d '.' -f 3| rev |tr -d 'el') ; \
 		if [ "$${RPM_REPOSITORY}" = "iso" ] && [ $${el_version} = "7" ] && [ $${ISO_MAJOR_VERSION} = "3" ]; then \
-			repomanager@artifacts.ii.inmanta.com "/usr/bin/repomanager --config /etc/repomanager.toml --repo ${REPOMANAGER_REPO} --distro el7 --file - --file-name $${rpm}" < $${path_to_rpm} ; \
+			ssh repomanager@artifacts.ii.inmanta.com "/usr/bin/repomanager --config /etc/repomanager.toml --repo ${REPOMANAGER_REPO} --distro el7 --file - --file-name $${rpm}" < $${path_to_rpm} ; \
 		fi ; \
 		if [ "$${RPM_REPOSITORY}" = "oss" ]; then \
 			if [ "$${RELEASE}" = "stable" ]; then \
