@@ -31,7 +31,7 @@ License:        ASL 2
 URL:            http://inmanta.com
 Source0:        inmanta-%{sourceversion_egg}.tar.gz
 Source1:        dependencies.tar.gz
-Source2:        inmanta-inmanta-dashboard-%{dashboard_version}.tgz
+Source2:        inmanta-dashboard-%{dashboard_version}-npm.tgz
 Source3:        inmanta-core-%{inmanta_core_version}.tar.gz
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
@@ -135,7 +135,7 @@ touch %{buildroot}/etc/sysconfig/inmanta-server
 touch %{buildroot}/etc/sysconfig/inmanta-agent
 
 # Install the dashboard
-cp -a dist %{venv}/dashboard
+cp -a package/dist %{venv}/dashboard
 
 %clean
 rm -rf %{buildroot}
