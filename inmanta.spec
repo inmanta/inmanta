@@ -19,6 +19,7 @@
 %define sourceversion %{version}%{?buildid}
 %define sourceversion_egg %{version}%{?buildid_egg}
 %define inmanta_core_dir inmanta-core-%{inmanta_core_version}
+%define inmanta_rpm_state_dir %{_localstatedir}/lib/rpm-state/inmanta
 
 Name:           inmanta-oss
 Version:        %{version}
@@ -166,6 +167,34 @@ rm -rf %{buildroot}
 %files -n inmanta-oss-agent
 %attr(-,root,root) %{_unitdir}/inmanta-agent.service
 
+# The save_service_state() and the restore_service_state() macros
+# are required to make sure that the service state (enable/disabled,
+# started/stopped) remains unchanged when migrating from the
+# python3-inmanta-server and python3-inmanta-agent RPMs to the
+# inmanta-oss-server and inmanta-oss-agent RPMs respectively.
+%define save_service_state() \
+if [ -e "%{_unitdir}/%{1}.service" ]; then \
+  mkdir -p "%{inmanta_rpm_state_dir}" \
+  if systemctl is-enabled -q %{1}.service; then \
+    touch "%{inmanta_rpm_state_dir}/%{1}_enabled" \
+  fi \
+  if systemctl is-active -q %1.service; then \
+    touch "%{inmanta_rpm_state_dir}/%{1}_active" \
+  fi \
+fi
+
+%define restore_service_state() \
+if [ -e "%{inmanta_rpm_state_dir}/%{1}_enabled" ] && ! systemctl is-enabled -q %{1}.service; then \
+  systemctl enable %{1}.service \
+fi \
+if [ -e "%{inmanta_rpm_state_dir}/%{1}_active" ] && ! systemctl is-active -q %{1}.service; then \
+  systemctl start %{1}.service \
+fi \
+rm -f "%{inmanta_rpm_state_dir}/%{1}_enabled" "%{inmanta_rpm_state_dir}/%{1}_active"
+
+%pre -n inmanta-oss-agent
+%save_service_state inmanta-agent
+
 %post -n inmanta-oss-agent
 %systemd_post inmanta-agent.service
 
@@ -174,6 +203,12 @@ rm -rf %{buildroot}
 
 %postun -n inmanta-oss-agent
 %systemd_postun_with_restart inmanta-agent.service
+
+%posttrans -n inmanta-oss-agent
+%restore_service_state inmanta-agent
+
+%pre -n inmanta-oss-server
+%save_service_state inmanta-server
 
 %post -n inmanta-oss-server
 %systemd_post inmanta-server.service
@@ -188,6 +223,9 @@ fi
 
 %postun -n inmanta-oss-server
 %systemd_postun_with_restart inmanta-server.service
+
+%posttrans -n inmanta-oss-server
+%restore_service_state inmanta-server
 
 %pre
 getent group inmanta >/dev/null || groupadd -r inmanta
