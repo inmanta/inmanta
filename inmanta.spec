@@ -1,11 +1,12 @@
-# Provide: dashboard_version  and inmanta_core_version to mock command via --define
-# Example --define="dashboard_version 1.0.0" --define="inmanta_core_version 4.1.0.dev0"
+# The following parameters have to be provided to mock via --define="<key> <value>"
+#
+# * release: Use release 1 for stable releases and 0 for pre-releases
+# * version: Version of inmanta-service-orchestrator release (without build_tag)
+# * buildid: Build_tag inmanta-oss RPM
+# * buildid_egg: Build_tag inmanta pypi package
+# * dashboard_version: Fully qualified version inmanta-dashboard NPM packge (version number + build_tag)
+# * inmanta_core_version: Fully qualified version inmanta-core pypi packge (version number + build_tag)
 
-# Use release 1 for stable releases
-%define release 0
-%define version 2020.7
-%define buildid %{nil}
-%define buildid_egg %{nil}
 %define python_version 3.6
 %define undotted_python_version %(v=%{python_version}; echo "${v//\./}")
 %define venv %{buildroot}/opt/inmanta
@@ -237,4 +238,3 @@ exit
 %changelog
 * Mon Jan 18 2021 Arnaud Schoonjans <arnaud.schoonjans@inmanta.com> - 2016.3
 - Initial commit
-
