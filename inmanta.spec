@@ -4,7 +4,7 @@
 # * version: Version of inmanta-service-orchestrator release (without build_tag)
 # * buildid: Build_tag inmanta-oss RPM
 # * buildid_egg: Build_tag inmanta pypi package
-# * dashboard_version: Fully qualified version inmanta-dashboard NPM packge (version number + build_tag)
+# * inmanta_dashboard_version: Fully qualified version inmanta-dashboard NPM packge (version number + build_tag)
 # * inmanta_core_version: Fully qualified version inmanta-core pypi packge (version number + build_tag)
 
 %define python_version 3.6
@@ -33,7 +33,7 @@ License:        ASL 2
 URL:            http://inmanta.com
 Source0:        inmanta-%{sourceversion_egg}.tar.gz
 Source1:        dependencies.tar.gz
-Source2:        inmanta-inmanta-dashboard-%{dashboard_version}.tgz
+Source2:        inmanta-inmanta-dashboard-%{inmanta_dashboard_version}.tgz
 Source3:        inmanta-core-%{inmanta_core_version}.tar.gz
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
