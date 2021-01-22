@@ -1,2 +1,2 @@
-[tool.irt]
+[tool.irt.publish.python]
 public = true
