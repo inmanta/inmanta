@@ -19,7 +19,6 @@
 
 %define sourceversion %{version}%{?buildid}
 %define sourceversion_egg %{version}%{?buildid_egg}
-%define inmanta_core_dir inmanta-core-%{inmanta_core_version}
 %define inmanta_rpm_state_dir %{_localstatedir}/lib/rpm-state/inmanta
 
 Name:           inmanta-oss
@@ -34,7 +33,6 @@ URL:            http://inmanta.com
 Source0:        inmanta-%{sourceversion_egg}.tar.gz
 Source1:        dependencies.tar.gz
 Source2:        inmanta-inmanta-dashboard-%{inmanta_dashboard_version}.tgz
-Source3:        inmanta-core-%{inmanta_core_version}.tar.gz
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 BuildRequires:  systemd
@@ -84,8 +82,9 @@ Obsoletes:      python3-inmanta-agent
 %setup -q -n inmanta-%{sourceversion_egg}
 %setup -T -D -a 1 -n inmanta-%{sourceversion_egg}
 %setup -T -D -a 2 -n inmanta-%{sourceversion_egg}
-%setup -T -D -a 3 -n inmanta-%{sourceversion_egg}
-cp ${RPM_SOURCE_DIR}/inmanta-core-%{inmanta_core_version}.tar.gz ${RPM_BUILD_DIR}/inmanta-%{sourceversion_egg}/dependencies
+# Unpack inmanta-core
+mkdir inmanta_core
+tar -xf dependencies/inmanta-core-*.tar.gz --strip-components=1 --directory inmanta_core
 
 %build
 
@@ -125,13 +124,13 @@ mkdir -p %{buildroot}/etc/inmanta
 mkdir -p %{buildroot}/etc/inmanta/inmanta.d
 mkdir -p %{buildroot}/var/log/inmanta
 mkdir -p %{buildroot}/etc/logrotate.d
-install -p -m 644 %{inmanta_core_dir}/misc/inmanta.cfg %{buildroot}/etc/inmanta/inmanta.cfg
-install -p -m 644 %{inmanta_core_dir}/misc/logrotation_config %{buildroot}/etc/logrotate.d/inmanta
+install -p -m 644 inmanta_core/misc/inmanta.cfg %{buildroot}/etc/inmanta/inmanta.cfg
+install -p -m 644 inmanta_core/misc/logrotation_config %{buildroot}/etc/logrotate.d/inmanta
 
 # Setup systemd
 mkdir -p %{buildroot}%{_unitdir}
-install -p -m 644 %{inmanta_core_dir}/misc/inmanta-agent.service $RPM_BUILD_ROOT%{_unitdir}/inmanta-agent.service
-install -p -m 644 %{inmanta_core_dir}/misc/inmanta-server.service $RPM_BUILD_ROOT%{_unitdir}/inmanta-server.service
+install -p -m 644 inmanta_core/misc/inmanta-agent.service $RPM_BUILD_ROOT%{_unitdir}/inmanta-agent.service
+install -p -m 644 inmanta_core/misc/inmanta-server.service $RPM_BUILD_ROOT%{_unitdir}/inmanta-server.service
 mkdir -p %{buildroot}/etc/sysconfig
 touch %{buildroot}/etc/sysconfig/inmanta-server
 touch %{buildroot}/etc/sysconfig/inmanta-agent
@@ -144,7 +143,7 @@ rm -rf %{buildroot}
 
 %files
 %defattr(-,root,root,-)
-%doc LICENSE %{inmanta_core_dir}/docs/*
+%doc LICENSE inmanta_core/docs/*
 /opt/inmanta/bin
 /opt/inmanta/lib
 /opt/inmanta/lib64
