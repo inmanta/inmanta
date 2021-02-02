@@ -23,6 +23,6 @@ inmanta-core = {"repo" = "https://github.com/inmanta/inmanta-core", "path" = "re
 documentation_repo = "https://github.com/inmanta/inmanta-core.git"
 
 [tool.irt.documentation.publish]
-dev_release_path = "/srv/www/docs/community/{version}"
+dev_release_path = "/srv/www/docs/community/{version}.dev"
 stable_release_path = "/srv/www/docs/community/{version}"
 
