@@ -1,3 +1,6 @@
+[tool.irt.module_set]
+file="sets/public.yml"
+
 [tool.irt.dependencies.python]
 inmanta-core = "https://github.com/inmanta/inmanta-core"
 
@@ -15,3 +18,11 @@ rpm_repo_name_prefix = "inmanta/oss"
 
 [tool.irt.additional-lock-files]
 inmanta-core = {"repo" = "https://github.com/inmanta/inmanta-core", "path" = "requirements.txt"}
+
+[tool.irt.documentation]
+documentation_repo = "https://github.com/inmanta/inmanta-core.git"
+
+[tool.irt.documentation.publish]
+dev_release_path = "/srv/www/docs/community/{version}"
+stable_release_path = "/srv/www/docs/community/{version}"
+
