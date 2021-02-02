@@ -1,5 +1,5 @@
 [tool.irt.module_set]
-file="sets/public.yml"
+path="sets/public.yml"
 
 [tool.irt.dependencies.python]
 inmanta-core = "https://github.com/inmanta/inmanta-core"
