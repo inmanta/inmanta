@@ -25,4 +25,5 @@ documentation_repo = "https://github.com/inmanta/inmanta-core.git"
 [tool.irt.documentation.publish]
 dev_release_path = "/srv/www/docs/community/{version}.dev"
 stable_release_path = "/srv/www/docs/community/{version}"
+post_publish_hook_remote = "~/post_publish_hook.py"
 
