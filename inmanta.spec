@@ -99,7 +99,11 @@ rm -rf %{buildroot}
 mkdir -p %{buildroot}/opt/inmanta
 %{__python3} -m venv --symlinks %{venv}
 %{_p3} -m pip install -U --no-index --find-links dependencies wheel setuptools pip
-%{_p3} -m pip install --no-index --find-links dependencies .
+if [ -z "%{?buildid}" ]; then
+  %{_p3} -m pip install --no-index --find-links dependencies .
+else
+  %{_p3} -m pip install --pre --no-index --find-links dependencies .
+fi
 %{_p3} -m inmanta.app
 
 # Use the correct python for bycompiling
