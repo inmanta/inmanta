@@ -45,6 +45,10 @@ Requires:       logrotate
 Requires:       libffi
 Requires(pre):  shadow-utils
 
+# Requirements cryptography
+BuildRequires:  redhat-rpm-config
+BuildRequires:  gcc
+BuildRequires:  cargo
 %if 0%{?el7}
 BuildRequires:  openssl11-devel
 Requires:       openssl11

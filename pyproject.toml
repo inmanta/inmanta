@@ -17,7 +17,7 @@ public = true
 rpm_repo_name_prefix = "inmanta/oss"
 
 [tool.irt.additional-lock-files]
-inmanta-core = {"repo" = "https://github.com/inmanta/inmanta-core", "path" = "requirements.txt"}
+inmanta-core = {"repo" = "https://github.com/inmanta/inmanta-core", "files" = ["requirements.txt", "requirements.setup.txt"]}
 
 [tool.irt.documentation]
 documentation_repo = "https://github.com/inmanta/inmanta-core.git"
