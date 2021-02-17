@@ -38,17 +38,20 @@ BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildRequires:  systemd
 BuildRequires:  sed
 BuildRequires:  libffi-devel
+Requires:       libffi-devel
 
 Requires:       git
-Requires:       gcc
 Requires:       logrotate
 Requires:       libffi
 Requires(pre):  shadow-utils
 
 # Requirements cryptography
 BuildRequires:  redhat-rpm-config
+Requires:       redhat-rpm-config
 BuildRequires:  gcc
+Requires:       gcc
 BuildRequires:  cargo
+Requires:       cargo
 %if 0%{?el7}
 BuildRequires:  openssl11-devel
 Requires:       openssl11
