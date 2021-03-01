@@ -1,4 +1,4 @@
-# Release 2020.7 (?)
+# Release 2020.7 (2021-03-01)
 
 - Switch to fat RPMs (inmanta/irt#438)
 
