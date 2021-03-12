@@ -71,12 +71,12 @@ Obsoletes: python3-inmanta-core
 
 %package -n inmanta-oss-server
 Summary:        The configuration and service files to start the Inmanta server
-Requires:       inmanta-oss = %{version}
+Requires:       inmanta-oss = 2021.1
 Obsoletes:      python3-inmanta-server
 
 %package -n inmanta-oss-agent
 Summary:        The configuration and service files to start the Inmanta agent
-Requires:       inmanta-oss = %{version}
+Requires:       inmanta-oss = 2021.1
 Obsoletes:      python3-inmanta-agent
 
 %description
