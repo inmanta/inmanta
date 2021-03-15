@@ -5,7 +5,7 @@ path="sets/public.yml"
 inmanta-core = "https://github.com/inmanta/inmanta-core"
 
 [tool.irt.dependencies.npm]
-dashboard = { "repo" = "https://github.com/inmanta/inmanta-dashboard", "version" = "~=3.6.0.0rc" }
+dashboard = { "repo" = "https://github.com/inmanta/inmanta-dashboard", "version" = "==3.6.0" }
 
 [tool.irt.build.rpm]
 enable_repo = {"el7" = ["epel"], "el8" = []}
