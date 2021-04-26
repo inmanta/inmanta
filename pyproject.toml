@@ -1,11 +1,11 @@
 [tool.irt.module_set]
 path="sets/public.yml"
 
-[tool.irt.dependencies.additional-python-dependencies]
-inmanta-core = "https://github.com/inmanta/inmanta-core"
+[tool.irt.dependencies]
+core-component = "https://github.com/inmanta/inmanta-core"
 
 [tool.irt.dependencies.npm]
-dashboard = { "repo" = "https://github.com/inmanta/inmanta-dashboard", "version" = "master" }
+inmanta-dashboard = { "repo" = "https://github.com/inmanta/inmanta-dashboard", "version" = "master" }
 
 [tool.irt.build.rpm]
 enable_repo = {"el7" = ["epel"], "el8" = []}
