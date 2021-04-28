@@ -1,0 +1,2 @@
+pipeline_template: ci/inmanta-product/Jenkinsfile-release
+repo_name: inmanta
