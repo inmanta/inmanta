@@ -28,4 +28,4 @@ el8 = []
 
 [tool.irt.dependencies.npm.inmanta-dashboard]
 repo = "https://github.com/inmanta/inmanta-dashboard"
-version = "~=3.7.0.0rc"
+version = "==3.7.0"
