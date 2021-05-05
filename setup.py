@@ -2,7 +2,7 @@ from setuptools import setup
 
 
 setup(
-    version="2021.1",
+    version="2021.2",
     python_requires=">=3.6",  # also update classifiers
     # Meta data
     name="inmanta",
@@ -27,6 +27,6 @@ setup(
         "Documentation": "https://docs.inmanta.com/community/latest/",
     },
     install_requires=[
-        "inmanta-core==5.0.0"
+        "inmanta-core==5.1.0"
     ],
 )
