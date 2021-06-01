@@ -1,3 +1,16 @@
+# Release 2021.2.1 (2021-06-01)
+
+## Inmanta-core: release 5.1.1 (2021-06-01)
+
+### Bug fixes
+
+- Add upperbound to docstring-parser dependency so that pip install does not fail
+
+## Inmanta-dashboard: release 3.7.0 (2021-06-01)
+
+No changelog entries.
+
+
 # Release 2021.2 (2021-05-05)
 
 ## Inmanta-core: release 5.1.0 (2021-05-05)
