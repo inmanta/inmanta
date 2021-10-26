@@ -7,7 +7,11 @@
 # * inmanta_dashboard_version: Fully qualified version inmanta-dashboard NPM packge (version number + build_tag)
 # * inmanta_core_version: Fully qualified version inmanta-core pypi packge (version number + build_tag)
 
+%if 0%{?el7}
 %define python_version 3.6
+%else
+%define python_version 3.9
+%endif
 %define undotted_python_version %(v=%{python_version}; echo "${v//\./}")
 %define venv %{buildroot}/opt/inmanta
 %define _p3 %{venv}/bin/python%{python_version}
