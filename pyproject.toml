@@ -26,7 +26,6 @@ files = [ "requirements.txt", "requirements.setup.txt",]
 centos_versions = [8]
 
 [tool.irt.build.rpm.enable_repo]
-el7 = [ "epel",]
 el8 = []
 
 [tool.irt.dependencies.npm.inmanta-dashboard]
