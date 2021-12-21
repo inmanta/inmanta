@@ -22,8 +22,10 @@ post_publish_hook_remote = "~/post_publish_hook.py"
 repo = "https://github.com/inmanta/inmanta-core"
 files = [ "requirements.txt", "requirements.setup.txt",]
 
+[tool.irt.build.rpm]
+centos_versions = [8]
+
 [tool.irt.build.rpm.enable_repo]
-el7 = [ "epel",]
 el8 = []
 
 [tool.irt.dependencies.npm.inmanta-dashboard]
