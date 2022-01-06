@@ -28,5 +28,6 @@ setup(
     },
     install_requires=[
         "inmanta-core>=5.0.0.dev"
+        "inmanta-ui>=2.0.0.dev",
     ],
 )
