@@ -255,6 +255,7 @@ getent passwd inmanta >/dev/null || \
 exit
 
 %changelog
+* Thu Jan 6 2022 Sander Van Balen <sander.vanbalen@inmanta.com> - 2022.1
+- Include inmanta-ui and web-console
 * Mon Jan 18 2021 Arnaud Schoonjans <arnaud.schoonjans@inmanta.com> - 2016.3
 - Initial commit
-
