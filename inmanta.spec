@@ -91,7 +91,6 @@ Obsoletes:      python3-inmanta-agent
 %prep
 %setup -q -n inmanta-%{sourceversion_egg}
 %setup -T -D -a 1 -n inmanta-%{sourceversion_egg}
-%setup -T -D -a 2 -n inmanta-%{sourceversion_egg}
 # Unpack inmanta-core
 mkdir inmanta_core
 tar -xf dependencies/inmanta-core-*.tar.gz --strip-components=1 --directory inmanta_core
@@ -150,10 +149,10 @@ touch %{buildroot}/etc/sysconfig/inmanta-server
 touch %{buildroot}/etc/sysconfig/inmanta-agent
 
 # Install the dashboard
-cp -a package/dist %{venv}/dashboard
+mkdir -p %{venv}/dashboard
+tar -xf %{SOURCE2} --strip-components=2 --directory %{venv}/dashboard
 
 # Install web-console
-# TODO: below is based on how iso specfile does it but dasboard installation above differs
 mkdir -p %{buildroot}/usr/share/inmanta/web-console
 tar -xf %{SOURCE3} --strip-components=2 --directory %{buildroot}/usr/share/inmanta/web-console
 
