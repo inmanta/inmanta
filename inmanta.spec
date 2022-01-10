@@ -4,10 +4,10 @@
 # * version: Version of inmanta-service-orchestrator release (without build_tag)
 # * buildid: Build_tag inmanta-oss RPM
 # * buildid_egg: Build_tag inmanta pypi package
-# * inmanta_core_version: Fully qualified version inmanta-core pypi packge (version number + build_tag)
-# * inmanta_ui_version: Fully qualified version inmanta-ui pypi packge (version number + build_tag)
-# * inmanta_dashboard_version: Fully qualified version inmanta-dashboard NPM packge (version number + build_tag)
-# * web_console_version: Fully qualified version web-console NPM packge (version number + build_tag)
+# * inmanta_core_version: Fully qualified version inmanta-core pypi package (version number + build_tag)
+# * inmanta_ui_version: Fully qualified version inmanta-ui pypi package (version number + build_tag)
+# * inmanta_dashboard_version: Fully qualified version inmanta-dashboard NPM package (version number + build_tag)
+# * web_console_version: Fully qualified version web-console NPM package (version number + build_tag)
 
 %define python_version 3.6
 %define undotted_python_version %(v=%{python_version}; echo "${v//\./}")
