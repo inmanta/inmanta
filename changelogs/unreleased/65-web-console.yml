@@ -2,7 +2,7 @@ description: Added the web console as the default front-end, replacing the dashb
 issue-nr: 65
 change-type: minor
 sections:
-  - feature: "{{description}}"
+  feature: "{{description}}"
 # dummy destination branches: repo is not managed by merge tool but release tool parsing requires change entries to be complete
 destination-branches:
   - master
