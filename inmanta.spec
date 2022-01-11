@@ -253,7 +253,7 @@ getent passwd inmanta >/dev/null || \
 exit
 
 %changelog
-* Tue Jan 11 2022 Arnaud Schoonjans <arnaud.schoonjans@inmanta.com> - 2021.2.2
+* Tue Jan 11 2022 Arnaud Schoonjans <arnaud.schoonjans@inmanta.com> - 2022.1
 - Make python_version of RPM venv configurable
 
 * Thu Jan 06 2022 Sander Van Balen <sander.vanbalen@inmanta.com> - 2022.1
