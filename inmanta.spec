@@ -6,8 +6,9 @@
 # * buildid_egg: Build_tag inmanta pypi package
 # * inmanta_dashboard_version: Fully qualified version inmanta-dashboard NPM package (version number + build_tag)
 # * web_console_version: Fully qualified version web-console NPM package (version number + build_tag)
+# * python_version: Create an RPM containing a venv for this python version. Only pass
+#                   the version number. For example: "3.6", "3.9", etc.
 
-%define python_version 3.6
 %define undotted_python_version %(v=%{python_version}; echo "${v//\./}")
 %define venv %{buildroot}/opt/inmanta
 %define _p3 %{venv}/bin/python%{python_version}
@@ -252,7 +253,11 @@ getent passwd inmanta >/dev/null || \
 exit
 
 %changelog
+* Tue Jan 11 2022 Arnaud Schoonjans <arnaud.schoonjans@inmanta.com> - 2022.1
+- Make python_version of RPM venv configurable
+
 * Thu Jan 06 2022 Sander Van Balen <sander.vanbalen@inmanta.com> - 2022.1
 - Include inmanta-ui and web-console
+
 * Mon Jan 18 2021 Arnaud Schoonjans <arnaud.schoonjans@inmanta.com> - 2016.3
 - Initial commit
