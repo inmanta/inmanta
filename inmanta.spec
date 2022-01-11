@@ -4,8 +4,8 @@
 # * version: Version of inmanta-service-orchestrator release (without build_tag)
 # * buildid: Build_tag inmanta-oss RPM
 # * buildid_egg: Build_tag inmanta pypi package
-# * inmanta_dashboard_version: Fully qualified version inmanta-dashboard NPM packge (version number + build_tag)
-# * inmanta_core_version: Fully qualified version inmanta-core pypi packge (version number + build_tag)
+# * inmanta_dashboard_version: Fully qualified version inmanta-dashboard NPM package (version number + build_tag)
+# * web_console_version: Fully qualified version web-console NPM package (version number + build_tag)
 # * python_version: Create an RPM containing a venv for this python version. Only pass
 #                   the version number. For example: "3.6", "3.9", etc.
 
@@ -34,6 +34,7 @@ URL:            http://inmanta.com
 Source0:        inmanta-%{sourceversion_egg}.tar.gz
 Source1:        dependencies.tar.gz
 Source2:        inmanta-inmanta-dashboard-%{inmanta_dashboard_version}.tgz
+Source3:        inmanta-web-console-%{web_console_version}.tgz
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 BuildRequires:  systemd
@@ -89,7 +90,6 @@ Obsoletes:      python3-inmanta-agent
 %prep
 %setup -q -n inmanta-%{sourceversion_egg}
 %setup -T -D -a 1 -n inmanta-%{sourceversion_egg}
-%setup -T -D -a 2 -n inmanta-%{sourceversion_egg}
 # Unpack inmanta-core
 mkdir inmanta_core
 tar -xf dependencies/inmanta-core-*.tar.gz --strip-components=1 --directory inmanta_core
@@ -148,7 +148,12 @@ touch %{buildroot}/etc/sysconfig/inmanta-server
 touch %{buildroot}/etc/sysconfig/inmanta-agent
 
 # Install the dashboard
-cp -a package/dist %{venv}/dashboard
+mkdir -p %{venv}/dashboard
+tar -xf %{SOURCE2} --strip-components=2 --directory %{venv}/dashboard
+
+# Install web-console
+mkdir -p %{buildroot}/usr/share/inmanta/web-console
+tar -xf %{SOURCE3} --strip-components=2 --directory %{buildroot}/usr/share/inmanta/web-console
 
 %clean
 rm -rf %{buildroot}
@@ -174,6 +179,7 @@ rm -rf %{buildroot}
 
 %files -n inmanta-oss-server
 /opt/inmanta/dashboard
+/usr/share/inmanta/web-console
 %attr(-,root,root) %{_unitdir}/inmanta-server.service
 
 %files -n inmanta-oss-agent
@@ -250,6 +256,8 @@ exit
 * Tue Jan 11 2022 Arnaud Schoonjans <arnaud.schoonjans@inmanta.com> - 2021.2.2
 - Make python_version of RPM venv configurable
 
+* Thu Jan 06 2022 Sander Van Balen <sander.vanbalen@inmanta.com> - 2022.1
+- Include inmanta-ui and web-console
+
 * Mon Jan 18 2021 Arnaud Schoonjans <arnaud.schoonjans@inmanta.com> - 2016.3
 - Initial commit
-
