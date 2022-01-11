@@ -6,8 +6,9 @@
 # * buildid_egg: Build_tag inmanta pypi package
 # * inmanta_dashboard_version: Fully qualified version inmanta-dashboard NPM packge (version number + build_tag)
 # * inmanta_core_version: Fully qualified version inmanta-core pypi packge (version number + build_tag)
+# * python_version: Create an RPM containing a venv for this python version. Only pass
+#                   the version number. For example: "3.6", "3.9", etc.
 
-%define python_version 3.9
 %define undotted_python_version %(v=%{python_version}; echo "${v//\./}")
 %define venv %{buildroot}/opt/inmanta
 %define _p3 %{venv}/bin/python%{python_version}
