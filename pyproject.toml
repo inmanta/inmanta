@@ -3,7 +3,6 @@ core-component = "https://github.com/inmanta/inmanta-core"
 
 [tool.irt.documentation]
 documentation_base_repo = "https://github.com/inmanta/inmanta-core.git"
-documentation_repo = "https://github.com/inmanta/inmanta.git"
 
 [tool.irt.module_set]
 path = "sets/public.yml"
