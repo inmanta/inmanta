@@ -216,6 +216,14 @@ rm -f "%{inmanta_rpm_state_dir}/%{1}_enabled" "%{inmanta_rpm_state_dir}/%{1}_act
 %post -n inmanta-oss-agent
 %systemd_post inmanta-agent.service
 
+# Rename the venv used by the agent when its python version is
+# out-of-date with the python version of the running process.
+python_version=$(basename $(readlink /opt/inmanta/bin/python3))
+agent_venv_dir="/var/lib/inmanta/agent/env"
+if [ -e "${agent_venv_dir}/bin" ] && [ ! -e "${agent_venv_dir}/bin/${python_version}" ]; then
+  mv "${agent_venv_dir}" "${agent_venv_dir}.rpmsave_$(date +'%%Y%%m%%d_%%H%%M%%S')"
+fi
+
 %preun -n inmanta-oss-agent
 %systemd_preun inmanta-agent.service
 
@@ -235,6 +243,24 @@ rm -f "%{inmanta_rpm_state_dir}/%{1}_enabled" "%{inmanta_rpm_state_dir}/%{1}_act
 if [ -e "/etc/inmanta/server.cfg" ]; then
   mv /etc/inmanta/server.cfg /etc/inmanta/inmanta.d/
 fi
+
+# Rename all compiler venvs for which the python version is out-of-date
+# with the python version of the server venv.
+python_version=$(basename $(readlink /opt/inmanta/bin/python3))
+for server_env in /var/lib/inmanta/server/environments/*; do
+  compiler_venv_dir="${server_env}/.env"
+  if [ -e "${compiler_venv_dir}/bin" ] && [ ! -e "${compiler_venv_dir}/bin/${python_version}" ]; then
+    mv "${compiler_venv_dir}" "${compiler_venv_dir}.rpmsave_$(date +'%%Y%%m%%d_%%H%%M%%S')"
+  fi
+done
+# Rename all (autostarted) agent venvs for which the python version is
+# out-of-date with the python version of the server venv.
+for server_env in /var/lib/inmanta/*; do
+  agent_venv_dir="${server_env}/agent/env"
+  if [ -e "${agent_venv_dir}/bin" ] && [ ! -e "${agent_venv_dir}/bin/${python_version}" ]; then
+    mv "${agent_venv_dir}" "${agent_venv_dir}.rpmsave_$(date +'%%Y%%m%%d_%%H%%M%%S')"
+  fi
+done
 
 %preun -n inmanta-oss-server
 %systemd_preun inmanta-server.service
