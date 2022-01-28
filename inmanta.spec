@@ -285,7 +285,7 @@ getent passwd inmanta >/dev/null || \
 exit
 
 %changelog
-* Tue Jan 11 2022 Arnaud Schoonjans <florent.lejoly@inmanta.com> - 2022.1
+* Tue Jan 11 2022 Florent Lejoly <florent.lejoly@inmanta.com> - 2022.1
 - Enable ui extension by default
 
 * Tue Jan 11 2022 Arnaud Schoonjans <arnaud.schoonjans@inmanta.com> - 2022.1
