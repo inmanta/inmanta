@@ -138,6 +138,11 @@ mkdir -p %{buildroot}/var/log/inmanta
 mkdir -p %{buildroot}/etc/logrotate.d
 install -p -m 644 inmanta_core/misc/inmanta.cfg %{buildroot}/etc/inmanta/inmanta.cfg
 install -p -m 644 inmanta_core/misc/logrotation_config %{buildroot}/etc/logrotate.d/inmanta
+cat <<EOF > %{buildroot}/etc/inmanta/inmanta.d/extensions.cfg
+[server]
+enabled_extensions=ui
+EOF
+
 
 # Setup systemd
 mkdir -p %{buildroot}%{_unitdir}
@@ -173,6 +178,7 @@ rm -rf %{buildroot}
 %config %attr(-, root, root)/etc/inmanta
 %config(noreplace) %attr(-, root, root)/etc/inmanta/inmanta.cfg
 %config %attr(-, root, root)/etc/inmanta/inmanta.d
+%config(noreplace) %attr(-, root, root)/etc/inmanta/inmanta.d/extensions.cfg
 %config(noreplace) %attr(-, root, root)/etc/logrotate.d/inmanta
 %config(noreplace) %attr(-, root, root)/etc/sysconfig/inmanta-server
 %config(noreplace) %attr(-, root, root)/etc/sysconfig/inmanta-agent
@@ -279,6 +285,9 @@ getent passwd inmanta >/dev/null || \
 exit
 
 %changelog
+* Tue Jan 11 2022 Florent Lejoly <florent.lejoly@inmanta.com> - 2022.1
+- Enable ui extension by default
+
 * Tue Jan 11 2022 Arnaud Schoonjans <arnaud.schoonjans@inmanta.com> - 2022.1
 - Make python_version of RPM venv configurable
 
