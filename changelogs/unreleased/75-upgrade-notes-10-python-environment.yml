@@ -1,0 +1,8 @@
+description: Python environment changelog notes.
+
+sections:
+  upgrade-note: The compiler venv (`.env`) is no longer used. The compiler uses the active venv.
+
+change-type: patch
+destination-branches:
+  - master

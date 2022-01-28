@@ -1,0 +1,18 @@
+description: Modules v2 changelog notes.
+
+sections:
+  feature: >-
+    Introduced the [v2 module format](https://docs.inmanta.com/community/latest/model_developers/modules.html#understanding-modules).
+    V2 modules offer better integration with the Python ecosystem with regards to
+    [distribution](https://docs.inmanta.com/community/latest/model_developers/modules.html#installing-modules),
+    dependency resolution and plugin loading. For more information on v2 modules, see how to
+    [add a v2 module source](https://docs.inmanta.com/community/latest/model_developers/developer_getting_started.html#v2-module-source),
+    [use a v2 module in your project](https://docs.inmanta.com/community/latest/model_developers/developer_getting_started.html#setting-up-a-module),
+    and [install v2 modules](https://docs.inmanta.com/community/latest/model_developers/modules.html#installing-modules).
+  upgrade-note: >-
+    Compiling a project no longer installs modules on the fly. Run `inmanta project install` to install modules. For more details see
+    [setting up a project](https://docs.inmanta.com/community/latest/model_developers/developer_getting_started.html#setting-up-a-project).
+
+change-type: patch
+destination-branches:
+  - master

@@ -1,0 +1,8 @@
+description: Deprecation note for module install command
+
+sections:
+  deprecation-note: "`inmanta module install` no longer installs all modules for a project. This has moved to `inmanta project install`."
+
+change-type: patch
+destination-branches:
+  - master

@@ -1,0 +1,10 @@
+description: >-
+  Added terraform module. Allows to use native terraform providers without having to use terraform directly by using the
+  included model generator.
+
+sections:
+  feature: "{{description}} (https://docs.inmanta.com/community/latest/reference/modules/terraform.html)"
+
+change-type: patch
+destination-branches:
+  - master
