@@ -1,0 +1,8 @@
+description: Dropped support for RHEL 7
+
+sections:
+  upgrade-note: This release requires RHEL 8
+
+change-type: patch
+destination-branches:
+  - master

@@ -1,0 +1,9 @@
+description: Added support for Jinja 3 to std module.
+
+sections:
+  feature: "{{description}}"
+  upgrade-note: Jinja templates are required to be compatible with [Jinja 3](https://jinja.palletsprojects.com/en/3.0.x/changes/#version-3-0-0).
+
+change-type: patch
+destination-branches:
+  - master
