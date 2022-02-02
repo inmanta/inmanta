@@ -1,0 +1,8 @@
+description: Added raw strings (r-strings) to the inmanta language
+
+sections:
+  feature: "{{description}} (https://docs.inmanta.com/community/latest/language.html#literals-values)"
+
+change-type: patch
+destination-branches:
+  - master

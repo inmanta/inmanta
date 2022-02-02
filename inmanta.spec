@@ -4,10 +4,11 @@
 # * version: Version of inmanta-service-orchestrator release (without build_tag)
 # * buildid: Build_tag inmanta-oss RPM
 # * buildid_egg: Build_tag inmanta pypi package
-# * inmanta_dashboard_version: Fully qualified version inmanta-dashboard NPM packge (version number + build_tag)
-# * inmanta_core_version: Fully qualified version inmanta-core pypi packge (version number + build_tag)
+# * inmanta_dashboard_version: Fully qualified version inmanta-dashboard NPM package (version number + build_tag)
+# * web_console_version: Fully qualified version web-console NPM package (version number + build_tag)
+# * python_version: Create an RPM containing a venv for this python version. Only pass
+#                   the version number. For example: "3.6", "3.9", etc.
 
-%define python_version 3.6
 %define undotted_python_version %(v=%{python_version}; echo "${v//\./}")
 %define venv %{buildroot}/opt/inmanta
 %define _p3 %{venv}/bin/python%{python_version}
@@ -33,6 +34,7 @@ URL:            http://inmanta.com
 Source0:        inmanta-%{sourceversion_egg}.tar.gz
 Source1:        dependencies.tar.gz
 Source2:        inmanta-inmanta-dashboard-%{inmanta_dashboard_version}.tgz
+Source3:        inmanta-web-console-%{web_console_version}.tgz
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 BuildRequires:  systemd
@@ -88,7 +90,6 @@ Obsoletes:      python3-inmanta-agent
 %prep
 %setup -q -n inmanta-%{sourceversion_egg}
 %setup -T -D -a 1 -n inmanta-%{sourceversion_egg}
-%setup -T -D -a 2 -n inmanta-%{sourceversion_egg}
 # Unpack inmanta-core
 mkdir inmanta_core
 tar -xf dependencies/inmanta-core-*.tar.gz --strip-components=1 --directory inmanta_core
@@ -137,6 +138,11 @@ mkdir -p %{buildroot}/var/log/inmanta
 mkdir -p %{buildroot}/etc/logrotate.d
 install -p -m 644 inmanta_core/misc/inmanta.cfg %{buildroot}/etc/inmanta/inmanta.cfg
 install -p -m 644 inmanta_core/misc/logrotation_config %{buildroot}/etc/logrotate.d/inmanta
+cat <<EOF > %{buildroot}/etc/inmanta/inmanta.d/extensions.cfg
+[server]
+enabled_extensions=ui
+EOF
+
 
 # Setup systemd
 mkdir -p %{buildroot}%{_unitdir}
@@ -147,7 +153,12 @@ touch %{buildroot}/etc/sysconfig/inmanta-server
 touch %{buildroot}/etc/sysconfig/inmanta-agent
 
 # Install the dashboard
-cp -a package/dist %{venv}/dashboard
+mkdir -p %{venv}/dashboard
+tar -xf %{SOURCE2} --strip-components=2 --directory %{venv}/dashboard
+
+# Install web-console
+mkdir -p %{buildroot}/usr/share/inmanta/web-console
+tar -xf %{SOURCE3} --strip-components=2 --directory %{buildroot}/usr/share/inmanta/web-console
 
 %clean
 rm -rf %{buildroot}
@@ -167,12 +178,14 @@ rm -rf %{buildroot}
 %config %attr(-, root, root)/etc/inmanta
 %config(noreplace) %attr(-, root, root)/etc/inmanta/inmanta.cfg
 %config %attr(-, root, root)/etc/inmanta/inmanta.d
+%config(noreplace) %attr(-, root, root)/etc/inmanta/inmanta.d/extensions.cfg
 %config(noreplace) %attr(-, root, root)/etc/logrotate.d/inmanta
 %config(noreplace) %attr(-, root, root)/etc/sysconfig/inmanta-server
 %config(noreplace) %attr(-, root, root)/etc/sysconfig/inmanta-agent
 
 %files -n inmanta-oss-server
 /opt/inmanta/dashboard
+/usr/share/inmanta/web-console
 %attr(-,root,root) %{_unitdir}/inmanta-server.service
 
 %files -n inmanta-oss-agent
@@ -209,6 +222,14 @@ rm -f "%{inmanta_rpm_state_dir}/%{1}_enabled" "%{inmanta_rpm_state_dir}/%{1}_act
 %post -n inmanta-oss-agent
 %systemd_post inmanta-agent.service
 
+# Rename the venv used by the agent when its python version is
+# out-of-date with the python version of the running process.
+python_version=$(basename $(readlink /opt/inmanta/bin/python3))
+agent_venv_dir="/var/lib/inmanta/agent/env"
+if [ -e "${agent_venv_dir}/bin" ] && [ ! -e "${agent_venv_dir}/bin/${python_version}" ]; then
+  mv "${agent_venv_dir}" "${agent_venv_dir}.rpmsave_$(date +'%%Y%%m%%d_%%H%%M%%S')"
+fi
+
 %preun -n inmanta-oss-agent
 %systemd_preun inmanta-agent.service
 
@@ -229,6 +250,24 @@ if [ -e "/etc/inmanta/server.cfg" ]; then
   mv /etc/inmanta/server.cfg /etc/inmanta/inmanta.d/
 fi
 
+# Rename all compiler venvs for which the python version is out-of-date
+# with the python version of the server venv.
+python_version=$(basename $(readlink /opt/inmanta/bin/python3))
+for server_env in /var/lib/inmanta/server/environments/*; do
+  compiler_venv_dir="${server_env}/.env"
+  if [ -e "${compiler_venv_dir}/bin" ] && [ ! -e "${compiler_venv_dir}/bin/${python_version}" ]; then
+    mv "${compiler_venv_dir}" "${compiler_venv_dir}.rpmsave_$(date +'%%Y%%m%%d_%%H%%M%%S')"
+  fi
+done
+# Rename all (autostarted) agent venvs for which the python version is
+# out-of-date with the python version of the server venv.
+for server_env in /var/lib/inmanta/*; do
+  agent_venv_dir="${server_env}/agent/env"
+  if [ -e "${agent_venv_dir}/bin" ] && [ ! -e "${agent_venv_dir}/bin/${python_version}" ]; then
+    mv "${agent_venv_dir}" "${agent_venv_dir}.rpmsave_$(date +'%%Y%%m%%d_%%H%%M%%S')"
+  fi
+done
+
 %preun -n inmanta-oss-server
 %systemd_preun inmanta-server.service
 
@@ -246,6 +285,15 @@ getent passwd inmanta >/dev/null || \
 exit
 
 %changelog
+* Tue Jan 11 2022 Florent Lejoly <florent.lejoly@inmanta.com> - 2022.1
+- Enable ui extension by default
+
+* Tue Jan 11 2022 Arnaud Schoonjans <arnaud.schoonjans@inmanta.com> - 2022.1
+- Make python_version of RPM venv configurable
+
+* Thu Jan 06 2022 Sander Van Balen <sander.vanbalen@inmanta.com> - 2022.1
+- Include inmanta-ui and web-console
+
 * Mon Jan 18 2021 Arnaud Schoonjans <arnaud.schoonjans@inmanta.com> - 2016.3
 - Initial commit
 

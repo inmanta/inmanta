@@ -1,0 +1,9 @@
+description: Vscode changelog note
+
+sections:
+  feature: VSCode extension interacts with the Python extension to allow venv selection.
+  upgrade-note: An update of the VSCode extension is required for compatibility with this release.
+
+change-type: patch
+destination-branches:
+  - master

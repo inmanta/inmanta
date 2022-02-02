@@ -1,0 +1,10 @@
+description: Extended web console functionality and made it the default front-end.
+
+sections:
+  feature: "{{description}}"
+  deprecation-note: >-
+    The inmanta dashboard is now deprecated in favor of the web console. It will be removed in a future major release.
+
+change-type: patch
+destination-branches:
+  - master

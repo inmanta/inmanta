@@ -1,0 +1,10 @@
+description: Added frontend browser cache changelog note.
+
+change-type: patch
+destination-branches:
+  - master
+
+sections:
+  upgrade-note: >-
+    Clear your browser cache after upgrading to remove the old redirection rule. If the cache is not cleared the ‘/’ route
+    will keep redirecting to ‘/dashboard’.

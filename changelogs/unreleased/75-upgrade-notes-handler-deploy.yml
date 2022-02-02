@@ -1,0 +1,10 @@
+description: Added deploy method to handlers for increased flexibility in responding to events
+issue-repo: inmanta-core
+issue-nr: 2940
+
+sections:
+  feature: "{{description}}"
+
+change-type: patch
+destination-branches:
+  - master
