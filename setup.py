@@ -27,7 +27,7 @@ setup(
         "Documentation": "https://docs.inmanta.com/community/latest/",
     },
     install_requires=[
-        "inmanta-core~=6.0.0.0rc",
-        "inmanta-ui~=3.0.0.0rc",
+        "inmanta-core==6.0.0",
+        "inmanta-ui==3.0.0",
     ],
 )
