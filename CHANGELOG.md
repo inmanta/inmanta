@@ -1,3 +1,120 @@
+# Release 2022.1 (2022-02-03)
+
+## General changes
+
+### New features
+
+- Added the web console as the default front-end, replacing the dashboard (Issue #65)
+- Introduced the [v2 module format](https://docs.inmanta.com/community/latest/model_developers/modules.html#understanding-modules). V2 modules offer better integration with the Python ecosystem with regards to [distribution](https://docs.inmanta.com/community/latest/model_developers/modules.html#installing-modules), dependency resolution and plugin loading. For more information on v2 modules, see how to [add a v2 module source](https://docs.inmanta.com/community/latest/model_developers/developer_getting_started.html#v2-module-source), [use a v2 module in your project](https://docs.inmanta.com/community/latest/model_developers/developer_getting_started.html#setting-up-a-module), and [install v2 modules](https://docs.inmanta.com/community/latest/model_developers/modules.html#installing-modules).
+- Added support for Python 3.9
+- Added deploy method to handlers for increased flexibility in responding to events (Issue inmanta/inmanta-core#2940)
+- Added raw strings (r-strings) to the inmanta language (https://docs.inmanta.com/community/latest/language.html#literals-values)
+- Added support for Jinja 3 to std module.
+- Added terraform module. Allows to use native terraform providers without having to use terraform directly by using the included model generator. (https://docs.inmanta.com/community/latest/reference/modules/terraform.html)
+- VSCode extension interacts with the Python extension to allow venv selection.
+- Extended web console functionality and made it the default front-end.
+
+### Upgrade notes
+
+- Compiling a project no longer installs modules on the fly. Run `inmanta project install` to install modules. For more details see [setting up a project](https://docs.inmanta.com/community/latest/model_developers/developer_getting_started.html#setting-up-a-project).
+- The compiler venv (`.env`) is no longer used. The compiler uses the active venv.
+- The supported PostgreSQL version is now 13
+- The supported Python version is now 3.9
+- This release requires RHEL 8
+- Jinja templates are required to be compatible with [Jinja 3](https://jinja.palletsprojects.com/en/3.0.x/changes/#version-3-0-0).
+- An update of the VSCode extension is required for compatibility with this release.
+- Clear your browser cache after upgrading to remove the old redirection rule. If the cache is not cleared the ‘/’ route will keep redirecting to ‘/dashboard’.
+- The compiler and agent venv's with a Python version older than the Python version of the Inmanta server will be moved to an `.rpmsave` directory at installation time. (Issue inmanta/inmanta-service-orchestrator#234)
+- Ensure the database is backed up before executing an upgrade.
+
+### Deprecation notes
+
+- `inmanta module install` no longer installs all modules for a project. This has moved to `inmanta project install`.
+- The inmanta dashboard is now deprecated in favor of the web console. It will be removed in a future major release.
+
+## Inmanta-core: release 6.0.0 (2022-02-02)
+
+### New features
+
+- Added `resource_deploy_start` endpoint (Issue #2928)
+- Added `resource_deploy_done` endpoint (Issue #2931)
+- Added helper method for reliable event processing (Issue #2941)
+- Improved south bound integration documentation (Issue #2954)
+- Compiler improvement: made `is defined` gradually executable
+- Added `resource_list` endpoint (Issue #3045)
+- Added `resource_details` endpoint (Issue #3046)
+- Added support to build V2 modules into a Python package. (Issue #3047)
+- Added `resource_history` endpoint (Issue #3048)
+- Added the ability to package V1 modules as V2 modules (Issue #3049)
+- Added `inmanta module v1tov2` command. (Issue #3050)
+- Added V2 package loader (Issue #3051)
+- Updated `inmanta module install` to install v2 modules from source.
+- Added the `inmanta module add` command. (Issue #3089)
+- Added `resource_logs` endpoint (Issue #3109)
+- Added endpoint to list compile reports (Issue #3131)
+- Added endpoint to get compile details (Issue #3132)
+- `inmanta project update` now updates modules' Python dependencies to the latest compatible version. The same goes for triggering an update and recompile from the dashboard. (Issue #3623)
+- Enable the UI extension by default (Issue #3653)
+- Added version diff api endpoint (Issue #3659)
+- Added raw strings to the inmanta language.
+- Restructured module developer guide
+- added operational procedures documentation
+- added instructions about passwordless sudo to remote agent setup
+- Added documentation regarding modules V2. (Issue #3023)
+- Port the agent to the new `deploy` handler method. (Issue #2940)
+- Added support for PostgreSQL 13 (Issue #2893)
+
+### Upgrade notes
+
+- On newly created environments, the environment setting `purge_on_delete` will be set to false by default instead of true. This overrides any purge_on_delete settings on individual resources. You need to explicitly set it to true to enable the old behavior again. (Issue #2958)
+- `inmanta compile` no longer installs any modules. Run `inmanta project install` before compiling the first time.
+- "The compiler venv has been phased out. The compiler will now use the venv used to execute the `inmanta compile` command."
+ (Issue #3096)
+- Compiler no longer installs modules on the fly, `inmanta project install` needs to be run to install required modules
+- Clear your browser cache after upgrading to remove the old redirection rule. If the cache is not cleared the '/' route will keep redirecting to '/dashboard'.  (Issue #3497)
+- `Project.load()` no longer installs Project dependencies. Pass `install=True` for the old behavior.
+- NOTSET is no longer accepted as a log level by the agent's context logger.
+It was not a valid log level before, but it was accepted by the agent.
+
+- After upgrading the Inmanta server, all virtual environments used by the compiler and the agents have to be removed. Use the following procedure to achive this:
+  * Stop the Inmanta server
+  * Remove all `/var/lib/inmanta/server/environments/<environment-id>/.env` directories
+  * Remove all `/var/lib/inmanta/<environment-id>` directories
+  * Start the Inmanta server again
+
+
+### Deprecation notes
+
+- `inmanta module install` no longer installs all modules for a project. This has moved to `inmanta project install`.
+- The `inmanta module list -r` command has been deprecated in favor of `inmanta project freeze`
+- `inmanta modules update` has been replaced by `inmanta project update`. The old command has been deprecated and will be removed in a future release. (Issue #3623)
+
+### Bug fixes
+
+- Fixed docstring-parser compatibility after non-backwards compatible changes and constrained dependency to semi-safe range.
+- Ensure that special characters in the resource action log are not escaped. (Issue inmanta/inmanta-lsm#699)
+- Fixed agent cache behavior when `cache_none` is provided
+- Fix dollar sign escaping issue in installation documentation
+- Fix bug where the listeners of the environment clear action are not notified when files of that environment cannot be deleted from the filesystem. (Issue #3637)
+- The tests folder is no longer included into the sdist package
+- Removed NOTSET loglevel from all API's
+
+## inmanta-ui: release 3.0.0
+This component has had no new releases since the last product version.
+## Inmanta-dashboard: release 3.8.1 (2022-01-25)
+
+No changelog entries.
+
+## Inmanta-dashboard: release 3.8.0 (2021-10-18)
+
+### New features
+
+- Extend proxy support (Issue #130)
+
+## web-console: release 1.9.0
+This component has had no new releases since the last product version.
+
+
 # Release 2021.2.1 (2021-06-01)
 
 ## Inmanta-core: release 5.1.1 (2021-06-01)
@@ -637,4 +754,3 @@ v 2016.2 (2016-05-02)
 - All RPC is now async on the tornado IOLoop
 - New async ODM for MongoDB
 - Increased test coverage
-
