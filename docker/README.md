@@ -42,9 +42,6 @@ services:
         image: iso5:stable
         ports:
             - 8888:80
-        volumes:
-            - ./resources/dev.inmanta.com.license:/etc/inmanta/license/.license
-            - ./resources/dev.inmanta.com.jwe:/etc/inmanta/license/.jwe
         depends_on:
             - postgres
         networks:
@@ -76,7 +73,5 @@ If you use docker-compose, you can simply update this section of the example abo
         ports:
             - 8888:80
         volumes:
-            - ./resources/dev.inmanta.com.license:/etc/inmanta/license/.license
-            - ./resources/dev.inmanta.com.jwe:/etc/inmanta/license/.jwe
             - ./resources/my-server-conf.cfg:/etc/inmanta/inmanta.cfg
 ```
