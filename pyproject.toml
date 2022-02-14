@@ -33,6 +33,13 @@ python_version = "python3.9"
 [tool.irt.build.rpm.enable_repo]
 el8 = []
 
+[tool.irt.build.docker_image]
+build_context_path = "docker/"
+dockerfile_path = "Dockerfile"
+image_name = "oss"
+product_package = "inmanta"
+product_package_venv = "/opt/inmanta/"
+
 [tool.irt.dependencies.npm.inmanta-dashboard]
 repo = "https://github.com/inmanta/inmanta-dashboard"
 version = "master"
