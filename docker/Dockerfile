@@ -15,14 +15,13 @@ RUN yum install -y yum-utils openssh-server git sudo curl && \
 	ssh-keygen -t dsa -f /etc/ssh/ssh_host_dsa_key -N ''
 
 # Copying default config files
-COPY resources/license.cfg /etc/inmanta/inmanta.d/license.cfg
 COPY resources/server.cfg /etc/inmanta/inmanta.cfg
 
 # Installing iso from rpm
 ARG MAJOR_VERSION
 ARG BUILD_TYPE
 ARG PRODUCT_REPO_TOKEN
-RUN curl -1sLf "https://packages.inmanta.com/oss-$BUILD_TYPE/config.rpm.txt?distro=el&codename=8" \
+RUN curl -1sLf "https://packages.inmanta.com/public/oss-$BUILD_TYPE/config.rpm.txt?distro=el&codename=8" \
 	> "/tmp/inmanta-oss.repo" && \
 	yum-config-manager --add-repo '/tmp/inmanta-oss.repo' && \
 	yum -q makecache -y --disablerepo='*' --enablerepo="inmanta-oss-${BUILD_TYPE}" && \
