@@ -23,7 +23,7 @@ RUN curl -1sLf "https://packages.inmanta.com/public/oss-$BUILD_TYPE/config.rpm.t
 	yum install -y inmanta-oss inmanta-oss-server && \
 	yum clean all && \
 	rm /etc/yum.repos.d/inmanta-oss.repo && \
-	rm /tmp/inmanta-inmanta-service-orchestrator.repo
+	rm /tmp/inmanta-oss.repo
 
 # Change the default shell of the inmanta user, to use a script loading env var from a file first
 RUN echo "%wheel ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers && \
