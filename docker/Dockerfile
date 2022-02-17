@@ -11,7 +11,6 @@ RUN yum install -y yum-utils openssh-server git sudo curl && \
 
 # Copying default config files and inmanta user login shell
 COPY resources/shell-with-env /usr/bin/shell-with-env
-COPY resources/license.cfg /etc/inmanta/inmanta.d/license.cfg
 COPY resources/server.cfg /etc/inmanta/inmanta.cfg
 
 # Installing iso from rpm
