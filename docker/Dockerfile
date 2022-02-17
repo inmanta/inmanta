@@ -44,6 +44,6 @@ LABEL com.inmanta.version=$VERSION \
 USER inmanta
 
 # Overwriting the entry point of ubi8 with our own
-ENTRYPOINT ["/usr/bin/shell-with-env", "-c"]
+ENTRYPOINT ["/usr/bin/shell-with-env"]
 
-CMD ["/usr/bin/inmanta -vvv --timed-logs server"]
+CMD ["/usr/bin/inmanta", "-vvv", "--timed-logs", "server"]
