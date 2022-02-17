@@ -1,0 +1,16 @@
+#!/bin/bash
+
+# Loading the content of the server env file if it is there
+if [ -f /etc/inmanta/env ]
+then
+  export $(cat /etc/inmanta/env | xargs)
+  export FOUND_INMANTA_ENV_FILE=true
+else
+  export FOUND_INMANTA_ENV_FILE=false
+fi
+
+# Source our virtual env
+source /opt/inmanta/bin/activate
+
+# Simply starts a bash console as the current user
+/bin/bash "$@"

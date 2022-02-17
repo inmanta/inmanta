@@ -3,22 +3,18 @@ FROM registry.access.redhat.com/ubi8/python-39:latest
 # We need to be root to setup the container image
 USER 0
 
-# Creating inmanta user
-RUN echo "%wheel ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers && \
-	useradd -G wheel -ms /bin/bash inmanta -d /var/lib/inmanta && \
-	mkdir -p /var/lib/inmanta/.ssh
-
-# Setting up common config
+# Install required packages and setup ssh
 RUN yum install -y yum-utils openssh-server git sudo curl && \
 	sed 's@session\s*required\s*pam_loginuid.so@session optional pam_loginuid.so@g' -i /etc/pam.d/sshd && \
 	ssh-keygen -t rsa -f /etc/ssh/ssh_host_rsa_key -N '' && \
 	ssh-keygen -t dsa -f /etc/ssh/ssh_host_dsa_key -N ''
 
-# Copying default config files
+# Copying default config files and inmanta user login shell
+COPY resources/shell-with-env /usr/bin/shell-with-env
+COPY resources/license.cfg /etc/inmanta/inmanta.d/license.cfg
 COPY resources/server.cfg /etc/inmanta/inmanta.cfg
 
 # Installing iso from rpm
-ARG MAJOR_VERSION
 ARG BUILD_TYPE
 ARG PRODUCT_REPO_TOKEN
 RUN curl -1sLf "https://packages.inmanta.com/public/oss-$BUILD_TYPE/config.rpm.txt?distro=el&codename=8" \
@@ -28,17 +24,27 @@ RUN curl -1sLf "https://packages.inmanta.com/public/oss-$BUILD_TYPE/config.rpm.t
 	yum install -y inmanta-oss inmanta-oss-server && \
 	yum clean all && \
 	rm /etc/yum.repos.d/inmanta-oss.repo && \
-	rm /tmp/inmanta-oss.repo
+	rm /tmp/inmanta-inmanta-service-orchestrator.repo
+
+# Change the default shell of the inmanta user, to use a script loading env var from a file first
+RUN echo "%wheel ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers && \
+	usermod -aG wheel inmanta && \
+	usermod -s /usr/bin/shell-with-env inmanta && \
+	chmod 755 /usr/bin/shell-with-env && \
+	chown root:root /usr/bin/shell-with-env
 
 # Adding label to the recently built container
 ARG VERSION
 ARG BUILD_DATE
 LABEL com.inmanta.version=$VERSION \
-    com.inmanta.description="Inmanta service orchestrator (OSS${MAJOR_VERSION}-${BUILD_TYPE})" \
+    com.inmanta.description="Inmanta OSS (OSS-${BUILD_TYPE})" \
     com.inmanta.build-type=$BUILD_TYPE \
 	com.inmanta.build-date=$BUILD_DATE
 
-# Overwriting the entry point of ubi8
-ENTRYPOINT ["bash", "-c"]
+# By default we want to execute process in the container as the inmanta user
+USER inmanta
 
-CMD ["/usr/bin/inmanta", "-vvv", "server"]
+# Overwriting the entry point of ubi8 with our own
+ENTRYPOINT ["/usr/bin/shell-with-env", "-c"]
+
+CMD ["/usr/bin/inmanta -vvv --timed-logs server"]
