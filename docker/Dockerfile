@@ -43,6 +43,9 @@ LABEL com.inmanta.version=$VERSION \
 # By default we want to execute process in the container as the inmanta user
 USER inmanta
 
+# Document default exposed port
+EXPOSE 8888
+
 # Overwriting the entry point of ubi8 with our own
 ENTRYPOINT ["/usr/bin/shell-with-env"]
 
