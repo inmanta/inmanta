@@ -41,8 +41,8 @@ RUN echo "%wheel ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers && \
 ARG VERSION
 ARG BUILD_DATE
 LABEL com.inmanta.version=$VERSION \
-    com.inmanta.description="Inmanta OSS (OSS-${BUILD_TYPE})" \
-    com.inmanta.build-type=$BUILD_TYPE \
+	com.inmanta.description="Inmanta OSS (OSS-${BUILD_TYPE})" \
+	com.inmanta.build-type=$BUILD_TYPE \
 	com.inmanta.build-date=$BUILD_DATE
 
 # By default we want to execute process in the container as the inmanta user
