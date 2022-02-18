@@ -7,7 +7,7 @@ USER 0
 RUN yum install -y yum-utils openssh-server git sudo curl nc
 
 # Copy env var loading script
-COPY resources/with-env /usr/bin/inmanta-with-env
+COPY resources/inmanta-env /usr/bin/inmanta-env
 
 # Overwriting container entrypoint with our own file
 COPY resources/container-entrypoint-with-env /container-entrypoint-with-env
@@ -32,8 +32,8 @@ RUN echo "%wheel ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers && \
 	usermod -s /usr/bin/shell-with-env inmanta && \
 	chmod 755 /usr/bin/shell-with-env && \
 	chown root:root /usr/bin/shell-with-env && \
-	chmod 644 /usr/bin/inmanta-with-env && \
-	chown root:root /usr/bin/inmanta-with-env && \
+	chmod 644 /usr/bin/inmanta-env && \
+	chown root:root /usr/bin/inmanta-env && \
 	chmod 755 /container-entrypoint-with-env && \
 	chown root:root /container-entrypoint-with-env
 

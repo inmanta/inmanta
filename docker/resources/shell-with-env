@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Setting up the inmanta working environment
-source /usr/bin/inmanta-with-env
+source /usr/bin/inmanta-env
 
 # Simply execute the command of the user
 /bin/bash "$@"
