@@ -76,7 +76,8 @@ configure_ssh()
 enforce_ssh_perms()
 {
     sudo chown $USER:$USER $HOME/.ssh --recursive
-    chmod 600 $HOME/.ssh --recursive
+    chmod 700 $HOME/.ssh
+    chmod 600 $HOME/.ssh/*
 }
 
 # Wait for at most X seconds for the database to be reachable
