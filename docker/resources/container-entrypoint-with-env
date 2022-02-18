@@ -3,6 +3,17 @@
 # Setting up the inmanta working environment
 source /usr/bin/inmanta-env
 
+# Overwriting some environment variables set by base image
+export USER=$(whoami)
+export HOME=$(eval echo ~$USER)
+export PWD=$HOME
+
+cd $PWD
+
+# Ensuring inmanta user can write in the log folder (in case it has been mounted)
+sudo mkdir -p /var/log/inmanta
+sudo chown inmanta:inmanta /var/log/inmanta
+
 # SHELL COLOR MANAGEMENT
 # ----------------------
 # This section only allows to manage the CLI color outputs for better messages,
@@ -177,7 +188,7 @@ case $1 in
         # Start the server with an ssh deamon
         configure_ssh
         enforce_ssh_perms
-        sudo /usr/sbin/sshd -D > /var/log/sshd.log &
+        sudo /usr/sbin/sshd -D | sudo tee /var/log/sshd.log &
 
         # Wait at most 30 seconds for the database to be reachable
         wait_for_host_port $wait_for_host $wait_for_port $wait_for
