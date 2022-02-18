@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Setting up the inmanta working environment
-source /usr/bin/inmanta-env
+source /usr/bin/load-inmanta-env
 
 # Overwriting some environment variables set by base image
 export USER=$(whoami)
