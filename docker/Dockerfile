@@ -37,6 +37,9 @@ RUN echo "%wheel ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers && \
 	chmod 755 /container-entrypoint-with-env && \
 	chown root:root /container-entrypoint-with-env
 
+# Overwrite the default config we received from the rpm with our own
+COPY resources/default-server-config.cfg /etc/inmanta/inmanta.cfg
+
 # Adding label to the recently built container
 ARG VERSION
 ARG BUILD_DATE
