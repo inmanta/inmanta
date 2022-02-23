@@ -19,6 +19,7 @@ image_registry = "ghcr.io"
 image_repository = "inmanta"
 image_name = "oss"
 image_tags = [
+    "dev",
     "{major_version}-dev",
 ]
 registry_username_env = "GITHUB_REGISTRY_USERNAME"
