@@ -1,0 +1,4 @@
+---
+description: Configuring tags of released container images
+change-type: patch
+destination-branches: [master]
