@@ -20,7 +20,6 @@ image_repository = "inmanta"
 image_name = "oss"
 image_tags = [
     "dev",
-    "{major_version}-dev",
 ]
 registry_username_env = "GITHUB_REGISTRY_USERNAME"
 registry_password_env = "GITHUB_REGISTRY_PASSWORD"
@@ -41,7 +40,6 @@ image_repository = "inmanta"
 image_name = "oss"
 image_tags = [
     "latest",
-    "{major_version}",
     "{version}",
 ]
 registry_username_env = "GITHUB_REGISTRY_USERNAME"
