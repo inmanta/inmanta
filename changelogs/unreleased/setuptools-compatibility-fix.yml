@@ -1,0 +1,6 @@
+description: "Compatibility fix for setuptools 61.0"
+change-type: patch
+issue-repo: irt
+issue-nr: 1074
+destination-branches:
+  - master

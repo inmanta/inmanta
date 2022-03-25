@@ -30,4 +30,6 @@ setup(
         "inmanta-core>=5.0.0.dev",
         "inmanta-ui>=2.0.0.dev",
     ],
+    # explicitly declare packages so setuptools does not attempt auto discovery
+    packages=[],
 )
