@@ -1,8 +1,7 @@
 # Loading the content of the server env file if it is there
 if [ -f /etc/inmanta/env ]
 then
-  export $(cat /etc/inmanta/env | xargs)
-  export FOUND_INMANTA_ENV_FILE=true
+  export $(cat /etc/inmanta/env | xargs) FOUND_INMANTA_ENV_FILE=true
 else
   export FOUND_INMANTA_ENV_FILE=false
 fi
