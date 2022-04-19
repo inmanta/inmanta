@@ -1,3 +1,41 @@
+# Release 2022.1.1 (2022-04-19)
+
+## Upgrade notes
+
+- Ensure the database is backed up before executing an upgrade.
+
+## Inmanta-core: release 6.0.2 (2022-04-19)
+
+### Bug fixes
+
+- Fix bug that crashes the agent when a cross-agent dependency doesn't have any changes (Issue #4116)
+- Constrained click dependency to known compatible range because of backwards incompatible minor
+
+## Inmanta-core: release 6.0.1 (2022-02-11)
+
+### Bug fixes
+
+- Fix bug in incremental deploy where event processing can be delayed (Issue #3789)
+
+## inmanta-ui: release 3.0.0
+This component has had no new releases since the last product version.
+## inmanta-dashboard: release 3.8.1
+This component has had no new releases since the last product version.
+## Web-console: release 1.10.0 (2022-04-12)
+
+### New features
+
+- Add the Compliance Check page (Issue #2558)
+- Add notification drawer (Issue #3056)
+- Add notification center page (Issue #3067)
+
+## Web-console: release 1.9.1 (2022-02-11)
+
+### New features
+
+- Add Desired State Compare page (Issue #2374)
+
+
 # Release 2022.1 (2022-02-03)
 
 ## General changes
