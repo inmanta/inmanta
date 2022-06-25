@@ -3,13 +3,25 @@
 # Setting up the inmanta working environment
 source /usr/bin/load-inmanta-env
 
+# Get the inmanta home folder for later usage in the script
+INMANTA_HOME=$(sudo -u inmanta bash -c "cd; pwd")
+
+# INMANTA USER/GROUP ID MANAGEMENT
+# --------------------------------
 # In case the user has provided some new id for the inmanta user or group, we change it here
+# In order to make the change, the user has to provide the following env vars:
+# - INMANTA_UID --> The value must be a positive integer and will be the new id for user inmanta
+# - INMANTA_GID --> The value must be a positive integer and will be the new id for group inmanta
+
+# Get the current value and save it
 _INMANTA_UID_OLD=$(id -u inmanta)
 _INMANTA_GID_OLD=$(id -g inmanta)
 
+# Resolve the new value
 _INMANTA_UID="${INMANTA_UID:-${_INMANTA_UID_OLD}}"
 _INMANTA_GID="${INMANTA_GID:-${_INMANTA_GID_OLD}}"
 
+# Make the change of value
 usermod -u "${_INMANTA_UID}" inmanta
 groupmod -g "${_INMANTA_GID}" inmanta
 
@@ -92,9 +104,9 @@ configure_ssh()
 # in there during the container creation.
 enforce_ssh_perms()
 {
-    chown $USER:$USER $HOME/.ssh --recursive
-    chmod 700 $HOME/.ssh
-    chmod 600 $HOME/.ssh/*
+    chown inmanta:inmanta $INMANTA_HOME/.ssh --recursive
+    chmod 700 $INMANTA_HOME/.ssh
+    chmod 600 $INMANTA_HOME/.ssh/*
 }
 
 # Wait for at most X seconds for the database to be reachable
