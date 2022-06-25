@@ -3,16 +3,23 @@
 # Setting up the inmanta working environment
 source /usr/bin/load-inmanta-env
 
-# Overwriting some environment variables set by base image
-export USER=$(whoami)
-export HOME=$(eval echo ~$USER)
-export PWD=$HOME
+# In case the user has provided some new id for the inmanta user or group, we change it here
+_INMANTA_UID_OLD=$(id -u inmanta)
+_INMANTA_GID_OLD=$(id -g inmanta)
 
-cd $PWD
+_INMANTA_UID="${INMANTA_UID:-${_INMANTA_UID_OLD}}"
+_INMANTA_GID="${INMANTA_GID:-${_INMANTA_GID_OLD}}"
+
+usermod -u "${_INMANTA_UID}" inmanta
+groupmod -g "${_INMANTA_GID}" inmanta
+
+# Make sure that no file is left with the previous inmanta uid/gid
+find / -group "${_INMANTA_GID_OLD}" -exec chgrp -h inmanta {} \; &> /dev/null
+find / -user "${_INMANTA_UID_OLD}" -exec chown -h inmanta {} \; &> /dev/null
 
 # Ensuring inmanta user can write in the log folder (in case it has been mounted)
-sudo mkdir -p /var/log/inmanta
-sudo chown inmanta:inmanta /var/log/inmanta
+mkdir -p /var/log/inmanta
+chown inmanta:inmanta /var/log/inmanta
 
 # SHELL COLOR MANAGEMENT
 # ----------------------
@@ -76,8 +83,8 @@ show_header()
 # This methods configures the ssh deamon, and creates new ssh keys
 configure_ssh()
 {
-    sudo sed 's@session\s*required\s*pam_loginuid.so@session optional pam_loginuid.so@g' -i /etc/pam.d/sshd
-    sudo ssh-keygen -A
+    sed 's@session\s*required\s*pam_loginuid.so@session optional pam_loginuid.so@g' -i /etc/pam.d/sshd
+    ssh-keygen -A
 }
 
 # This methods ensures that the current user has the correct permissions set
@@ -85,7 +92,7 @@ configure_ssh()
 # in there during the container creation.
 enforce_ssh_perms()
 {
-    sudo chown $USER:$USER $HOME/.ssh --recursive
+    chown $USER:$USER $HOME/.ssh --recursive
     chmod 700 $HOME/.ssh
     chmod 600 $HOME/.ssh/*
 }
@@ -115,6 +122,12 @@ wait_for_host_port()
         redb "$host:$port is still unreachable after $max_attempts, stopping now." >& 2
         exit 1
     fi
+}
+
+# Start the inmanta server as an inmanta user
+start_server() 
+{
+    sudo -u inmanta /usr/bin/inmanta -vvv --timed-logs server
 }
 
 # MAIN SECTION
@@ -177,7 +190,7 @@ case $1 in
         wait_for_host_port $wait_for_host $wait_for_port $wait_for
 
         # Start the server only
-        /usr/bin/inmanta -vvv --timed-logs server
+        start_server
         ;;
 
     'server-with-ssh')
@@ -187,13 +200,13 @@ case $1 in
         # Start the server with an ssh deamon
         configure_ssh
         enforce_ssh_perms
-        sudo /usr/sbin/sshd -D | sudo tee /var/log/sshd.log &
+        /usr/sbin/sshd -D | tee /var/log/sshd.log &
 
         # Wait at most 30 seconds for the database to be reachable
         wait_for_host_port $wait_for_host $wait_for_port $wait_for
 
         # Start the server
-        /usr/bin/inmanta -vvv --timed-logs server
+        start_server
         ;;
 
     'help')
