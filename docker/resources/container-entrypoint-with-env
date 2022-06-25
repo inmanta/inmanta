@@ -59,7 +59,7 @@ if [ "${_INMANTA_UID}" != "${_INMANTA_UID_OLD}" ]; then
 fi
 
 if [ "${_INMANTA_GID}" != "${_INMANTA_GID_OLD}" ]; then
-    yellow "Changing inmanta group id from ${_INMANTA_UID_OLD} to ${_INMANTA_UID}"
+    yellow "Changing inmanta group id from ${_INMANTA_GID_OLD} to ${_INMANTA_GID}"
 
     # Make the change of value
     groupmod -g "${_INMANTA_GID}" inmanta
