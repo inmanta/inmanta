@@ -6,33 +6,6 @@ source /usr/bin/load-inmanta-env
 # Get the inmanta home folder for later usage in the script
 INMANTA_HOME=$(sudo -u inmanta bash -c "cd; pwd")
 
-# INMANTA USER/GROUP ID MANAGEMENT
-# --------------------------------
-# In case the user has provided some new id for the inmanta user or group, we change it here
-# In order to make the change, the user has to provide the following env vars:
-# - INMANTA_UID --> The value must be a positive integer and will be the new id for user inmanta
-# - INMANTA_GID --> The value must be a positive integer and will be the new id for group inmanta
-
-# Get the current value and save it
-_INMANTA_UID_OLD=$(id -u inmanta)
-_INMANTA_GID_OLD=$(id -g inmanta)
-
-# Resolve the new value
-_INMANTA_UID="${INMANTA_UID:-${_INMANTA_UID_OLD}}"
-_INMANTA_GID="${INMANTA_GID:-${_INMANTA_GID_OLD}}"
-
-# Make the change of value
-usermod -u "${_INMANTA_UID}" inmanta
-groupmod -g "${_INMANTA_GID}" inmanta
-
-# Make sure that no file is left with the previous inmanta uid/gid
-find / -group "${_INMANTA_GID_OLD}" -exec chgrp -h inmanta {} \; &> /dev/null
-find / -user "${_INMANTA_UID_OLD}" -exec chown -h inmanta {} \; &> /dev/null
-
-# Ensuring inmanta user can write in the log folder (in case it has been mounted)
-mkdir -p /var/log/inmanta
-chown inmanta:inmanta /var/log/inmanta
-
 # SHELL COLOR MANAGEMENT
 # ----------------------
 # This section only allows to manage the CLI color outputs for better messages,
@@ -59,6 +32,45 @@ function lightblueb {
     lightblueb="\033[1;36m"
     echo -e "${lightblueb}${1}${end}"
 }
+
+# INMANTA USER/GROUP ID MANAGEMENT
+# --------------------------------
+# In case the user has provided some new id for the inmanta user or group, we change it here
+# In order to make the change, the user has to provide the following env vars:
+# - INMANTA_UID --> The value must be a positive integer and will be the new id for user inmanta
+# - INMANTA_GID --> The value must be a positive integer and will be the new id for group inmanta
+
+# Get the current value and save it
+_INMANTA_UID_OLD=$(id -u inmanta)
+_INMANTA_GID_OLD=$(id -g inmanta)
+
+# Resolve the new value
+_INMANTA_UID="${INMANTA_UID:-${_INMANTA_UID_OLD}}"
+_INMANTA_GID="${INMANTA_GID:-${_INMANTA_GID_OLD}}"
+
+if [ "${_INMANTA_UID}" != "${_INMANTA_UID_OLD}" ]; then
+    yellow "Changing inmanta user id from ${_INMANTA_UID_OLD} to ${_INMANTA_UID}"
+
+    # Make the change of value
+    usermod -u "${_INMANTA_UID}" inmanta
+
+    # Make sure that no file is left with the previous inmanta uid/gid
+    find / -user "${_INMANTA_UID_OLD}" -exec chown -h inmanta {} \; &> /dev/null
+fi
+
+if [ "${_INMANTA_GID}" != "${_INMANTA_GID_OLD}" ]; then
+    yellow "Changing inmanta group id from ${_INMANTA_UID_OLD} to ${_INMANTA_UID}"
+
+    # Make the change of value
+    groupmod -g "${_INMANTA_GID}" inmanta
+
+    # Make sure that no file is left with the previous inmanta uid/gid
+    find / -group "${_INMANTA_GID_OLD}" -exec chgrp -h inmanta {} \; &> /dev/null
+fi
+
+# Ensuring inmanta user can write in the log folder (in case it has been mounted)
+mkdir -p /var/log/inmanta
+chown inmanta:inmanta /var/log/inmanta
 
 # HELPER METHODS
 # --------------
