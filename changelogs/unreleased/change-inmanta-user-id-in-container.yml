@@ -1,0 +1,4 @@
+---
+description: Change inmanta user id in container on demand
+change-type: patch
+destination-branches: [master]

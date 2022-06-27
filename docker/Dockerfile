@@ -48,9 +48,6 @@ LABEL com.inmanta.version=$VERSION \
 	com.inmanta.build-type=$BUILD_TYPE \
 	com.inmanta.build-date=$BUILD_DATE
 
-# By default we want to execute process in the container as the inmanta user
-USER inmanta
-
 # Document default exposed port
 EXPOSE 8888
 
