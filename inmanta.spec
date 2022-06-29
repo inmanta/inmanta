@@ -165,7 +165,7 @@ rm -rf %{buildroot}
 
 %files
 %defattr(-,root,root,-)
-%doc LICENSE inmanta_core/docs/*
+%doc LICENSE
 /opt/inmanta/bin
 /opt/inmanta/lib
 /opt/inmanta/lib64
