@@ -151,7 +151,7 @@ wait_for_host_port()
 # Start the inmanta server as an inmanta user
 start_server() 
 {
-    sudo -u inmanta /usr/bin/inmanta -vvv --timed-logs server
+    sudo -i -u inmanta /usr/bin/inmanta -vvv --timed-logs server
 }
 
 # MAIN SECTION
