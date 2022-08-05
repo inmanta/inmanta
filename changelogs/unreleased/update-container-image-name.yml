@@ -1,0 +1,4 @@
+---
+description: Update container image name and default db address
+change-type: patch
+destination-branches: [master]

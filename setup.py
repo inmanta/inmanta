@@ -2,8 +2,8 @@ from setuptools import setup
 
 
 setup(
-    version="2022.1.1",
-    python_requires=">=3.6",  # also update classifiers
+    version="2022.1.2",
+    python_requires=">=3.9",  # also update classifiers
     # Meta data
     name="inmanta",
     description="Inmanta deployment tool",
@@ -18,8 +18,7 @@ setup(
         "Operating System :: POSIX :: Linux",
         "Topic :: System :: Systems Administration",
         "Topic :: Utilities",
-        "Programming Language :: Python :: 3.6",
-        "Programming Language :: Python :: 3.7",
+        "Programming Language :: Python :: 3.9",
     ],
     keywords="orchestrator orchestration configurationmanagement",
     project_urls={
@@ -30,4 +29,6 @@ setup(
         "inmanta-core==6.0.2",
         "inmanta-ui==3.0.0",
     ],
+    # explicitly declare packages so setuptools does not attempt auto discovery
+    packages=[],
 )
