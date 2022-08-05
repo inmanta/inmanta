@@ -8,10 +8,6 @@ documentation_repo = "https://github.com/inmanta/inmanta.git"
 [tool.irt.module_set]
 path = "sets/public.yml"
 
-[tool.irt.build.rpm]
-centos_versions = [ 8,]
-python_version = "python3.9"
-
 [tool.irt.publish.python]
 public = true
 
@@ -61,6 +57,10 @@ post_publish_hook_remote = "~/post_publish_hook.py"
 repo = "https://github.com/inmanta/inmanta-core"
 files = [ "requirements.txt", "requirements.setup.txt",]
 
+[tool.irt.build.rpm]
+centos_versions = [8]
+python_version = "python3.9"
+
 [tool.irt.build.rpm.enable_repo]
 el8 = []
 
@@ -71,8 +71,8 @@ product_package_venv = "/opt/inmanta/"
 
 [tool.irt.dependencies.npm.inmanta-dashboard]
 repo = "https://github.com/inmanta/inmanta-dashboard"
-version = "==3.8.1"
+version = "master"
 
 [tool.irt.dependencies.npm.web-console]
 repo = "https://github.com/inmanta/web-console"
-version = "==1.10.0"
+version = "master"
