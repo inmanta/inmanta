@@ -12,6 +12,9 @@ path = "sets/public.yml"
 centos_versions = [ 8,]
 python_version = "python3.9"
 
+[tool.irt.build.docker_image]
+product_package_venv = "/opt/inmanta/"
+
 [tool.irt.publish.python]
 public = true
 
@@ -33,10 +36,34 @@ files = [ "requirements.txt", "requirements.setup.txt",]
 [tool.irt.build.rpm.enable_repo]
 el8 = []
 
+[tool.irt.publish.docker_image.dev]
+image_registry = "ghcr.io"
+image_repository = "inmanta"
+image_name = "orchestrator"
+image_tags = [ "dev",]
+registry_username_env = "GITHUB_REGISTRY_USERNAME"
+registry_password_env = "GITHUB_REGISTRY_PASSWORD"
+
+[tool.irt.publish.docker_image.next]
+image_registry = "ghcr.io"
+image_repository = "inmanta"
+image_name = "orchestrator"
+image_tags = [ "{version}-rc",]
+registry_username_env = "GITHUB_REGISTRY_USERNAME"
+registry_password_env = "GITHUB_REGISTRY_PASSWORD"
+
+[tool.irt.publish.docker_image.stable]
+image_registry = "ghcr.io"
+image_repository = "inmanta"
+image_name = "orchestrator"
+image_tags = [ "latest", "{version}",]
+registry_username_env = "GITHUB_REGISTRY_USERNAME"
+registry_password_env = "GITHUB_REGISTRY_PASSWORD"
+
 [tool.irt.dependencies.npm.inmanta-dashboard]
 repo = "https://github.com/inmanta/inmanta-dashboard"
 version = "==3.8.1"
 
 [tool.irt.dependencies.npm.web-console]
 repo = "https://github.com/inmanta/web-console"
-version = "==1.10.0"
+version = "==1.11.0"

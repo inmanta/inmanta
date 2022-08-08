@@ -1,0 +1,247 @@
+#!/bin/bash
+
+# Setting up the inmanta working environment
+source /usr/bin/load-inmanta-env
+
+# Get the inmanta home folder for later usage in the script
+INMANTA_HOME=$(sudo -u inmanta bash -c "cd; pwd")
+
+# SHELL COLOR MANAGEMENT
+# ----------------------
+# This section only allows to manage the CLI color outputs for better messages,
+# should not be changed since these are defaults.
+
+end="\033[0m"
+
+function redb {
+    redb="\033[1;31m"
+    echo -e "${redb}${1}${end}"
+}
+
+function greenb {
+    greenb="\033[1;32m"
+    echo -e "${greenb}${1}${end}"
+}
+
+function yellow {
+    yellow="\033[0;33m"
+    echo -e "${yellow}${1}${end}"
+}
+
+function lightblueb {
+    lightblueb="\033[1;36m"
+    echo -e "${lightblueb}${1}${end}"
+}
+
+# INMANTA USER/GROUP ID MANAGEMENT
+# --------------------------------
+# In case the user has provided some new id for the inmanta user or group, we change it here
+# In order to make the change, the user has to provide the following env vars:
+# - INMANTA_UID --> The value must be a positive integer and will be the new id for user inmanta
+# - INMANTA_GID --> The value must be a positive integer and will be the new id for group inmanta
+
+# Get the current value and save it
+_INMANTA_UID_OLD=$(id -u inmanta)
+_INMANTA_GID_OLD=$(id -g inmanta)
+
+# Resolve the new value
+_INMANTA_UID="${INMANTA_UID:-${_INMANTA_UID_OLD}}"
+_INMANTA_GID="${INMANTA_GID:-${_INMANTA_GID_OLD}}"
+
+if [ "${_INMANTA_UID}" != "${_INMANTA_UID_OLD}" ]; then
+    yellow "Changing inmanta user id from ${_INMANTA_UID_OLD} to ${_INMANTA_UID}"
+
+    # Make the change of value
+    usermod -u "${_INMANTA_UID}" inmanta
+
+    # Make sure that no file is left with the previous inmanta uid/gid
+    find / -user "${_INMANTA_UID_OLD}" -exec chown -h inmanta {} \; &> /dev/null
+fi
+
+if [ "${_INMANTA_GID}" != "${_INMANTA_GID_OLD}" ]; then
+    yellow "Changing inmanta group id from ${_INMANTA_GID_OLD} to ${_INMANTA_GID}"
+
+    # Make the change of value
+    groupmod -g "${_INMANTA_GID}" inmanta
+
+    # Make sure that no file is left with the previous inmanta uid/gid
+    find / -group "${_INMANTA_GID_OLD}" -exec chgrp -h inmanta {} \; &> /dev/null
+fi
+
+# Ensuring inmanta user can write in the log folder (in case it has been mounted)
+mkdir -p /var/log/inmanta
+chown inmanta:inmanta /var/log/inmanta
+
+# HELPER METHODS
+# --------------
+# This section contains methods that can be used for the different commands
+# supported by this file
+
+# The method prints a short usage message for the container image.
+show_header()
+{
+    echo '';
+    echo 'Usage: [command] [options...]'
+    echo '                                                         ';
+    greenb ' Entrypoint for the inmanta orchestrator container.';
+    echo '';
+    lightblueb ' You can use any of the helper commands below to start the server easily.';
+    lightblueb ' If you want to use a custom command, you can as well, it will be handed';
+    lightblueb ' over to exec.';
+    echo '';
+    echo 'Commands:'
+    echo -e '  server          \t Start the inmanta server using in place configs'
+    echo -e '  server-with-ssh \t Start the inmanta server and the ssh daemon'
+    echo -e '  help            \t Show this help message'
+    echo '';
+    echo 'Options:'
+    echo -e '  --wait-for-host <host> \t Host that has a port we want to wait for'
+    echo -e '                         \t (--wait-for-port should be provided as well)'
+    echo -e '  --wait-for-port <port> \t Port on the host we are waiting for'
+    echo -e '                         \t (--wait-for-host should be provided as well)'
+    echo -e '  --wait-for <seconds>   \t Amount of seconds to wait for the port'
+    echo -e '                         \t (optional, default: 30)'
+    echo '';
+}
+
+# This methods configures the ssh deamon, and creates new ssh keys
+configure_ssh()
+{
+    sed 's@session\s*required\s*pam_loginuid.so@session optional pam_loginuid.so@g' -i /etc/pam.d/sshd
+    ssh-keygen -A
+}
+
+# This methods ensures that the current user has the correct permissions set
+# on its ssh folder, which might not be the case when some files are mounted
+# in there during the container creation.
+enforce_ssh_perms()
+{
+    chown inmanta:inmanta $INMANTA_HOME/.ssh --recursive
+    chmod 700 $INMANTA_HOME/.ssh
+    chmod 600 $INMANTA_HOME/.ssh/*
+}
+
+# Wait for at most X seconds for the database to be reachable
+wait_for_host_port()
+{
+    host=$1
+    port=$2
+    max_attempts=$3
+
+    if [ "$host" == "0" ] || [ "$port" == "0" ]; then
+        # No config provided to wait for the host
+        return
+    fi
+
+    yellow "Will wait at most $max_attempts seconds for $host:$port to become reachable"
+
+    count=0
+    until nc -z -v -w30 "$host" "$port" || [ $count -ge $max_attempts ]
+    do
+        sleep 1
+        count=$(( $count+1 ))
+    done
+
+    if [ $count -ge $max_attempts ]; then
+        redb "$host:$port is still unreachable after $max_attempts, stopping now." >& 2
+        exit 1
+    fi
+}
+
+# Start the inmanta server as an inmanta user
+start_server() 
+{
+    sudo -i -u inmanta /usr/bin/inmanta -vvv --timed-logs server
+}
+
+# MAIN SECTION
+# ------------
+# Start checking arguments and act accordingly
+
+# Checking if the entrypoint received any argument at all
+if [ $# -eq 0 ]; then
+    redb 'No command provided, container can not start.' >& 2
+    show_header
+    exit 1
+fi
+
+# Checking command options
+wait_for_host=0
+wait_for_port=0
+wait_for=30
+
+load_options()
+{
+    while :; do
+        case $2 in
+            --wait-for-host)
+                wait_for_host="$3"
+                shift
+                ;;
+            --wait-for-port)
+                wait_for_port="$3"
+                shift
+                ;;
+            --wait-for)
+                wait_for="$3"
+                shift
+                ;;
+            --)
+                shift
+                break
+                ;;
+            -?*)
+                redb "Unknown option (ignored): $2"
+                show_header
+                exit 1
+                ;;
+            *)
+                break
+        esac
+        shift
+    done
+}
+
+# Checking if the first argument is a command we know
+# Otherwise we default to the base image entrypoint
+case $1 in
+
+    'server')
+
+        load_options "$@"
+
+        # Wait at most 30 seconds for the database to be reachable
+        wait_for_host_port $wait_for_host $wait_for_port $wait_for
+
+        # Start the server only
+        start_server
+        ;;
+
+    'server-with-ssh')
+
+        load_options "$@"
+
+        # Start the server with an ssh deamon
+        configure_ssh
+        enforce_ssh_perms
+        /usr/sbin/sshd -D | tee /var/log/sshd.log &
+
+        # Wait at most 30 seconds for the database to be reachable
+        wait_for_host_port $wait_for_host $wait_for_port $wait_for
+
+        # Start the server
+        start_server
+        ;;
+
+    'help')
+
+        # Show the help message
+        show_header
+        ;;
+
+    *)
+        # Simply exec the command
+        exec "$@"
+        ;;
+
+esac
