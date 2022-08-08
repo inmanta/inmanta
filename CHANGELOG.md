@@ -1,3 +1,102 @@
+# Release 2022.2 (2022-08-08)
+
+## Upgrade notes
+
+- Ensure the database is backed up before executing an upgrade.
+
+## Inmanta-core: release 7.0.0 (2022-08-05)
+
+### New features
+
+- Change the relation deprecation warning to be more accurate. (Issue #2443)
+- Add support for the elif keyword to the compiler
+- Improved tracking of potential future relation assignments within conditional statements.
+- Improved error reporting for invalid namespace access (Issue #2818)
+- Expressions are now treated as statements (Issue #3367)
+- Add environment setting to set the number of stored versions. (Issue #3505)
+- Ensure processes forked by Inmanta commands load the same config folder as their parent process (Issue #3765)
+- Add notification service (Issue #3981)
+- Create a notification when a git pull fails during compile (Issue #4021)
+- Add 'inmanta-cli environment recompile' command (Issue #4052)
+- Added auto_full_compile environment option to schedule regular full compiles (Issue #4274)
+- Add support to pass type precedence hints to the compiler (Issue #3098)
+- Added support to create development builds of V2 modules (Issue inmanta/irt#1184)
+- Added documentation for primitive type casts to the language reference
+
+### Improvements
+
+- Improve batching of code loading in the agent (Issue #4217)
+- inmanta module v1tov2 and inmanta module build will now merge setup.cfg and pyproject.toml (Issue #4372)
+- Add py.typed file to packages build using inmanta module build (Issue #4374)
+- The compiler cache (.cfc) files are now stored in the .cfcache directory in the root of the inmanta project instead of in the __cfcache__ directory in the inmanta modules. (Issue inmanta/inmanta-core#4407)
+- More precise cache invalidation for the compiler cache (Issue #4408)
+- Add support to enable/disable strict dependency checking in the compiler and in the module tools using the --strict-deps-check and --no-strict-deps-check options. (Issue #4516)
+- Improve exception messages on version conflicts (Issue #4524)
+- Improve documentation of agent configuration
+- Make `python -m inmanta` work
+- Add database connection metrics to the influxdb reporter
+
+### Upgrade notes
+
+- The default log level of the `inmanta` commandline tool was changed from ERROR to WARNING (Issue #3911)
+- The compiler and the module tools now by default check all dependencies transitively for version conflicts. When a version conflict is found, an error is raised. A fallback to the old behavior is possible by providing the `--no-strict-deps-check` option. (Issue #4516)
+- `inmanta project install` and `inmanta project update` now always take into account the `requirements.txt` of the project to provide additional version constraints to pip (Issue #4410)
+
+### Deprecation notes
+
+- Unicode characters are no longer escaped in multi-line strings. (Issue #2582)
+- The available-versions-to-keep option in the server configuration file is now deprecated in favor of the environment setting (Issue #3505)
+- Writing a string over multiple lines is now only supported for strings within triple quotes. This was previously allowed for strings within single quotes due to a bug.
+- An exception is now raised when trying to interpolate a string in a dictionary key
+- The auto-recompile-wait option in the server configuration is now deprecated in favor of the recompile_backoff environment setting (Issue #4332)
+
+### Bug fixes
+
+- The logger now correctly reports the endpoints that will be removed from a session
+- Fixed an instance of nondeterministic behavior in the compiler
+- Fix memory leak caused by lru-cache keeping strong references to cached items
+- Optimize resource list query
+- Fix installing extras of module dependencies (Issue #3443)
+- Fix bug that fails the CRUDHandler when a changed attribute is of type set. (Issue #3470)
+- Wrap any exception that occurs during resource export so that it is more useful to the end user (Issue #3787)
+- Writing a string over multiple lines is now only supported for strings within triple quotes.
+- An error message is now shown if a wrong repo path is used
+- An exception is now raised when there is a mismatch between the python version of the compiler venv and the python version of the active process (Issue #3829)
+- Improve the compiler error message that is given when an index attribute is missing in the constructor call. (Issue #3902)
+- Fix bug where the user is suggested to run the `inmanta module update` command when the execution of the same command failed. (Issue #3911)
+- Fixed bug that makes the `inmanta deploy` command fail when the database and server sections of the inmanta configuration files contain non-default values. (Issue #3927)
+- Fix bug that makes every inmanta warning end with an empty line. (Issue #3951)
+- Improve syntax error reporting when defining an attribute starting with a capital letter.
+- Fix handling of '_' in resource_logs and get_resource_events api endpoints (Issue #4043)
+- Fix bug where `inmanta project install` and `inmanta project update` always invokes pip, even when all dependencies are already met. (Issue #4055)
+- Limit included namespace packages to inmanta_plugins for v1tov2 module conversion. (Issue #4130)
+- Enforce inmanta package requirements so that modules can't overwrite those. (Issue #4200)
+- Make sure that the `inmanta project install` command doesn't protect the inmanta-dev-dependencies package (Issue #4249)
+- Fix syntax error when calling "is defined" on dictionary lookup
+- The set_setting endpoint now correctly returns a 400 status code when an invalid value is provided. (Issue #4361)
+- Fix bug where the setup.cfg file, generated by the v1tov2 command, contains a dependency to the module itself when the module contains an import for a namespace in its own module. (Issue inmanta/inmanta-core#4373)
+- Fix bug on value lookup in an unknown dict and on lookup with an unknown key. (Issue #4475)
+- Fix failing test case.
+- Fix order of stages in compile report details (Issue inmanta/web-console#3082)
+- Fixed incorrect top level module loading for nested imports when v2 module is present in venv but not in explicit requires
+- Fix performance impacting race condition in deploy handler method (Issue inmanta/lsm#433)
+- Fix issue with get_resources_in_latest_version call not taking into account versions without resources (Issue inmanta/inmanta-lsm#739)
+- Fix issue where the deployment of resources takes a long time, due a high rate limiter backoff. (Issue #4084)
+- Fixed type cast behavior for `null` and unknown values
+
+## Inmanta-ui: release 3.0.1 (2022-08-05)
+
+No changelog entries.
+
+## inmanta-dashboard: release 3.8.1
+This component has had no new releases since the last product version.
+## Web-console: release 1.11.0 (2022-08-05)
+
+### New features
+
+- Add support for inter-service relations in the service inventory (Issue #3040)
+
+
 # Release 2022.1.1 (2022-04-19)
 
 ## Upgrade notes
