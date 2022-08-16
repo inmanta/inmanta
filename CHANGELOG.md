@@ -1,3 +1,23 @@
+# Release 2022.2.1 (2022-08-16)
+
+## Upgrade notes
+
+- Ensure the database is backed up before executing an upgrade.
+
+## inmanta-core: release 7.0.0
+This component has had no new releases since the last product version.
+## inmanta-ui: release 3.0.1
+This component has had no new releases since the last product version.
+## inmanta-dashboard: release 3.8.1
+This component has had no new releases since the last product version.
+## Web-console: release 1.11.1 (2022-08-16)
+
+### Bug fixes
+
+- Fixed error on settings page resulting in blank page
+- Fixed behavior of instance creation and update for services with inter-service relations
+
+
 # Release 2022.2 (2022-08-08)
 
 ## Upgrade notes
