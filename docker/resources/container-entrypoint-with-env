@@ -1,5 +1,32 @@
 #!/bin/bash
 
+stop_container() {
+    # This script is running as PID=1. Stopping this
+    # process will stop the entire container.
+    exit 0
+}
+trap stop_container TERM INT
+
+execute_long_running_command() {
+    # When Bash is executing a command, it processes signals as soon as
+    # the command has finished executing. This way it can take a long time
+    # between the ctrl-c interrupt/docker stop executed by the user and the
+    # actual termination of the container. This function provides functionality
+    # to execute a command and process signals at the same time. Commands that
+    # take a long time to execute should always use this function.
+    #
+    # :params: The command to be executed
+    # :return: The exit code of this function is the exit code of the executed command.
+    local cmd="$*"
+    eval ${cmd} &
+    local pid=$!
+    # Wait until the background task finishes execution.
+    # The `wait` command gets interrupted when a signal fires.
+    wait ${pid}
+    local exit_code_cmd=$?
+    return ${exit_code_cmd}
+}
+
 # Setting up the inmanta working environment
 source /usr/bin/load-inmanta-env
 
@@ -136,7 +163,7 @@ wait_for_host_port()
     yellow "Will wait at most $max_attempts seconds for $host:$port to become reachable"
 
     count=0
-    until nc -z -v -w30 "$host" "$port" || [ $count -ge $max_attempts ]
+    until execute_long_running_command nc -z -v -w30 "$host" "$port" || [ $count -ge $max_attempts ]
     do
         sleep 1
         count=$(( $count+1 ))
@@ -151,7 +178,7 @@ wait_for_host_port()
 # Start the inmanta server as an inmanta user
 start_server() 
 {
-    sudo -i -u inmanta /usr/bin/inmanta -vvv --timed-logs server
+    execute_long_running_command sudo -i -u inmanta /usr/bin/inmanta -vvv --timed-logs server
 }
 
 # MAIN SECTION
