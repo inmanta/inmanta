@@ -1,4 +1,6 @@
 ---
-description: Add a signal handler to correctly handle the termination of containers
+description: Add a signal handler to the entrypoint of the Inmanta container to correctly handle the termination of the container
 change-type: patch
 destination-branches: [master]
+sections:
+  bugfix: "{{description}}"
