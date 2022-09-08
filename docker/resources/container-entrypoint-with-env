@@ -13,12 +13,12 @@ stop_container(){
 trap stop_container TERM INT
 
 execute_long_running_command() {
-    # When Bash is executing a command, it processes signals as soon as
-    # the command has finished executing. This way it can take a long time
-    # between the ctrl-c interrupt/docker stop executed by the user and the
-    # actual termination of the container. This function provides functionality
-    # to execute a command and process signals at the same time. Commands that
-    # take a long time to execute should always use this function.
+    # When Bash is executing a command, it queues all signals that occur while
+    # that command is executing. When the command finishes, the signals are processed.
+    # This way it can take a long time between the moment the ctrl-c interrupt/docker stop
+    # is executed by the user and the actual termination of the container. This function
+    # provides functionality to ensure that signals are processed while a command is executing.
+    # Commands that take a long time to execute should always use this function.
     #
     # :params: The command to be executed
     # :return: The exit code of this function is the exit code of the executed command.
