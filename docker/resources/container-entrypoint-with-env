@@ -149,6 +149,7 @@ configure_ssh()
 enforce_ssh_perms()
 {
     chown inmanta:inmanta $INMANTA_HOME/.ssh --recursive
+    chmod 700 $INMANTA_HOME
     chmod 700 $INMANTA_HOME/.ssh
     chmod 600 $INMANTA_HOME/.ssh/*
 }
