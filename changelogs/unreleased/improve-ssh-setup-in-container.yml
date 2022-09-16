@@ -1,0 +1,4 @@
+---
+description: Improve ssh setup in containers.
+change-type: patch
+destination-branches: [master, iso5, iso4]
