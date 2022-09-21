@@ -1,7 +1,19 @@
 #!/bin/bash
 
+pid=-1
+stop_proc(){
+    if [ ${pid} -ge 0 ]; then
+        kill ${pid}
+        wait ${pid}
+    fi
+    exit 0
+}
+trap stop_proc TERM INT
+
 # Setting up the inmanta working environment
 source /usr/bin/load-inmanta-env
 
 # Simply execute the command of the user
-/bin/bash "$@"
+/bin/bash "$@" &
+pid=$!
+wait ${pid}
