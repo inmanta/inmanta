@@ -33,7 +33,7 @@ execute_long_running_command() {
 }
 
 # Setting up the inmanta working environment
-source /usr/bin/load-inmanta-env
+source /etc/profile.d/inmanta.sh
 
 # Get the inmanta home folder for later usage in the script
 INMANTA_HOME=$(sudo -u inmanta bash -c "cd; pwd")
