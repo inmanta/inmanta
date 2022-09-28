@@ -1,0 +1,4 @@
+description: Bumped dev version after RC release
+change-type: patch
+destination-branches:
+  - master
