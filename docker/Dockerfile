@@ -17,23 +17,16 @@ RUN curl -1sLf "https://packages.inmanta.com/public/oss-$BUILD_TYPE/config.rpm.t
 	rm /etc/yum.repos.d/inmanta-oss.repo && \
 	rm /tmp/inmanta-oss.repo
 
-# Copy env var loading script
-COPY resources/load-inmanta-env /usr/bin/load-inmanta-env
-
 # Overwriting container entrypoint with our own file
 COPY resources/container-entrypoint-with-env /container-entrypoint-with-env
 
-# Copying inmanta user login shell
-COPY resources/shell-with-env /usr/bin/shell-with-env
+# Ensure that environment variables are loaded
+COPY resources/profile /etc/profile.d/inmanta.sh
 
 # Change the default shell of the inmanta user, to use a script loading env var from a file first
 RUN echo "%wheel ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers && \
 	usermod -aG wheel inmanta && \
-	usermod -s /usr/bin/shell-with-env inmanta && \
-	chmod 755 /usr/bin/shell-with-env && \
-	chown root:root /usr/bin/shell-with-env && \
-	chmod 644 /usr/bin/load-inmanta-env && \
-	chown root:root /usr/bin/load-inmanta-env && \
+	usermod -s /usr/bin/bash inmanta && \
 	chmod 755 /container-entrypoint-with-env && \
 	chown root:root /container-entrypoint-with-env
 
