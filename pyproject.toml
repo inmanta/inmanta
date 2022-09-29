@@ -62,8 +62,8 @@ registry_password_env = "GITHUB_REGISTRY_PASSWORD"
 
 [tool.irt.dependencies.npm.inmanta-dashboard]
 repo = "https://github.com/inmanta/inmanta-dashboard"
-version = "~=3.8.1.0rc"
+version = "==3.8.1"
 
 [tool.irt.dependencies.npm.web-console]
 repo = "https://github.com/inmanta/web-console"
-version = "~=1.11.2.0rc"
+version = "==1.11.2"
