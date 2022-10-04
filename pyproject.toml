@@ -55,7 +55,7 @@ post_publish_hook_remote = "~/post_publish_hook.py"
 
 [tool.irt.additional-lock-files.inmanta-core]
 repo = "https://github.com/inmanta/inmanta-core"
-files = [ "requirements.txt", "requirements.setup.txt",]
+files = [ "requirements.txt" ]
 
 [tool.irt.build.rpm]
 centos_versions = [8]
