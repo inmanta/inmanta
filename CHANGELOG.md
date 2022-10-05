@@ -1,3 +1,93 @@
+# Release 2022.3 (2022-09-29)
+
+## General changes
+
+### Upgrade notes
+
+- Ensure the database is backed up before executing an upgrade.
+
+### Bug fixes
+
+- Add a signal handler to the entrypoint of the Inmanta container to correctly handle the termination of the container
+
+## Inmanta-core: release 7.1.0 (2022-09-29)
+
+### New features
+
+- Add option to bytecompile all python source in a v2 module wheel (Issue inmanta/irt#1190)
+- Replace Drupal model of quickstart with SR Linux. (Issue #4333)
+- Added partial compile feature
+
+### Improvements
+
+- When the AutostartedAgentManager starts a new agent process, it now uses a dynamic timeout on the time to wait until all agents are active. The AutostartedAgentManager raises a timeout as soon as no new agent has become active in the past five seconds. (Issue inmanta/inmanta-core#4398)
+- Improved logging on the agent manager when restarting agents
+- Performance improvements for the resource_did_dependency_change endpoint (Issue #4402)
+- The `put_partial` endpoint and `inmanta export --partial` now dynamically allocate a new version.
+- Add support for extras on Python dependencies (Issue inmanta/inmanta-core#4497)
+- Improve logging on module installation. (Issue #4500)
+- Reject v1tov2 module conversion when a setup.py is present
+- Fix issue where the v1tov2 command removes the requirements.txt file (Issue #4684)
+- Fix a bug in the typing of the new influxdb metrics (Issue #4688)
+- Don't set PYTHONPATH environment variable on venv activation: fixes editable install compatibility with setuptools<64 (Issue #4713)
+- Add argument to compilerservice to allow exporting with the specified exporter plugin
+- Added options to compiler service to configure notification behavior (Issue #4803)
+- Reduce compiler log level for iterations and cache log lines to debug
+- For v1tov2 conversion, split tag from version and put it in tag_build field
+- Improved editable v2 module compatibility with latest setuptools and PEP660 in edge case scenarios.
+- Set the startup/shutdown order between the Inmanta server and the database in the docker-compose file
+
+### Upgrade notes
+
+- It's required to update-and-recompile on each Inmanta project on the server after an upgrade (Issue inmanta/inmanta-core#4718)
+
+### Deprecation notes
+
+- The internal upload_code endpoint has been removed, deprecated since core release 2018.2 (Issue inmanta/irt#1190)
+- The `put_partial` endpoint (previously marked experimental) no longer accepts a version argument.
+
+### Bug fixes
+
+- Fix rare deadlock in the database locking mechanism when tasks are cancelled, mostly affects test environments. (Issue #4384)
+- Fix issue that causes an agent restart storm for all agents on an agent process when an agent on that process is paused. (Issue inmanta/inmanta-core#4398)
+- make sure that the index present in PIP_INDEX_URL or PIP_EXTRA_INDEX_URL is not leaked to pip when using install_from_index (Issue inmanta/inmanta-core#4723)
+- Fix issue where the pip consistency check is too strict (Issue #4761)
+- The compiler service now logs the requested time of a recompile using a consistent timezone
+- Fixed minor backwards incompatibility of the resource action database schema and `resource_action_update` endpoint
+- Fix bugs in the merge logic of a partial compile. 1) Ensure that the version numbers present in the new version of the configuration model are set correctly. 2) Ensure that the resource states and unknowns, that belongs to the partial model, are sent to the server and merged correctly with the old configuration model.
+
+## Inmanta-ui: release 3.0.2 (2022-09-29)
+
+No changelog entries.
+
+## inmanta-dashboard: release 3.8.1
+This component has had no new releases since the last product version.
+## Web-console: release 1.11.2 (2022-09-29)
+
+### Improvements
+
+- add delete button for desired state version with test coverage, bump test coverage for sibiling components (Issue #3957)
+- replace KeyCloakInstance as it is depraceted (Issue #4002)
+
+### Upgrade notes
+
+- Improve test coverage for conditionals (Issue #4000)
+
+### Bug fixes
+
+- Scroll into view when new lines are being added to the report while it is compiling. (Issue #3855)
+- Fix the overflow disapearing outside the window for the facts table. (Issue #3909)
+- Add error handling for uncaught errors. (Issue #3924)
+- replace instance uuid with instance identity when possible in action modals(Delete and set State Action)
+- bump dependencies versions to resolve vulnerabilities (Issue #4001)
+- Fixed issue where web-console would crash when failing to format xml
+
+### Other notes
+
+- The editorconfig file now ensures that the codebase stays LF, the package.json will contain Windows specific commands for linting/prettier. Single quotes for paths are not supported by Windows. (Issue #3909)
+- updated the jenkins scripts for tests to be slightly more performant (Issue #3924)
+
+
 # Release 2022.2.1 (2022-08-16)
 
 ## Upgrade notes
