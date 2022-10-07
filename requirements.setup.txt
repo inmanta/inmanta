@@ -1,0 +1,12 @@
+# build dependencies collected from:
+# 1. python -m build --no-isolation .
+# 2. pip download --no-build-isolation --check-build-dependencies --no-binary :all: dist/*.tar.gz
+build
+cffi>=1.12; platform_python_implementation != 'PyPy'
+cython
+flit_core>=3.2.0,<4
+poetry-core>=1
+setuptools
+setuptools-rust[toml]>=0.11.4
+setuptools_scm
+wheel
