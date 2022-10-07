@@ -69,10 +69,6 @@ build_context_path = "docker/"
 dockerfile_path = "Dockerfile"
 product_package_venv = "/opt/inmanta/"
 
-[tool.irt.dependencies.npm.inmanta-dashboard]
-repo = "https://github.com/inmanta/inmanta-dashboard"
-version = "master"
-
 [tool.irt.dependencies.npm.web-console]
 repo = "https://github.com/inmanta/web-console"
 version = "master"
