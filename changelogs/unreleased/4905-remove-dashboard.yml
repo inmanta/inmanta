@@ -1,0 +1,4 @@
+description: Remove dashboard from the release
+change-type: major
+destination-branches:
+    - master
