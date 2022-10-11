@@ -4,7 +4,6 @@
 # * version: Version of inmanta-service-orchestrator release (without build_tag)
 # * buildid: Build_tag inmanta-oss RPM
 # * buildid_egg: Build_tag inmanta pypi package
-# * inmanta_dashboard_version: Fully qualified version inmanta-dashboard NPM package (version number + build_tag)
 # * web_console_version: Fully qualified version web-console NPM package (version number + build_tag)
 # * python_version: Create an RPM containing a venv for this python version. Only pass
 #                   the version number. For example: "3.6", "3.9", etc.
@@ -33,7 +32,6 @@ License:        ASL 2
 URL:            http://inmanta.com
 Source0:        inmanta-%{sourceversion_egg}.tar.gz
 Source1:        dependencies.tar.gz
-Source2:        inmanta-inmanta-dashboard-%{inmanta_dashboard_version}.tgz
 Source3:        inmanta-web-console-%{web_console_version}.tgz
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
@@ -152,9 +150,6 @@ mkdir -p %{buildroot}/etc/sysconfig
 touch %{buildroot}/etc/sysconfig/inmanta-server
 touch %{buildroot}/etc/sysconfig/inmanta-agent
 
-# Install the dashboard
-mkdir -p %{venv}/dashboard
-tar -xf %{SOURCE2} --strip-components=2 --directory %{venv}/dashboard
 
 # Install web-console
 mkdir -p %{buildroot}/usr/share/inmanta/web-console
@@ -184,7 +179,6 @@ rm -rf %{buildroot}
 %config(noreplace) %attr(-, root, root)/etc/sysconfig/inmanta-agent
 
 %files -n inmanta-oss-server
-/opt/inmanta/dashboard
 /usr/share/inmanta/web-console
 %attr(-,root,root) %{_unitdir}/inmanta-server.service
 
