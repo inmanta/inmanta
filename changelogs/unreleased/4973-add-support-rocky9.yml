@@ -1,4 +1,4 @@
-description: Add support for Rocky 9
+description: Add support for RHEL 9 and derivatives.
 change-type: patch
 issue-repo: inmanta-core
 issue-nr: 4973
