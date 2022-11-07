@@ -1,0 +1,6 @@
+description: Add support for Rocky 9
+change-type: patch
+issue-repo: inmanta-core
+issue-nr: 4973
+destination-branches:
+    - master
