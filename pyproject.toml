@@ -58,7 +58,7 @@ repo = "https://github.com/inmanta/inmanta-core"
 files = [ "requirements.txt" ]
 
 [tool.irt.build.rpm]
-centos_versions = [8]
+centos_versions = [8, 9]
 python_version = "python3.9"
 
 [tool.irt.build.rpm.enable_repo]
