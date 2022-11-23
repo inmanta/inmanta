@@ -127,6 +127,10 @@ mkdir -p %{buildroot}%{_bindir}
 ln -s /opt/inmanta/bin/inmanta %{buildroot}%{_bindir}/inmanta
 ln -s /opt/inmanta/bin/inmanta-cli %{buildroot}%{_bindir}/inmanta-cli
 
+# Install inmanta-workon
+mkdir -p %{buildroot}/%{_sysconfdir}/profile.d/
+install -p -m 644 inmanta_core/misc/inmanta-workon-register.sh %{buildroot}/%{_sysconfdir}/profile.d/inmanta-workon-register.sh
+
 # Additional dirs and config
 chmod -x LICENSE
 mkdir -p %{buildroot}%{_localstatedir}/lib/inmanta
@@ -180,6 +184,7 @@ rm -rf %{buildroot}
 
 %files -n inmanta-oss-server
 /usr/share/inmanta/web-console
+%{_sysconfdir}/profile.d/inmanta-workon-register.sh
 %attr(-,root,root) %{_unitdir}/inmanta-server.service
 
 %files -n inmanta-oss-agent
@@ -279,6 +284,9 @@ getent passwd inmanta >/dev/null || \
 exit
 
 %changelog
+* Wed Nov 23 2022 Sander Van Balen <sander.vanbalen@inmanta.com> - 2022.4
+- Packaged inmanta-workon-register.sh into /etc/profile.d
+
 * Tue Jan 11 2022 Florent Lejoly <florent.lejoly@inmanta.com> - 2022.1
 - Enable ui extension by default
 
