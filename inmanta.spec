@@ -44,6 +44,8 @@ Requires:       git
 Requires:       logrotate
 Requires:       libffi
 Requires(pre):  shadow-utils
+# for inmanta-workon
+Requires:       which
 
 # Requirements cryptography
 BuildRequires:  redhat-rpm-config
@@ -284,6 +286,9 @@ getent passwd inmanta >/dev/null || \
 exit
 
 %changelog
+* Tue Nov 29 2022 Sander Van Balen <sander.vanbalen@inmanta.com> - 2022.4
+- Added which as a dependency
+
 * Wed Nov 23 2022 Sander Van Balen <sander.vanbalen@inmanta.com> - 2022.4
 - Packaged inmanta-workon-register.sh into /etc/profile.d
 
