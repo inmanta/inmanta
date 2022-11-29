@@ -1,3 +1,6 @@
+[tool.irt]
+release-type = "continuous"
+
 [tool.irt.dependencies]
 core-component = "https://github.com/inmanta/inmanta-core"
 
