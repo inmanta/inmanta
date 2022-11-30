@@ -4,7 +4,6 @@
 # * version: Version of inmanta-service-orchestrator release (without build_tag)
 # * buildid: Build_tag inmanta-oss RPM
 # * buildid_egg: Build_tag inmanta pypi package
-# * inmanta_dashboard_version: Fully qualified version inmanta-dashboard NPM package (version number + build_tag)
 # * web_console_version: Fully qualified version web-console NPM package (version number + build_tag)
 # * python_version: Create an RPM containing a venv for this python version. Only pass
 #                   the version number. For example: "3.6", "3.9", etc.
@@ -33,7 +32,6 @@ License:        ASL 2
 URL:            http://inmanta.com
 Source0:        inmanta-%{sourceversion_egg}.tar.gz
 Source1:        dependencies.tar.gz
-Source2:        inmanta-inmanta-dashboard-%{inmanta_dashboard_version}.tgz
 Source3:        inmanta-web-console-%{web_console_version}.tgz
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
@@ -46,6 +44,8 @@ Requires:       git
 Requires:       logrotate
 Requires:       libffi
 Requires(pre):  shadow-utils
+# for inmanta-workon
+Requires:       which
 
 # Requirements cryptography
 BuildRequires:  redhat-rpm-config
@@ -129,6 +129,10 @@ mkdir -p %{buildroot}%{_bindir}
 ln -s /opt/inmanta/bin/inmanta %{buildroot}%{_bindir}/inmanta
 ln -s /opt/inmanta/bin/inmanta-cli %{buildroot}%{_bindir}/inmanta-cli
 
+# Install inmanta-workon
+mkdir -p %{buildroot}/%{_sysconfdir}/profile.d/
+install -p -m 644 inmanta_core/misc/inmanta-workon-register.sh %{buildroot}/%{_sysconfdir}/profile.d/inmanta-workon-register.sh
+
 # Additional dirs and config
 chmod -x LICENSE
 mkdir -p %{buildroot}%{_localstatedir}/lib/inmanta
@@ -152,9 +156,6 @@ mkdir -p %{buildroot}/etc/sysconfig
 touch %{buildroot}/etc/sysconfig/inmanta-server
 touch %{buildroot}/etc/sysconfig/inmanta-agent
 
-# Install the dashboard
-mkdir -p %{venv}/dashboard
-tar -xf %{SOURCE2} --strip-components=2 --directory %{venv}/dashboard
 
 # Install web-console
 mkdir -p %{buildroot}/usr/share/inmanta/web-console
@@ -184,8 +185,8 @@ rm -rf %{buildroot}
 %config(noreplace) %attr(-, root, root)/etc/sysconfig/inmanta-agent
 
 %files -n inmanta-oss-server
-/opt/inmanta/dashboard
 /usr/share/inmanta/web-console
+%{_sysconfdir}/profile.d/inmanta-workon-register.sh
 %attr(-,root,root) %{_unitdir}/inmanta-server.service
 
 %files -n inmanta-oss-agent
@@ -285,6 +286,12 @@ getent passwd inmanta >/dev/null || \
 exit
 
 %changelog
+* Tue Nov 29 2022 Sander Van Balen <sander.vanbalen@inmanta.com> - 2022.4
+- Added which as a dependency
+
+* Wed Nov 23 2022 Sander Van Balen <sander.vanbalen@inmanta.com> - 2022.4
+- Packaged inmanta-workon-register.sh into /etc/profile.d
+
 * Tue Jan 11 2022 Florent Lejoly <florent.lejoly@inmanta.com> - 2022.1
 - Enable ui extension by default
 

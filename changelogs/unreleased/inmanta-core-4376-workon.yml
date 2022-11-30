@@ -1,0 +1,5 @@
+description: Added inmanta-workon to the RPM build
+change-type: patch
+destination-branches:
+  - iso5
+  - master

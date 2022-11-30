@@ -1,0 +1,6 @@
+description: Remove dashboard from the release
+change-type: major
+issue-repo: inmanta-core
+issue-nr: 4905
+destination-branches:
+    - master
