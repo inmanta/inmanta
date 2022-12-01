@@ -1,3 +1,94 @@
+# Release 2022.4 (2022-12-01)
+
+## General changes
+
+### New features
+
+- Add support for RHEL 9 and derivatives. (Issue inmanta/inmanta-core#4973)
+
+### Upgrade notes
+
+- Ensure the database is backed up before executing an upgrade.
+
+## Inmanta-core: release 8.0.0 (2022-11-30)
+
+### New features
+
+- Added the inmanta-workon command (Issue #4376)
+- Add the finalizer decorator. Functions decorated with it will be executed at the end of the compilation
+- Constructors that appear as a right hand side in an assignment (or another constructor) now no longer require explicit assignments for the inverse relation to the left hand side.
+- Add support for extensions to register their environment settings via the `register_environment_settings` method in the `extension.py` file of the extension. (Issue inmanta/irt#1366)
+
+### Improvements
+
+- Improve the logging of the pip commands by using a separated logger for those. Also add the content of the requirements and constraints files to the logging. (Issue #4651)
+- Add module and plugin deprecation mechanism (Issue #4908)
+- Improve the error message when trying to build a moduleV2 with an invalid version name (Issue #5054)
+- Refactor page view functionality
+
+### Deprecation notes
+
+- Remove support for leaving nullable attribute unassigned, an exception will now be raised. You should make sure optional variables are always assigned a value. This changes the behaviour of 'is defined' in Jinja templates. You should now use 'is not none' instead (Issue #1888)
+- The 'dashboard' section is no longer supported for configuration options. The 'web-ui' section should now be used instead for configuration options related to web interfaces. (Issue inmanta/inmanta-ui#317)
+- The Inmanta dashboard was removed. The URL of the Inmanta dashboard now redirects to the Inmanta web-console which is the successor of the Inmanta dashboard. (Issue #4905)
+- V1 modules are deprecated. Support for V1 modules will be removed in one of the next major releases (Issue inmanta/inmanta-core#4941)
+- Removed support to use a dictionary in the requires metadata field of a V1 module or an Inmanta project. (Issue inmanta/inmanta-core#4974)
+- The `inmanta module update` command and the `-r` option of the `inmanta module list` command were removed. They are replaced by the `inmanta project update` and the `inmanta project freeze` command respectively. (Issue inmanta/inmanta-core#4975)
+- Remove support for hyphens in identifiers. An exception will now be raised. (Issue #4976)
+- The available-versions-to-keep option of the server configuration file is no longer supported. Please use the AVAILABLE_VERSIONS_TO_KEEP environment setting instead. (Issue #4980)
+- Remove support for default constructors (Issue #4984)
+- The `inmanta.server.services.environmentservice.register_setting` method, used by the extensions to register environment settings, has been deprecated. The `register_environment_settings` method in the `extension.py` of the extension has to be used instead. (Issue inmanta/irt#1366)
+
+### Bug fixes
+
+- Fix issue where the progress information of the git clone command shows mixed log lines (Issue inmanta/inmanta-core#4919)
+- Fix issue with "inmanta module build" command on a v1 module if inmanta_plugins dir already exists (Issue #4954)
+- Fix bug where the stdout filehandler is not closed after streaming the output from pip into the logger.
+- Fix bug where warnings messages were not shown to the user.
+- Fix bug where the status endpoint can become non-responsive
+- Fix issue where the documentation of the `inmanta module freeze` command incorrectly indicates that it updates the project.yml file, while it updates the module.yml file.
+- Fix an issue about the __str__ function of the DatabaseOrder class which made it incompatible with python3.11
+- Fix an issue about enum representation which made a test fail for python3.11
+- Fixes an issue about optional fields without default value not being populated correctly in DAO
+- Fix bug where a ResourceAction fails with an InvalidStateError when the agent is shutdown
+- Fix bug where the endpoints `compile_details`, `get_compile_reports` and `get_compile_queue` returned incorrect data for the fields `exporter_plugin`, `notify_failed_compile` and `failed_compile_message`.
+
+## Inmanta-ui: release 4.0.0 (2022-11-30)
+
+### Deprecation notes
+
+- The 'web-console' section is no longer supported for configuration options. The 'web-ui' section should now be used instead for configuration options related to web interfaces. (Issue inmanta/inmanta-ui#317)
+
+## Web-console: release 1.11.3 (2022-11-30)
+
+### Improvements
+
+- Allow to send filter values from more than one input at once with enter or button click - Resouces & Desired State Details view
+- An update banner will be displayed if your application happens to be outdated. (Issue #3879)
+- Add an indication in the navigation sidebar when there are ongoing compilations. The indication will be added to the "Compile Report" menu-item.
+- add buttons for expanding/collapsing all nested attributes to speed up the process of going through services
+- The create/edit Instance form now has a better way to allow the user to select multiple Inter Service Relations. (Issue #4100)
+- Updating React version to React 18. (Issue #4107)
+- The link to the old dashboard has been removed from the sidebar. (Issue #4108)
+- Improve the sidebar closing behaviour when on smaller screens. You can now click in the page content to close the container. (Issue #4119)
+- Add Hooks that check if user leaves unfinished Add/Edit Instance form and prompt for confirmation (Issue #4125)
+- When only one option available in select input, then this one is preselected instead of default placeholder prompt (Issue #4127)
+- A button has been added to the Service Catalog overview to execute an update. (Issue #4159)
+- move service details from dropdown to separate page (Issue #4160)
+- add pagination on the bottom of the table to improve UX (Issue #4246)
+- Move delete service button to the Service Catalog overview, in the kebab menu options. (Issue #4326)
+- Fix service callbacks issues in display, in readabilty and form behaviour after adding callback (Issue #4332)
+- Fix filter options being displayed under the DIFF comparator on some pages. (Issue #4338)
+- Improve alignment of filter options on smaller screens. (Issue #4339)
+
+### Bug fixes
+
+- Fix missing paramter in query when updating a service configuration. (Issue #4064)
+- Fix the error thrown on create new instance. (Issue #4100)
+- Make sure the Update button is also shown on an empty Catalog.
+- Hotfix for the xml-formatter when the scenario occurs where the string to be formatted is preceded or ends with whitspaces. (Issue #4144)
+
+
 # Release 2022.3 (2022-09-29)
 
 ## General changes
