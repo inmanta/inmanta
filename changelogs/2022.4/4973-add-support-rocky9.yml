@@ -1,0 +1,8 @@
+description: Add support for RHEL 9 and derivatives.
+change-type: patch
+issue-repo: inmanta-core
+issue-nr: 4973
+destination-branches:
+    - master
+sections:
+  feature: "{{description}}"

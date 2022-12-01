@@ -1,0 +1,6 @@
+description: Remove dashboard from the docker
+change-type: patch
+issue-repo: inmanta-core
+issue-nr: 4905
+destination-branches:
+    - master

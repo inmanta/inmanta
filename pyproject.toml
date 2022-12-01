@@ -9,7 +9,7 @@ documentation_repo = "https://github.com/inmanta/inmanta.git"
 path = "sets/public.yml"
 
 [tool.irt.build.rpm]
-centos_versions = [ 8,]
+centos_versions = [ 8, 9,]
 python_version = "python3.9"
 
 [tool.irt.build.docker_image]
@@ -31,7 +31,7 @@ post_publish_hook_remote = "~/post_publish_hook.py"
 
 [tool.irt.additional-lock-files.inmanta-core]
 repo = "https://github.com/inmanta/inmanta-core"
-files = [ "requirements.txt", "requirements.setup.txt",]
+files = [ "requirements.txt",]
 
 [tool.irt.build.rpm.enable_repo]
 el8 = []
@@ -60,10 +60,6 @@ image_tags = [ "latest", "{version}",]
 registry_username_env = "GITHUB_REGISTRY_USERNAME"
 registry_password_env = "GITHUB_REGISTRY_PASSWORD"
 
-[tool.irt.dependencies.npm.inmanta-dashboard]
-repo = "https://github.com/inmanta/inmanta-dashboard"
-version = "==3.8.1"
-
 [tool.irt.dependencies.npm.web-console]
 repo = "https://github.com/inmanta/web-console"
-version = "==1.11.2"
+version = "==1.11.3"
