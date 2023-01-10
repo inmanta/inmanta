@@ -1,1 +1,0 @@
-inmanta-core
