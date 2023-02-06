@@ -1,3 +1,79 @@
+# Release 2023.1 (2023-02-06)
+
+## Upgrade notes
+
+- Ensure the database is backed up before executing an upgrade.
+
+## Inmanta-core: release 8.1.0 (2023-02-06)
+
+### New features
+
+- Added `inmanta module release` command. (Issue inmanta/inmanta-core#5082)
+- Added the `/metrics` API endpoint to retrieve aggregated metrics about an Inmanta environment from the server. (Issue inmanta/inmanta-core#5129)
+- experimental: Added a project option to install dependencies on other modules when loading code on the agent
+- Improve stability of incremental deploy for resources containing dicts (Issue #5306)
+
+### Improvements
+
+- Remove resource.resource_version_id fields from the database and use resource id instead
+- Improve error reporting when an index collision is detected. (Issue #5075)
+- A proper inmanta warning is now displayed when an invalid escape sequence is detected in a regular string or a multi-line string. (Issue #5091)
+- Fix wrong docker login instructions
+- improved partial compile documentation for LSM
+- Improved error reporting when an optional list attribute (not relation) remains unset
+- Improved exception handling during shutdown
+- Remove auto-recompile-wait from the config file in the rpm (Issue #4332)
+
+### Upgrade notes
+
+- The first recompile after this upgrade will always perform a full deploy (Issue #5306)
+
+### Deprecation notes
+
+- The `inmanta module commit` command has been deprecated in favor of the `inmanta module release` command.
+- The `do_clean_hard` and `postgres_get_custom_types` functions and the `PGRestore` and `AsyncSingleton` classes in respectively `inmanta_tests.conftest` and `inmanta_tests.db.common` were moved to the `inmanta.db.util` module. The `do_clean_hard` function is available in the `inmanta.db.util` module under the name `clear_database`. These functions and classes will be removed from their original location in a future major release (>=ISO7). (Issue inmanta/inmanta-core#5383)
+
+### Bug fixes
+
+- Fix issue where server-side compiles fail when the SSL configuration on the server doesn't match the SSL configuration defined in the .inmanta file of the project. (Issue inmanta/inmanta-core#4640)
+- Fixed cycle detection in experimental relation precedence policy (Issue #5380)
+- Fix handling of deploying state in incremental deploys (Issue #5434)
+
+## Inmanta-ui: release 4.0.1 (2023-02-06)
+
+No changelog entries.
+
+## Web-console: release 1.12.0 (2023-02-06)
+
+### New features
+
+- Create component and navigation for the Dashboard Page (Issue #4525)
+- Create base components for Dashboard, endpoint QueryManager to acquire metrics and serve them to Dashboard and finally components with given Manager (Issue #4527)
+- Adjust routing to include Dashboard correctly, fix e2e accordingly to new flow of routes (Issue #4531)
+- Add interpolation to charts when no data was aggregated, format dates from UTC to local, add rounding (Issue #4579)
+
+### Improvements
+
+- Adding automated e2e testing for the Service Catalog, for a basic-service instance. (Issue #4317)
+- Adding automated e2e testing for the Service Catalog, for child-parent service instances. (Issue #4320)
+- Adding automated e2e testing for the Service Catalog, for a Embedded Entity instance. (Issue #4321)
+- Adding automated e2e testing for the Service Catalog - Catalog Update (Issue #4323)
+- Adding automated e2e testing for the Service Details (Issue #4327)
+- Adding automated e2e testing for the Service Catalog, for a desired state (Issue #4337)
+- Adding Tooltips for halted and resume buttons in the sidebar. (Issue #4341)
+- Adding automated e2e testing for the Compile Reports (Issue #4348)
+
+### Bug fixes
+
+- Fix Service filtering when clicking on service relation (Issue #4099)
+- Fix toolbar alignment issue. (Issue #4422)
+- Fix form booleans issue (Issue #4438)
+- Name of the agent is not properly escaped in pause agent request (Issue #4454)
+- Fix resource logs issue (Issue #4480)
+- Fix configuration update issue (Issue #4481)
+- fixes to metrics (Issue #4590)
+
+
 # Release 2022.4 (2022-12-01)
 
 ## General changes
