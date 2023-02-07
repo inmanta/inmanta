@@ -1,3 +1,0 @@
-description: Temporarily remove dependency on python-slugify so that the release doc build passes. This commit has to be reverted once the build is successful.
-change-type: patch
-destination-branches: [master]
