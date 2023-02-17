@@ -1,3 +1,29 @@
+# Release 2023.1.1 (2023-02-17)
+
+## Upgrade notes
+
+- Ensure the database is backed up before executing an upgrade.
+
+## Inmanta-core: release 8.2.0 (2023-02-09)
+
+### Improvements
+
+- Support `inmanta module release` options `-c`, `--patch`, `--minor`, `--major` without `--dev`
+
+## inmanta-ui: release 4.0.1
+This component has had no new releases since the last product version.
+## Web-console: release 1.12.2 (2023-02-17)
+
+### Bug fixes
+
+- Do not show LSM related graphs when LSM it not loaded (Issue #4650)
+
+
+## Web-console: release 1.12.1 (2023-02-09)
+
+No changelog entries.
+
+
 # Release 2023.1 (2023-02-06)
 
 ## Upgrade notes
