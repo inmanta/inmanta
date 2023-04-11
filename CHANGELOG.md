@@ -1,3 +1,86 @@
+# Release 2023.2 (2023-04-11)
+
+## Upgrade notes
+
+- Ensure the database is backed up before executing an upgrade.
+
+## Inmanta-core: release 8.3.0 (2023-04-11)
+
+### New features
+
+- Added namespace inference to nested constructors (Issue #4028)
+- Add the user management service (Issue #5310)
+- change agent_install_dependency_modules from experimental feature to expert feature (Issue #5693)
+- adds docstrings to the anchormap so that the vscode extension can display them on hover (Issue inmanta/vscode-inmanta#933)
+
+### Improvements
+
+- Improve the performance of the `put_partial` endpoint (Issue inmanta/inmanta-core#4743)
+- Expanded project's package repo documentation with a note about the risk of using multiple package repos and dependency confusion attacks.
+- Old agents in the agent table are now cleaned up from the database. (Issue #5349)
+- Improved compiler reasoning on resolving `is defined` for empty lists
+- Improve line numbering when reporting non-existing attributes on constructors (Issue #5497)
+- Produce no warning about download path if it is not used (Issue #5507)
+- Added diagrams to the documentation that explain the limitations regarding inter-resource set dependencies when partial compiles are enabled. (Issue inmanta/inmanta-core#5679)
+- Add support for four digit versioning for `inmanta module release`.
+- Raise namespace lookup exception earlier (normalization phase) for improved diagnostics
+- Added `-a` option to `inmanta release` command to commit all pending changes.
+
+### Upgrade notes
+
+- It's required to run a full compile on any environment that uses partial compiles after upgrading the server. (Issue inmanta/inmanta-core#4743)
+- Changed the default value of `environment_agent_trigger_method` environment setting to `push_incremental_deploy`
+- The `inmanta release` command will no longer do `git commit -a` by default, add the `-a` option to get the old behavior 
+
+### Bug fixes
+
+- The following API endpoints now return their results in a consistent, meaningful order: methods.list_settings, methods_v2.environment_settings_list, methods.list_params, methods_v2.get_facts, methods.list_projects, methods_v2.project_list, methods.dryrun_list.
+- Fix race condition that causes the deployment of a resource to fail with the error message: 'Fetching resource events only makes sense when the resource is currently deploying'. This issue happens in rare situations and the orchestrator will automatically recover from it during the next deployment.
+- Fix issue that may cause the first export for an environment to fail when files with identical content are present.
+- Autostarted agents will now log in debug mode (Issue #5562)
+- Fix bug that incorrectly calculates the timestamp indicating which facts have to be renewed.
+- Fix race condition in incremental deploy calculation where a newly released version uses an increment that is calculated from an old model version.
+- Fix bug where the 'done' field of a model version returned by the `GET /version` or the `GET /version/<id>` API endpoint decrements when a repair run of an agent changes the state of the resource to deploying again.
+
+
+## Inmanta-core: release 8.2.0 (2023-02-09)
+
+### Improvements
+
+- Support `inmanta module release` options `-c`, `--patch`, `--minor`, `--major` without `--dev`
+
+## Inmanta-ui: release 4.0.2 (2023-04-11)
+
+No changelog entries.
+
+## Web-console: release 1.12.3 (2023-04-11)
+
+### New features
+
+- Add support to force instance state, destroy instance or change intance attributes through lsm expert mode (Issue #4682)
+
+### Improvements
+
+- Move sidebars status icon into Header (Issue #4342)
+- Adding automated e2e testing for the Resources (Issue #4367)
+- Improve appeareance of Environment selector and move it to the right corner of the page (Issue #4531)
+- Add new icons for new event types in Service Inventory (Issue #4609)
+- Improve support for attribute lists (Issue #4556)
+
+### Bug fixes
+
+- Resolve the rounding issue on dashboard Service Counter. (Issue #4602)
+- refresh catalog list after deleting Service (Issue #4608)
+- Show no value instead of null when there is no description in embedded/relation entity (Issue #4610)
+- Fix tooltip aligment and resolve flickering on environment control button (Issue #4612)
+- Allow to add/delete optional nested entities (Issue #4615)
+- Fix service details relation links to send user to specified service page (Issue #4617)
+- Fix incorrect Y-axis values on stacked charts on dashboard (Issue #4626)
+- Improve metrics tooltip placement across chart (Issue #4627)
+- Fix issue wit clearing unread notification (Issue #4677)
+- fix the issue that crash the app when using missing environment setting and it's definition (Issue #4772)
+
+
 # Release 2023.1.1 (2023-02-17)
 
 ## Upgrade notes
