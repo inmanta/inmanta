@@ -62,4 +62,4 @@ registry_password_env = "GITHUB_REGISTRY_PASSWORD"
 
 [tool.irt.dependencies.npm.web-console]
 repo = "https://github.com/inmanta/web-console"
-version = "~=1.12.3.0rc"
+version = "==1.12.3"
