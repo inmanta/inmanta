@@ -30,7 +30,7 @@
 
 - It's required to run a full compile on any environment that uses partial compiles after upgrading the server. (Issue inmanta/inmanta-core#4743)
 - Changed the default value of `environment_agent_trigger_method` environment setting to `push_incremental_deploy`
-- The `inmanta release` command will no longer do `git commit -a` by default, add the `-a` option to get the old behavior 
+- The `inmanta release` command will no longer do `git commit -a` by default, add the `-a` option to get the old behavior
 
 ### Bug fixes
 
@@ -86,12 +86,6 @@ No changelog entries.
 ## Upgrade notes
 
 - Ensure the database is backed up before executing an upgrade.
-
-## Inmanta-core: release 8.2.0 (2023-02-09)
-
-### Improvements
-
-- Support `inmanta module release` options `-c`, `--patch`, `--minor`, `--major` without `--dev`
 
 ## inmanta-ui: release 4.0.1
 This component has had no new releases since the last product version.
