@@ -26,8 +26,8 @@ setup(
         "Documentation": "https://docs.inmanta.com/community/latest/",
     },
     install_requires=[
-        "inmanta-core~=9.3.0.0rc",
-        "inmanta-ui~=4.0.3.0rc",
+        "inmanta-core==9.3.0",
+        "inmanta-ui==4.0.3",
     ],
     # explicitly declare packages so setuptools does not attempt auto discovery
     packages=[],
