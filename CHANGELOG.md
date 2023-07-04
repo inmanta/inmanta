@@ -1,3 +1,94 @@
+# Release 2023.3 (2023-07-04)
+
+## Upgrade notes
+
+- Ensure the database is backed up before executing an upgrade.
+
+## Inmanta-core: release 9.3.0 (2023-07-04)
+
+### New features
+
+- Added support for list comprehensions to the language, see the documentation for more details (Issue #5433)
+- Added support for keyword-only arguments in plugins (Issue inmanta/inmanta-core#5706)
+- Expose the logging setup through the stable api (Issue #5815)
+
+### Improvements
+
+- Add support to the compilerservice to request a compile that is part of a database transaction. (Issue inmanta/inmanta-lsm#1249)
+- Add documentation on how to upgrade an orchestrator by migrating from one running orchestrator to another. (Issue inmanta/inmanta-service-orchestrator#391)
+- The CRUDHandlerGeneric class was added. This class contains the same implementation as the CRUDHandler class, but is generic with respect to the specific PurgeableResource it acts on. (Issue inmanta/inmanta-core#5555)
+- Added generic logging interface for the handler and a compatible implementation that uses the Python loggers for testing purposes. (Issue #5708)
+- Add the "-v" / "--verbose" option to Inmanta commands and sub-commands to set the verbosity of the console output. (Issue inmanta/inmanta-core#5755)
+- Add python-like f-strings. (Issue #5757)
+- The 'inmanta module release' command now outputs the release tag (Issue #5816)
+- Improve error reporting when attempting to move a resource to another resource set in a partial compile. (Issue #5884)
+- Fix bug that makes the handler fail with the exception `PostgresSyntaxError: trailing junk after parameter at or near "$3A"` when running against PostgreSQL 15. (Issue inmanta/inmanta-core#5898)
+- The server now keeps track of database pool exhaustion events and will report daily how many occured, if some exhaustion was noticed. (Issue #5944)
+- improved support for pip config files by adding the use_config_file option to project.yml. If set the pip config file will be used. (Issue #5976)
+- Add dedicated project-wide pip index url configuration option to the project.yml. (Issue #5993)
+- Add support to expose the same method via the API using different URLs. (Issue inmanta/inmanta-lsm#1274)
+- The hardcoded agent backoff time is now configurable using the `config.agent_get_resource_backoff` config option.
+- Improve the documentation of the `api/v1/resource/<id>` endpoint and return a clear error message if the given id is not a valid resource version id.
+- Improve the performance of the `GET /api/v2/resource/<resource_id>/logs` endpoint. (Issue inmanta/inmanta-core#6147)
+- The server now logs the enabled extensions when it starts.
+- Only print exception trace on cache failure when log level is at least DEBUG (-vvv)
+- Ensure status endpoint returns after 100ms
+- Update the documentation about setting up authentication, to use Keycloak version 20.0
+- Mention in the server installation documentation which extensions need to be enabled.
+
+### Upgrade notes
+
+- The purge_on_delete feature and the `POST /decommission/<id>` endpoints have been removed. (Issue #5677)
+
+### Deprecation notes
+
+- In a future release it will not be possible anymore to use a resource with an id_attribute called id (Issue inmanta/pytest-inmanta#367)
+- The CRUDHandler class is deprecated in favor of the CRUDHandlerGeneric class. In a future major release CRUDHandlerGeneric will be renamed to CRUDHandler. As such, it's recommended to import CRUDHandlerGeneric using the alias CRUDHandler. (Issue inmanta/inmanta-core#5555)
+- Setting a package source in the project.yml file through the `repo -> url <index_url> option with type `package` is now deprecated in favour of the `pip -> index_urls <index_url> option.`
+ (Issue #5993)
+- For consistency, V1 modules' dependencies will now be installed using the configured pip index url (or v2 package repo) if it is set (Issue #5993)
+- The default agent backoff time has been changed from five to three. This backoff is configurable using the `config.agent-get-resource-backoff` config option.
+- Drop deprecated log_msg method in the handler.
+
+### Bug fixes
+
+- Show a clear error message when the `inmanta module freeze` command is executed on a v2 module. This is not supported. (Issue #5631)
+- Don't run cleanup jobs on halted environments (Issue #5842)
+- Make sure resource.version == resource.id.version (Issue #5931)
+- The environment_delete endpoint now correctly removes the environment directory on the server. (Issue #5974)
+- Fix bug in `inmanta module update` when requirements.txt contains additional constraints
+- Fixed compiler bug that could lead to performance issues for deeply nested boolean operators
+- Fix bug where the cleanup job, that removes old resource actions, ignores the environment scope of the `resource_action_logs_retention` setting. This way the shortest interval used for the `resource_action_logs_retention` environment setting across all environments was applied on all environments.
+- Fixed broken link to Pydantic docs in documentation
+- Fix issue where the documentation of the `inmanta module release` command is incorrectly formatted on the documentation pages.
+- Make sure that the log line, that reports the time required for an agent to fetch its resources from the server, is reported as a floating point number instead of an integer.
+- Fix race condition that can cause an environment setting to be reset to its default value.
+- Fix bug that causes the `/serverstatus` endpoint to report an incorrect length of the compiler queue.
+- The server no longer incorrectly logs a warning about server_rest_transport.token missing from the config
+
+## Inmanta-ui: release 4.0.3 (2023-07-04)
+
+### Improvements
+
+- Improve the logging regarding the web-console configuration options.
+
+## Web-console: release 1.13.0 (2023-07-04)
+
+### Improvements
+
+- From now on Recompile buttons aren't disabled after use, which makes queueing recompilations possible.
+- Add support for Attribute-Type migration in the attribute table. (Issue #4534)
+- Add support to run the e2e tests against the OSS Orchestrator releases. (Issue #4660)
+- UI-fix for the header when authentication is enabled. (Issue #4865)
+- Add support for textarea in forms (Issue #4910)
+
+### Bug fixes
+
+- Fixed issues with missing default values in string list input in Create Instance Form and with embedded entity inputs not being disabled in the Edit Instance Form (Issue #4737)
+- Page redirection has been fixed when the authentication token expires. (Issue #4885)
+- Bugfix for nested embedded entities being wrongly displayed in the attribute tree-table. (Issue #4915)
+
+
 # Release 2023.2 (2023-04-11)
 
 ## Upgrade notes
