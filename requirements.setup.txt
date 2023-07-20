@@ -4,7 +4,7 @@
 build
 cffi>=1.12; platform_python_implementation != 'PyPy'
 # asyncpg is not compatible with cython>=3
-cython<4
+cython<3
 flit_core>=3.2.0,<4
 poetry-core>=1
 setuptools
