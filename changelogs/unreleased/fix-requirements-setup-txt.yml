@@ -1,0 +1,4 @@
+---
+description: Fix incorrect requirement in the requirements.setup.txt
+change-type: patch
+destination-branches: [master]
