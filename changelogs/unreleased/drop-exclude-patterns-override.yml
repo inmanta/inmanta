@@ -1,0 +1,4 @@
+description: dropped docs build exclude_patterns override
+change-type: patch
+destination-branches:
+  - master
