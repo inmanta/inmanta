@@ -1,5 +1,5 @@
 ---
-description: Added support for Python 3.11
+description: The RPMs now install a Python 3.11 environment.
 issue-nr: 6024
 issue-repo: inmanta-core
 change-type: patch
