@@ -1,0 +1,8 @@
+---
+description: Added support for Python 3.11
+issue-nr: 6024
+issue-repo: inmanta-core
+change-type: patch
+destination-branches: [master]
+sections:
+  feature: "{{description}}"
