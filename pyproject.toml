@@ -62,7 +62,7 @@ files = [ "requirements.txt" ]
 
 [tool.irt.build.rpm]
 centos_versions = [8, 9]
-python_version = "python3.9"
+python_version = "python3.11"
 
 [tool.irt.build.rpm.enable_repo]
 el8 = []
