@@ -62,9 +62,15 @@ BuildRequires:  openssl-devel >= 1:1.1.1
 Requires:       openssl >= 1:1.1.1
 %endif
 
+%if "%{#undotted_python_version}" == "2"
 BuildRequires:  python%{undotted_python_version}-devel
 Requires:       python%{undotted_python_version}
 Requires:       python%{undotted_python_version}-devel
+%else
+BuildRequires:  python%{python_version}-devel
+Requires:       python%{python_version}
+Requires:       python%{python_version}-devel
+%endif
 
 Obsoletes: python3-inmanta
 Obsoletes: python3-inmanta-core
@@ -120,6 +126,9 @@ fi
 # Fix shebang
 find %{venv}/bin/ -type f | xargs sed -i "s|%{buildroot}||g"
 find %{venv} -name RECORD | xargs sed -i "s|%{buildroot}||g"
+
+# Fix path in pyvenv.cfg file
+sed -i "s|%{buildroot}||g" %{venv}/pyvenv.cfg
 
 # Make sure we use the correct python version and don't have dangeling symlink
 ln -sf /usr/bin/python%{python_version} %{venv}/bin/python3

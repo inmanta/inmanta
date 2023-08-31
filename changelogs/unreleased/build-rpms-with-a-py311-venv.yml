@@ -1,0 +1,8 @@
+---
+description: The RPMs now install a Python 3.11 environment.
+issue-nr: 6024
+issue-repo: inmanta-core
+change-type: patch
+destination-branches: [master]
+sections:
+  upgrade-note: "{{description}}"
