@@ -1,4 +1,4 @@
-description: Make sure ubi 9 is used to build the Docker images.
+description: Use the product config (centos and python version )to build the Docker images.
 issue-nr: 6026
 issue-repo: inmanta-core
 change-type: patch
