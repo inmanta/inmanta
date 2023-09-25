@@ -7,7 +7,7 @@ FROM registry.access.redhat.com/ubi${EL_VERSION}/python-${PYTHON_VERSION}:latest
 USER 0
 
 # Install required packages and setup ssh
-RUN yum install -y yum-utils openssh-server git sudo nc
+RUN yum install -y yum-utils openssh-server git sudo curl nc
 
 # Installing iso from rpm
 ARG BUILD_TYPE
