@@ -11,6 +11,7 @@ RUN yum install -y yum-utils openssh-server git sudo nc
 
 # Installing iso from rpm
 ARG BUILD_TYPE
+ARG EL_VERSION=8
 RUN curl -1sLf "https://packages.inmanta.com/public/oss-$BUILD_TYPE/config.rpm.txt?distro=el&codename=$EL_VERSION" \
 	> "/tmp/inmanta-oss.repo" && \
 	yum-config-manager --add-repo '/tmp/inmanta-oss.repo' && \
