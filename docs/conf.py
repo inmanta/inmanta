@@ -15,6 +15,3 @@ with open(core_conf_file, "r") as f:
     code = compile(f.read(), core_conf_file, "exec")
     # share this file's globals namespace (both for reading and for writing)
     exec(code, globals())
-
-# override exclude patterns: don't exclude anything for product docs
-exclude_patterns = []

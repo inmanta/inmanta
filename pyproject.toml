@@ -9,8 +9,8 @@ documentation_repo = "https://github.com/inmanta/inmanta.git"
 path = "sets/public.yml"
 
 [tool.irt.build.rpm]
-centos_versions = [ 8, 9,]
-python_version = "python3.9"
+centos_versions = [ 9, 8,]
+python_version = "python3.11"
 
 [tool.irt.build.docker_image]
 product_package_venv = "/opt/inmanta/"
@@ -62,4 +62,4 @@ registry_password_env = "GITHUB_REGISTRY_PASSWORD"
 
 [tool.irt.dependencies.npm.web-console]
 repo = "https://github.com/inmanta/web-console"
-version = "==1.13.0"
+version = "==1.14.0"

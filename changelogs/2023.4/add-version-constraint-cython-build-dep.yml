@@ -1,0 +1,4 @@
+---
+description: Add version constraint cython<3 on the cython build dependency, because asyncpg is not yet compatible with cython>=3.
+change-type: patch
+destination-branches: [master]

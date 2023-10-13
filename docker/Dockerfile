@@ -1,14 +1,18 @@
-FROM registry.access.redhat.com/ubi8/python-39:latest
+ARG EL_VERSION=8
+ARG PYTHON_VERSION=39
+
+FROM registry.access.redhat.com/ubi${EL_VERSION}/python-${PYTHON_VERSION}:latest
 
 # We need to be root to setup the container image
 USER 0
 
 # Install required packages and setup ssh
-RUN yum install -y yum-utils openssh-server git sudo curl nc
+RUN yum install -y yum-utils openssh-server git sudo nc
 
 # Installing iso from rpm
 ARG BUILD_TYPE
-RUN curl -1sLf "https://packages.inmanta.com/public/oss-$BUILD_TYPE/config.rpm.txt?distro=el&codename=8" \
+ARG EL_VERSION=8
+RUN curl -1sLf "https://packages.inmanta.com/public/oss-$BUILD_TYPE/config.rpm.txt?distro=el&codename=$EL_VERSION" \
 	> "/tmp/inmanta-oss.repo" && \
 	yum-config-manager --add-repo '/tmp/inmanta-oss.repo' && \
 	yum -q makecache -y --disablerepo='*' --enablerepo="inmanta-oss-${BUILD_TYPE}" && \
