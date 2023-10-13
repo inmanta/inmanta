@@ -1,3 +1,91 @@
+# Release 2023.4 (2023-10-13)
+
+## General changes
+
+### Upgrade notes
+
+- The RPMs now install a Python 3.11 environment. ([inmanta/inmanta-core#6024](https://github.com/inmanta/inmanta-core/issues/6024))
+- Ensure the database is backed up before executing an upgrade.
+
+## Inmanta-core: release 10.0.0 (2023-10-13)
+
+### New features
+
+- Add handler (DiscoveryHandler) to discover unmanaged resources. ([#6025](https://github.com/inmanta/inmanta-core/issues/6025))
+- the `release_version`, `/version/<id>` api endpoint will now return a 409 when called twice on the same version ([#6349](https://github.com/inmanta/inmanta-core/issues/6349))
+- Allow cron expressions in the agent_repair_interval so that we can specify a time-interval where the repair runs happen.
+
+### Improvements
+
+- Improve agents responsiveness for agents with a large number of connections and introduce a parameter to set the max-clients limit on an agent. ([#241](https://github.com/inmanta/inmanta-core/issues/241))
+- add a warning to the docs about the risk of using multiple python package indexes
+- Add top-level handler abstract base class `HandlerAPI` and made resource handlers generic in their resource type. ([#6025](https://github.com/inmanta/inmanta-core/issues/6025))
+- Add the "not in" operator. ([#6211](https://github.com/inmanta/inmanta-core/issues/6211))
+- Split deletes of projects, environments and configurationmodels into small transactions to prevent deadlocks. ([inmanta/inmanta-core#6427](https://github.com/inmanta/inmanta-core/issues/6427))
+- Files handled by the file API are now stored in the database instead of on the file system of the Inmanta server. ([inmanta/inmanta-core#6441](https://github.com/inmanta/inmanta-core/issues/6441))
+- Ensure that resources that will receive events are in the increment.. Any deployment with a status other than nochange is considered to be an event.  ([#6477](https://github.com/inmanta/inmanta-core/issues/6477))
+- Add support for cron expressions for autostart_agent_deploy_interval and autostart_agent_repair_interval environment settings. ([#6549](https://github.com/inmanta/inmanta-core/issues/6549))
+- Ensure child processes are awaited by the deploy command
+- Prefix the error messages produced by the `inmanta module release` command with `Error:` to make clear it's an error message.
+- Improve the output of the `inmanta compile` and `inmanta export` commands to make it more clear to the end-user when the command failed. ([inmanta/inmanta-core#5258](https://github.com/inmanta/inmanta-core/issues/5258))
+- Increase the default value of INMANTA_MAX_ITERATIONS to 100000
+- Moved the `validate_type` logic from the std module to inmanta-core. ([inmanta/inmanta-core#6540](https://github.com/inmanta/inmanta-core/issues/6540))
+- Reduce log level of compiler scheduler from debug to trace, to reduce compiler log output
+- Added support to the `GET /metrics` endpoint to round the returned timestamps to a full hour. ([inmanta/inmanta-core#6051](https://github.com/inmanta/inmanta-core/issues/6051))
+- Add clarifying docstring to the IgnoreResourceException.
+
+### Upgrade notes
+
+- When implementing a generic handler (extending from Generic), the Generic class must be mentioned last in the list of base classes of that handler. ([#6025](https://github.com/inmanta/inmanta-core/issues/6025))
+- the `release_version`, `/version/<id>` api endpoint will now return a 409 when called twice on the same version ([#6349](https://github.com/inmanta/inmanta-core/issues/6349))
+- A full recompile is required after upgrading the Inmanta server to re-publish all required files to the file API. After the upgrade, the Inmanta server will no longer have access to files uploaded using the old version of the Inmanta server. ([inmanta/inmanta-core#6441](https://github.com/inmanta/inmanta-core/issues/6441))
+
+### Deprecation notes
+
+- The compiler no longer explicitly injects the implied `== true` for plugin calls in typedef constraints ([inmanta/inmanta-core#5787](https://github.com/inmanta/inmanta-core/issues/5787))
+- The CRUDHandlerGeneric is now deprecated in favor of the CRUDHandler class ([#6025](https://github.com/inmanta/inmanta-core/issues/6025))
+- The `server.delete-currupt-files` config option was removed. ([inmanta/inmanta-core#6441](https://github.com/inmanta/inmanta-core/issues/6441))
+- Removed support for the legacy relationship syntax from the compiler. ([inmanta/inmanta-core#5265](https://github.com/inmanta/inmanta-core/issues/5265))
+
+### Bug fixes
+
+- Ensure get_resource_events and resource_did_dependency_change work across incremental compiles ([#5493](https://github.com/inmanta/inmanta-core/issues/5493))
+- Prevent repairs from restarting indefinitely when a short deploy interval is set ([#6202](https://github.com/inmanta/inmanta-core/issues/6202))
+- Ensure releasing a new version can not hide failures in ongoing deployments for older versions ([#6475](https://github.com/inmanta/inmanta-core/issues/6475))
+- Increase the timeout on the status method of a server slice 1s to prevent undesired timeouts on the status page of the web-console. ([inmanta/inmanta-core#6599](https://github.com/inmanta/inmanta-core/issues/6599))
+- Removed duplicate fact-expire from default config file
+- Don't set a resource to the deploying state if that resource is undeployable.
+- Fix bug where the `id.attribute_value` field of resources emitted by the exporter have a non-string type, when the type in the model is not a string.
+- Improve the performance of the API endpoints that clear or delete an environment. ([inmanta/inmanta-core#6373](https://github.com/inmanta/inmanta-core/issues/6373))
+
+## Inmanta-ui: release 5.0.0 (2023-10-13)
+
+No changelog entries.
+
+## Web-console: release 1.14.0 (2023-10-13)
+
+### Improvements
+
+- A banner will now be shown if your license is about to expire, or if it already has expired. ([#4708](https://github.com/inmanta/web-console/issues/4708))
+- Add e2e test for keycloak authentication ([#4868](https://github.com/inmanta/web-console/issues/4868))
+- Updated the default filtering on Compliance check page and Compare page to exclude the unmodified files. ([#4681](https://github.com/inmanta/web-console/issues/4681))
+- Improve the error messaging when the server is down and not reachable. ([#4686](https://github.com/inmanta/web-console/issues/4686))
+- Improve the user-feedback when pressing either the repair or deploy button on the ressource page. ([#4349](https://github.com/inmanta/web-console/issues/4349))
+- Update url construction based on new changes in API to redirect to ressource page. ([#4907](https://github.com/inmanta/web-console/issues/4907))
+- Refresh automatically the environment overview page. ([#4840](https://github.com/inmanta/web-console/issues/4840))
+- The select for compare functionality on the Desired State page has been updated. ([#4391](https://github.com/inmanta/web-console/issues/4391))
+- Implement the useFeatures hook to fetch the config.js file from the server and extract the features.
+
+### Bug fixes
+
+- Improve the behavior on Firefox when hovering over code-block icons. ([#4916](https://github.com/inmanta/web-console/issues/4916))
+- Repair timepicker.
+
+### Other notes
+
+- Upgrade the UI library to Patternfly V5. ([#5076](https://github.com/inmanta/web-console/issues/5076))
+
+
 # Release 2023.3 (2023-07-04)
 
 ## Upgrade notes
