@@ -8,4 +8,8 @@ updates:
   allow:
     # Allow both direct and indirect updates for all packages
     - dependency-type: "all"
+  ignore:
+    - dependency-name: "cython"
+      versions: [">3"]
+
 
