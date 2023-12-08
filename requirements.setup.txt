@@ -11,3 +11,9 @@ setuptools
 setuptools-rust[toml]>=0.11.4
 setuptools_scm
 wheel
+
+# pydantic and pydantic-core
+hatchling
+hatch-fancy-pypi-readme>=22.5
+maturin>=1,<2
+typing-extensions>=4.6,!=4.7.0
