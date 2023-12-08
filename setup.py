@@ -2,7 +2,7 @@ from setuptools import setup
 
 
 setup(
-    version="2023.5",
+    version="2024.1",
     python_requires=">=3.11",  # also update classifiers
     # Meta data
     name="inmanta",
