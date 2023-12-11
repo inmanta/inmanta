@@ -1,3 +1,98 @@
+# Release 2024.1 (2023-12-11)
+
+## Upgrade notes
+
+- Ensure the database is backed up before executing an upgrade.
+
+## Inmanta-core: release 11.0.0 (2023-12-11)
+
+### New features
+
+- Add 'exclude_change' argument to 'get_resource_events' to be able to exclude some types of changes from the results. ([#6375](https://github.com/inmanta/inmanta-core/issues/6375))
+- Add server config option server.tz_aware_timestamps to make the server return time-zone aware timestamps. ([#6428](https://github.com/inmanta/inmanta-core/issues/6428))
+- Add server config option server.tz_aware_timestamps to make the server return time-zone aware timestamps. ([#6428](https://github.com/inmanta/inmanta-core/issues/6428))
+- A project-wide pip configuration can be set through the project.yml pip section. ([#6518](https://github.com/inmanta/inmanta-core/issues/6518))
+- Introduce the 'float' type for floating point numbers ([inmanta/inmanta-core#6526](https://github.com/inmanta/inmanta-core/issues/6526))
+- Introduced the dict_path module in the inmanta.util package. This module was previously located in the inmanta-lsm package. Users transitioning from inmanta-lsm should now use inmanta.util.dict_path for relevant functionality. ([inmanta/inmanta-core#6631](https://github.com/inmanta/inmanta-core/issues/6631))
+- Support `*args` and `**kwargs` arguments in plugin signatures. ([inmanta/inmanta-core#6691](https://github.com/inmanta/inmanta-core/issues/6691))
+- Migrated to pydantic v2, which offers more accurate type validation and increased performance
+
+### Improvements
+
+- Fixed reference to OpenAPI docs to work from any page
+- Show exporter timings in compiler output ([#6387](https://github.com/inmanta/inmanta-core/issues/6387))
+- Improve the output of the `inmanta compile` and `inmanta export` commands, by using the logger name `compiler`, `exporter` or `<name-inmanta-module>` for log records produced by respectively the compiler, the exporter or an Inmanta module. ([inmanta/inmanta-core#6489](https://github.com/inmanta/inmanta-core/issues/6489))
+- Input validation of the put_version api endpoint is now more strict ([#6517](https://github.com/inmanta/inmanta-core/issues/6517))
+- Rate limit resolution of cross agent dependencies and make notification asynchronous
+- Stricter type checking of values returned by plugins.
+- Set the ``PIP_PRE``, ``PIP_INDEX_URL`` and ``PIP_EXTRA_INDEX_URL`` pip env vars according to the project.yml pip config when activating an inmanta environment with the ``inmanta-workon`` command.
+ ([#6721](https://github.com/inmanta/inmanta-core/issues/6721))
+- Raise an explicit error when attempting to create a virtual env with invalid characters in its path.
+- Added documentation on how to perform an upgrade in-place. ([inmanta/inmanta-service-orchestrator#393](https://github.com/inmanta/inmanta-service-orchestrator/issues/393))
+
+### Upgrade notes
+
+- All projects now require a pip config in the `project.yml`: please refer to the [migration guide](migrate_to_project_wide_pip_config) to move to a project-wide pip configuration. ([#6518](https://github.com/inmanta/inmanta-core/issues/6518))
+- Stricter type checking of values returned by plugins. Specifying None as returned type requires None to be returned.
+- For successful upgrading to this version, it is required to have ISO version 5.4.2 or higher already installed. ([#6726](https://github.com/inmanta/inmanta-core/issues/6726))
+- stricturl is no longer supported. This has been dropped by pydantic
+
+### Deprecation notes
+
+- The ``net`` module has been deprecated. ([inmanta/net#209](https://github.com/inmanta/net/issues/209))
+- The ``ip`` module has been deprecated. All its functionality is now available in the ``std`` module. ([inmanta/ip#253](https://github.com/inmanta/ip/issues/253))
+- Remove the autostart_agent_interval and autostart_splay environment settings ([#6084](https://github.com/inmanta/inmanta-core/issues/6084))
+- Deprecate the 'number' type. Use the 'int' or 'float' type instead ([inmanta/inmanta-core#6526](https://github.com/inmanta/inmanta-core/issues/6526))
+- Removed the 'inmanta module install' command.. As an alternative to the now-removed 'inmanta module install' command, users should follow the updated procedure for module installation: The new method involves using the 'inmanta module build' command followed by 'pip install ./dist/<dist-package>' to build a module from source and install the distribution package, respectively. Alternatively, use 'pip install -e .' to install the module in editable mode ([#6717](https://github.com/inmanta/inmanta-core/issues/6717))
+
+### Bug fixes
+
+- Make sure openapi UI works when ssl is enabled ([#5680](https://github.com/inmanta/inmanta-core/issues/5680))
+- Fix bug in f-strings not working when whitespaces surround the variable. ([#6629](https://github.com/inmanta/inmanta-core/issues/6629))
+- Fix the handling of numeric keys in dict paths: floating-point numbers and their integer equivalents are treated as the same key. ([#6731](https://github.com/inmanta/inmanta-core/issues/6731))
+- Fix a bug where numbers where cast to int instead of float
+- Fix jwt config error message to use the correct attribute and provide more context
+- Compiler: fixed bugs in some operators when "Unknown" values are passed: `==`, `!=`, `not`, `in` and `is defined` now properly propagate unknowns. ([#6033](https://github.com/inmanta/inmanta-core/issues/6033))
+- Compiler: add support for "Unknown" values in operators ([#6033](https://github.com/inmanta/inmanta-core/issues/6033))
+- No longer update the increment when the agent pulls (this is now done when a new version is released), to prevent race with #6486.
+- Fixed compiler bug where list comprehensions result in a ListModifiedAfterFreeze exception when the value expression is a constructor
+
+### Other notes
+
+- Compiler: for consistency reasons, the for loop body will no longer be executed for "Unknown" values
+
+## Inmanta-ui: release 5.1.0 (2023-12-11)
+
+### Deprecation notes
+
+- Removed the `web-ui.console_json_parser` option because it has become redundant. ([inmanta/inmanta-core#6641](https://github.com/inmanta/inmanta-core/issues/6641))
+
+## Web-console: release 1.15.0 (2023-12-11)
+
+### New features
+
+- The Service inventory now supports the functionality to duplicate an instance. ([#5166](https://github.com/inmanta/web-console/issues/5166))
+
+### Improvements
+
+- Add links to API documentation, both for LSM API and the General API. The update Service Catalog message is now also clearer ([#4419](https://github.com/inmanta/web-console/issues/4419))
+- Improve behaviour of the agents table when the environment is halted ([#4555](https://github.com/inmanta/web-console/issues/4555))
+- Enhancement bringing back functionality to close Sidebar when clicked outside of it on mobile, Introduce said functionality to Notification Drawer - Desktop & mobile ([#4751](https://github.com/inmanta/web-console/issues/4751))
+- Redirect the user to the Desired State page on Environment Creation on OSS, instead of Compile Reports page. ([#4835](https://github.com/inmanta/web-console/issues/4835))
+- Highlight table rows when hovering ([#5038](https://github.com/inmanta/web-console/issues/5038))
+- Add the attribute modifiers to the Service Details table. ([#5053](https://github.com/inmanta/web-console/issues/5053))
+- Timestamps in the dashboard are now rounded to full hours ([#5081](https://github.com/inmanta/web-console/issues/5081))
+- Introduce functionality that blocks UI for the process of halting environment ([#5136](https://github.com/inmanta/web-console/issues/5136))
+- Increase default page size to 100 for Resource logs in the Resource details page. ([#5159](https://github.com/inmanta/web-console/issues/5159))
+- The user actions present in the expanded rows in the Service Inventory, displaying the Service Details have been moved to a toggle-menu at the end of each row. ([#5166](https://github.com/inmanta/web-console/issues/5166))
+- Update support archive link for v2 ([#5218](https://github.com/inmanta/web-console/issues/5218))
+- Improve overal UI of the inventory table, and remove the Attribute Summary Column ([#5280](https://github.com/inmanta/web-console/issues/5280))
+
+### Bug fixes
+
+- Repair the drilldown height issue for the Actions dropdown. ([#5280](https://github.com/inmanta/web-console/issues/5280))
+
+
 # Release 2023.4 (2023-10-13)
 
 ## General changes
