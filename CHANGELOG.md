@@ -1,3 +1,31 @@
+# Release 2024.1.1 (2024-01-22)
+
+## Upgrade notes
+
+- Ensure the database is backed up before executing an upgrade.
+
+## Inmanta-core: release 11.0.1 (2024-01-04)
+
+### Bug fixes
+
+- Fix anchormap entrypoint (language server) for imports with rename
+
+## inmanta-ui: release 5.1.0
+This component has had no new releases since the last product version.
+## Web-console: release 1.15.2 (2024-01-17)
+
+### Bug fixes
+
+- Fix resolving freezing of compliance check page
+
+
+## Web-console: release 1.15.1 (2024-01-04)
+
+### Bug fixes
+
+- Fix for pagination in Service Inventory + tests
+
+
 # Release 2024.1 (2023-12-11)
 
 ## Upgrade notes
