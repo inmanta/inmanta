@@ -1,3 +1,28 @@
+# Release 2024.1.2 (2024-02-09)
+
+## Upgrade notes
+
+- Ensure the database is backed up before executing an upgrade.
+
+## Inmanta-core: release 11.0.2 (2024-02-09)
+
+### New features
+
+- Prevent double processing of events in case of stale events ([#7066](https://github.com/inmanta/inmanta-core/issues/7066))
+
+### Known Issues
+
+- Handlers that process events should always indicate when they processed events(via ctx.set_updated) ([#7066](https://github.com/inmanta/inmanta-core/issues/7066))
+
+## inmanta-ui: release 5.1.0
+This component has had no new releases since the last product version.
+## Web-console: release 1.15.3 (2024-02-09)
+
+### Improvements
+
+- Collapse Difference Viewer Component by default to improve loading performance - iso6 ([#5439](https://github.com/inmanta/web-console/issues/5439))
+
+
 # Release 2024.1.1 (2024-01-22)
 
 ## Upgrade notes
