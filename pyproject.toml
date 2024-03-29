@@ -37,12 +37,14 @@ files = [ "requirements.txt",]
 el8 = []
 
 [tool.irt.publish.docker_image.dev]
-image_registry = "ghcr.io"
-image_repository = "inmanta"
+image_registry = "code.inmanta.com:4567"
+image_repository = "solutions/containers"
 image_name = "orchestrator"
-image_tags = [ "dev",]
-registry_username_env = "GITHUB_REGISTRY_USERNAME"
-registry_password_env = "GITHUB_REGISTRY_PASSWORD"
+image_tags = [
+    "dev",
+]
+registry_username_env = "GITLAB_REGISTRY_USERNAME"
+registry_password_env = "GITLAB_REGISTRY_PASSWORD"
 
 [tool.irt.publish.docker_image.next]
 image_registry = "ghcr.io"
