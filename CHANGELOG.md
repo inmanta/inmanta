@@ -1,3 +1,116 @@
+# Release 2024.2 (2024-04-02)
+
+## Upgrade notes
+
+- Ensure the database is backed up before executing an upgrade.
+
+## Inmanta-core: release 12.0.0 (2024-04-02)
+
+### New features
+
+- Added support for arithmetic operators to the language (addition, substraction, multiplication, division, exponentiation and modulo). ([inmanta/inmanta-core#1799](https://github.com/inmanta/inmanta-core/issues/1799))
+- Add facts that don't expire. ([#6560](https://github.com/inmanta/inmanta-core/issues/6560))
+- Introduced a new configuration option `database.wait_time` for the Inmanta server, enabling it to wait for the database to become available before starting. Users can specify the maximum time (in seconds) the server should wait for the database to be up. A value of 0 means the server will not wait, while a negative value indicates the server will wait indefinitely. ([#6994](https://github.com/inmanta/inmanta-core/issues/6994))
+- Implement constraints on jwt claims
+- Remove state back propagation from the database
+
+### Improvements
+
+- Add `--soft-delete` option to the exporter. This option makes sure that resource sets, specified using the `--delete-resource-set` option, are only deleted if there are no resources exported for this set.
+ ([inmanta/inmanta-lsm#1638](https://github.com/inmanta/inmanta-lsm/issues/1638))
+- Report which pip indexes were used to install a V2 module or third-party Python dependency if that package could not be found. ([#6096](https://github.com/inmanta/inmanta-core/issues/6096))
+- Add exclude_changes argument to the get_resource_actions endpoint to filter out resource actions with specific changes ([#6733](https://github.com/inmanta/inmanta-core/issues/6733))
+- Improved error message when http request have oversized headers
+- Improve performance of cross agent dependency resolution ([#6999](https://github.com/inmanta/inmanta-core/issues/6999))
+- Improve exporter performance ([#7040](https://github.com/inmanta/inmanta-core/issues/7040))
+- Improve performance of std::validate_type ([#7041](https://github.com/inmanta/inmanta-core/issues/7041))
+- Add dedicated set_fact and set_parameter endpoints ([#7068](https://github.com/inmanta/inmanta-core/issues/7068))
+- Remove support for legacy schema migration (< ISO4 ) ([#7117](https://github.com/inmanta/inmanta-core/issues/7117))
+- Added the ability to have mergeable environment variables to the compiler service ([#7154](https://github.com/inmanta/inmanta-core/issues/7154))
+- Improve performance of resource view ([#7231](https://github.com/inmanta/inmanta-core/issues/7231))
+- Increased the default value of the database.connection_pool_max_size setting to 70 ([#7248](https://github.com/inmanta/inmanta-core/issues/7248))
+- Improve deploy performance for very large models ([#7262](https://github.com/inmanta/inmanta-core/issues/7262))
+- Add documentation on how to create the initial user when using the built-in authentication provider. ([inmanta/inmanta-core#7357](https://github.com/inmanta/inmanta-core/issues/7357))
+- Ensure agent code folder is cleaned up on restart ([#7388](https://github.com/inmanta/inmanta-core/issues/7388))
+- Agent started using std::Agentconfig now always deploy when first started ([#7448](https://github.com/inmanta/inmanta-core/issues/7448))
+- Added a named-volume to the PostgreSQL server started by the docker-compose based installation documentation.
+- Make agent more resilient to resource loading issues
+- Improve performance by tuning logging
+- Improve performance of type validation
+- Make parameter refresh a non-blocking call
+- Add support for string concatenation in the Inmanta modelling language
+- Changed the default value of the `server.auth_method` config option from `None` to `oidc`.
+
+### Upgrade notes
+
+- The default value of the project configuration option `agent_install_dependency_modules` changed to True. ([inmanta/inmanta-core#7026](https://github.com/inmanta/inmanta-core/issues/7026))
+- Remove state back propagation from the database
+
+### Deprecation notes
+
+- Remove functionality relying on netifaces from reporting. ([inmanta/inmanta-core#7019](https://github.com/inmanta/inmanta-core/issues/7019))
+- The project configuration option `agent_install_dependency_modules` is deprecated and will be removed in a next major release. ([inmanta/inmanta-core#7026](https://github.com/inmanta/inmanta-core/issues/7026))
+
+### Bug fixes
+
+- Fixed bug where certain config options could not be set through environment variables
+- Fix formatting of error message for inline if expressions ([#6226](https://github.com/inmanta/inmanta-core/issues/6226))
+- make sure an environment can not be resumed while deleting, that deleting an environment first halts the environment and that the active model cannot be deleted.
+- Resolve race condition on release version ([#6955](https://github.com/inmanta/inmanta-core/issues/6955))
+- Deploy command no longer ignores ``-f`` option. ([#6993](https://github.com/inmanta/inmanta-core/issues/6993))
+- Prevent deadlock between the `_log_session_expiry_to_db` and the `_log_session_seen_to_db` and `_log_session_creation_to_db` methods. ([inmanta/inmanta-core#7024](https://github.com/inmanta/inmanta-core/issues/7024))
+- Requesting a dryrun after a partial compile was sometimes causing an internal server error. ([#7065](https://github.com/inmanta/inmanta-core/issues/7065))
+- Fix bug where the latest released version of the configurationmodel could be removed by the cleanup job. ([inmanta/inmanta-core#7324](https://github.com/inmanta/inmanta-core/issues/7324))
+- Improved f-string error reporting ([#7418](https://github.com/inmanta/inmanta-core/issues/7418))
+- Fix bug where undefined and skipped_for_undefined resources are not correctly merged by the put_partial endpoint. ([inmanta/inmanta-core#7416](https://github.com/inmanta/inmanta-core/issues/7416))
+- Fix a bug where PIP_NO_INDEX could be used by pip when use_system_config was set to False in the PipConfig ([#6096](https://github.com/inmanta/inmanta-core/issues/6096))
+- Fix bug that causes literal values to be rendered incorrectly in the OpenAPI documentation. ([inmanta/inmanta-lsm#1586](https://github.com/inmanta/inmanta-lsm/issues/1586))
+- Improve ha db setup documentation
+
+## Inmanta-ui: release 5.1.1 (2024-03-29)
+
+No changelog entries.
+
+## Web-console: release 1.16.0 (2024-03-29)
+
+### New features
+
+- Add User Management view when user is logged in through database authentication ([#4738](https://github.com/inmanta/web-console/issues/4738))
+- Discovered Resources page has been added. ([#5395](https://github.com/inmanta/web-console/issues/5395))
+- New pages have been added to display the orders and their details. ([#5438](https://github.com/inmanta/web-console/issues/5438))
+- Smart Composer is now general available ([#5470](https://github.com/inmanta/web-console/issues/5470))
+- Add database based login form ([#5558](https://github.com/inmanta/web-console/issues/5558))
+
+### Improvements
+
+- Add filtering by resource type on the Compliance and Compare pages. ([#4555](https://github.com/inmanta/web-console/issues/4555))
+- Prevent the user from creating a project name that could be an empty value. ([#5373](https://github.com/inmanta/web-console/issues/5373))
+- Corrected the disabled highlight for disabled delete button in the Service Inventory ([#5400](https://github.com/inmanta/web-console/issues/5400))
+- Improve Instance Composer code readability and remove duplicated code ([#5443](https://github.com/inmanta/web-console/issues/5443))
+- Add description to the order api request and extract the call from the Canvas component ([#5469](https://github.com/inmanta/web-console/issues/5469))
+- Add Tooltips to the icon buttons in the Instance composer ([#5478](https://github.com/inmanta/web-console/issues/5478))
+- Add default behavior to zoom to fit on initial load of the instance in the Smart Composer ([#5506](https://github.com/inmanta/web-console/issues/5506))
+- Adjusted the color of the compile details to match patternfly scheme. Added default empty page for facts. ([#5511](https://github.com/inmanta/web-console/issues/5511))
+- Add support for suggestions in the forms ([#5531](https://github.com/inmanta/web-console/issues/5531))
+- Added support to display attribute annotations in tabs in the Service Inventory ([#5532](https://github.com/inmanta/web-console/issues/5532))
+- Update the add instance button to be displayed as a toggle when the Composer feature is enabled. ([#5554](https://github.com/inmanta/web-console/issues/5554))
+- Update Notification Drawer to handle notifications without uri ([#5593](https://github.com/inmanta/web-console/issues/5593))
+- Feature Flag V2, enable specific parts of the application based on licencing ([#5619](https://github.com/inmanta/web-console/issues/5619))
+- Add improvements to smart composer: Highlight of loose components, Hide/Show connection label, composer is available only from root services
+- Upgrade Yarn to V4.
+
+### Bug fixes
+
+- Enable adding new nested entity that are already part of a nested entity when the form is in edit-mode ([#5375](https://github.com/inmanta/web-console/issues/5375))
+- Prevent displaying invalid dates in the Order Details View. ([#5512](https://github.com/inmanta/web-console/issues/5512))
+- Fix display name in the form for inter-service relationship, and adjust filtering when clicking on a relation link in the attribute table. ([#5561](https://github.com/inmanta/web-console/issues/5561))
+- Fix issue with misleading visual state of Diagnose button and misplaced 'back' button for terminated instances
+
+### Other notes
+
+- The repo requires node 18+ to be installed
+
+
 # Release 2024.1.2 (2024-02-09)
 
 ## Upgrade notes
