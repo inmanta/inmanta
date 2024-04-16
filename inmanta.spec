@@ -98,7 +98,7 @@ Obsoletes:      python3-inmanta-agent
 %setup -T -D -a 1 -n inmanta-%{sourceversion_egg}
 # Unpack inmanta-core
 mkdir inmanta_core
-tar -xf dependencies/inmanta-core-*.tar.gz --strip-components=1 --directory inmanta_core
+tar -xf dependencies/inmanta_core-*.tar.gz --strip-components=1 --directory inmanta_core
 
 %build
 
@@ -312,3 +312,4 @@ exit
 
 * Mon Jan 18 2021 Arnaud Schoonjans <arnaud.schoonjans@inmanta.com> - 2016.3
 - Initial commit
+

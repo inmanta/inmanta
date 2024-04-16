@@ -1,0 +1,4 @@
+---
+description: Update the inmanta.spec file so that it's in-line with the fact that the name part of an sdist package separates its parts using an underscore instead of a hyphen.
+change-type: patch
+destination-branches: [master]
