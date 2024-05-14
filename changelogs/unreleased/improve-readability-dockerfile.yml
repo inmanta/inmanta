@@ -1,0 +1,4 @@
+---
+description: Remove the default values from the arguments in the dockerfile to make clear they are set by IRT.
+change-type: patch
+destination-branches: [master]
