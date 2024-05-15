@@ -1,5 +1,9 @@
-ARG EL_VERSION=8
-ARG PYTHON_VERSION=39
+# The format of the EL_VERSION argument is a single number, for example: 9
+# This argument is set by IRT.
+ARG EL_VERSION
+# The format of the PYTHON_VERSION argument is a non-dotted python version, for example 311
+# This argument is set by IRT.
+ARG PYTHON_VERSION
 
 FROM registry.access.redhat.com/ubi${EL_VERSION}/python-${PYTHON_VERSION}:latest
 
