@@ -1,6 +1,3 @@
-[tool.irt]
-postgres_version = 13
-
 [tool.irt.dependencies]
 core-component = "https://github.com/inmanta/inmanta-core"
 
