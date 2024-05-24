@@ -1,3 +1,46 @@
+# Release 2024.2.1 (2024-05-24)
+
+## Upgrade notes
+
+- Ensure the database is backed up before executing an upgrade.
+
+## Inmanta-core: release 12.1.0 (2024-05-24)
+
+### Bug fixes
+
+- Fixed a race condition where autostarted agents might become unresponsive for 30s when restarted ([#7612](https://github.com/inmanta/inmanta-core/issues/7612))
+- Fix bug where the `GET /api/v2/resource/<rid>` and `GET /api/v2/resource` endpoints return an incorrect resourcestate if a resource moved back to the available state in a new version of the configurationmodel.
+- Fix resource details endpoint status reporting
+
+## inmanta-ui: release 5.1.1
+This component has had no new releases since the last product version.
+## Web-console: release 1.16.1 (2024-05-24)
+
+### New features
+
+- Add functionality to show relation label when hovering over them in Instance Composer ([#5623](https://github.com/inmanta/web-console/issues/5623))
+
+### Improvements
+
+- Automate axe compliance testing. ([#5154](https://github.com/inmanta/web-console/issues/5154))
+- Added functionality to view instances that are blocked from editing in the Instance Composer. ([#5373](https://github.com/inmanta/web-console/issues/5373))
+- Enable expert mode on empty values. ([#5588](https://github.com/inmanta/web-console/issues/5588))
+- Forced state options are now sorted alphabetically. ([#5631](https://github.com/inmanta/web-console/issues/5631))
+- Improve the icons in the menu to make them more straightforward. ([#5650](https://github.com/inmanta/web-console/issues/5650))
+- Replace SVG icons with PatternFly icons. ([#5651](https://github.com/inmanta/web-console/issues/5651))
+- Change information in the Composer's Form Modal to be more adequate when no instance is chosen, Make expand/collapse button action area bigger in the Instances on the Instance Composer Canvas. ([#5691](https://github.com/inmanta/web-console/issues/5691))
+- replace randomUUID function with adequate cryptographic substitute ([#5706](https://github.com/inmanta/web-console/issues/5706))
+- Propagate suggestions to embedded entities and allow 0 as valid default input ([#5717](https://github.com/inmanta/web-console/issues/5717))
+
+### Bug fixes
+
+-  resolve bug in duplicate form for preselected values in dropdowns. ([#5588](https://github.com/inmanta/web-console/issues/5588))
+- Resolve a bug of invalid presentation of the add instance button in the instance composer when using Firefox ([#5689](https://github.com/inmanta/web-console/issues/5689))
+- Resolve bug in resource details filtering, where removing log filters would send invalid request. ([#5697](https://github.com/inmanta/web-console/issues/5697))
+- Fix issue with integers passed through expert mode as a string ([#5718](https://github.com/inmanta/web-console/issues/5718))
+- Fix issue with updating textarea fields ([#5748](https://github.com/inmanta/web-console/issues/5748))
+
+
 # Release 2024.2 (2024-04-02)
 
 ## Upgrade notes
