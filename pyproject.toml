@@ -100,7 +100,12 @@ python_version = "python3.11"
 el8 = []
 
 [tool.irt.build.docker_image]
-build_context_path = "docker/"
+build_context_path = "docker/legacy_image/"
+dockerfile_path = "Dockerfile"
+product_package_venv = "/opt/inmanta/"
+
+[tool.irt.build.native_docker_image]
+build_context_path = "docker/native_image/"
 dockerfile_path = "Dockerfile"
 product_package_venv = "/opt/inmanta/"
 
