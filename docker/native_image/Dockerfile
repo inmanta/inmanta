@@ -1,6 +1,7 @@
 # Expected files/directories in the build context:
 # * NPM package containing the web-console.
 # * A checkout of the inmanta-core repository in a directory called inmanta-core.
+# * A checkout of the product repository in a directory called product
 ARG PYTHON_VERSION_INMANTA_VENV
 FROM python:${PYTHON_VERSION_INMANTA_VENV}-bookworm
 
@@ -30,7 +31,7 @@ RUN apt-get -y update \
     && apt-get clean
 
 # Copy files from buildcontext
-COPY inmanta-core/LICENSE /usr/share/doc/inmanta-oss/
+COPY product/LICENSE /usr/share/doc/inmanta-oss/
 COPY inmanta-core/misc/inmanta.cfg /etc/inmanta/
 COPY inmanta-core/misc/inmanta-workon-register.sh /var/lib/inmanta/.inmanta/
 COPY inmanta-web-console-*.tgz /usr/share/inmanta/web-console/
