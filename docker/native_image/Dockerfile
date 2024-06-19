@@ -1,10 +1,10 @@
-# Expected content of the build directory:
+# Expected files/directories in the build context:
 # * NPM package containing the web-console.
 # * A checkout of the inmanta_core repository in a directory called inmanta_core.
-ARG PYTHON_VERSION
-FROM python:${PYTHON_VERSION}-bookworm
+ARG PYTHON_VERSION_INMANTA_VENV
+FROM python:${PYTHON_VERSION_INMANTA_VENV}-bookworm
 
-ARG PYTHON_VERSION
+ARG PYTHON_VERSION_INMANTA_VENV
 ARG VERSION
 ARG BUILD_TYPE
 ARG BUILD_DATE
@@ -29,13 +29,15 @@ RUN apt-get -y update \
                           openssl \
     && apt-get clean
 
-# Create build directory
-RUN --mount=type=bind,source=.,target=/inmanta_build_dir <<EOF
-cd /inmanta_build_dir
-# Install LICENSE file
-install -p -m 644 inmanta-core/LICENSE /usr/share/doc/inmanta-oss/LICENSE
+# Copy files from buildcontext
+COPY inmanta_core/LICENSE /usr/share/doc/inmanta-oss/
+COPY inmanta_core/misc/inmanta.cfg /etc/inmanta/
+COPY inmanta_core/misc/inmanta-workon-register.sh /etc/profile.d/
+COPY inmanta-web-console-*.tgz /usr/share/inmanta/web-console/
+RUN python${PYTHON_VERSION_INMANTA_VENV} -m venv /opt/inmanta
+RUN <<EOF
 # Create venv
-python${PYTHON_VERSION} -m venv /opt/inmanta
+python${PYTHON_VERSION_INMANTA_VENV} -m venv /opt/inmanta
 # Install build dependencies
 /opt/inmanta/bin/pip install -U wheel setuptools pip
 # Install product
@@ -49,20 +51,23 @@ fi
 /opt/inmanta/bin/python -m inmanta.app
 # Add symlinks to venv binaries in /usr/bin
 ln -s /opt/inmanta/bin/inmanta /usr/bin/inmanta && ln -s /opt/inmanta/bin/inmanta-cli /usr/bin/inmanta-cli
-# Install inmanta-workon
-install -p -m 644 inmanta-core/misc/inmanta-workon-register.sh /etc/profile.d/inmanta-workon-register.sh
 # Install inmanta config files
-install -p -m 644 inmanta-core/misc/inmanta.cfg /etc/inmanta/inmanta.cfg
 cat <<EXTENSION_EOF > /etc/inmanta/inmanta.d/extensions.cfg
 [server]
 enabled_extensions=ui
 EXTENSION_EOF
 # Install web-console
-tar -xf inmanta-web-console-*.tgz --strip-components=2 --directory /usr/share/inmanta/web-console
+tar -xf /usr/share/inmanta/web-console/inmanta-web-console-*.tgz --strip-components=2 --directory /usr/share/inmanta/web-console
+rm -f /usr/share/inmanta/web-console/inmanta-web-console-*.tgz
 # Create inmanta group
 groupadd -r inmanta
 # Create inmanta user
 useradd -r -g inmanta -d /var/lib/inmanta -s /bin/bash -c "Account used by the Inmanta daemons" inmanta
+# Make the inmanta user the owner of the state and log directory
+for path in /var/lib/inmanta /var/log/inmanta
+do
+  chown -R inmanta:inmanta "${path}"
+done
 EOF
 
 # Run the container using the inmanta user and group
@@ -73,3 +78,6 @@ EXPOSE 8888
 
 # Change the workdir to the HOME directory of the inmanta user
 WORKDIR /var/lib/inmanta
+
+ENTRYPOINT ["/usr/bin/inmanta"]
+CMD ["--log-file", "/var/log/inmanta/server.log", "--log-file-level", "2", "--timed-logs", "server"]
