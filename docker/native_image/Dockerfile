@@ -60,9 +60,9 @@ EXTENSION_EOF
 tar -xf /usr/share/inmanta/web-console/inmanta-web-console-*.tgz --strip-components=2 --directory /usr/share/inmanta/web-console
 rm -f /usr/share/inmanta/web-console/inmanta-web-console-*.tgz
 # Create inmanta group
-groupadd -r inmanta
+groupadd -r -g 999 inmanta
 # Create inmanta user
-useradd -r -g inmanta -d /var/lib/inmanta -s /bin/bash -c "Account used by the Inmanta daemons" inmanta
+useradd -r -g inmanta -u 999 -d /var/lib/inmanta -s /bin/bash -c "Account used by the Inmanta daemons" inmanta
 # Make the inmanta user the owner of the state and log directory
 for path in /var/lib/inmanta /var/log/inmanta
 do
