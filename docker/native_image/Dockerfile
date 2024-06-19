@@ -83,4 +83,4 @@ EXPOSE 8888
 WORKDIR /var/lib/inmanta
 
 ENTRYPOINT ["/usr/bin/inmanta"]
-CMD ["--log-file", "/var/log/inmanta/server.log", "--log-file-level", "2", "--timed-logs", "server"]
+CMD ["--log-file", "/var/log/inmanta/server.log", "--log-file-level", "2", "--timed-logs", "server", "--db-wait-time", "15"]
