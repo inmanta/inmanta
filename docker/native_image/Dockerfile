@@ -33,7 +33,7 @@ RUN apt-get -y update \
 # Copy files from buildcontext
 COPY product/LICENSE /usr/share/doc/inmanta-oss/
 COPY inmanta-core/misc/inmanta.cfg /etc/inmanta/
-COPY inmanta-core/misc/inmanta-workon-register.sh /var/lib/inmanta/.inmanta/
+COPY inmanta-core/misc/inmanta-workon-register.sh /etc/
 COPY inmanta-web-console-*.tgz /usr/share/inmanta/web-console/
 RUN python${PYTHON_VERSION_INMANTA_VENV} -m venv /opt/inmanta
 RUN <<EOF
@@ -65,7 +65,7 @@ groupadd -r -g 999 inmanta
 # Create inmanta user
 useradd -r -g inmanta -u 999 -d /var/lib/inmanta -s /bin/bash -c "Account used by the Inmanta daemons" inmanta
 # Make sure that the inmanta-workon-register.sh script is sourced when a bash shell is started
-echo "source /var/lib/inmanta/.inmanta/inmanta-workon-register.sh" >> /var/lib/inmanta/.bashrc
+echo "source /etc/inmanta-workon-register.sh" >> /etc/bash.bashrc
 # Make the inmanta user the owner of the state and log directory
 for path in /var/lib/inmanta /var/log/inmanta
 do
