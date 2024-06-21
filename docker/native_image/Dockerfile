@@ -20,22 +20,22 @@ LABEL com.inmanta.build-date=$BUILD_DATE
 # Create inmanta directories
 RUN mkdir -p /var/lib/inmanta /var/log/inmanta /etc/inmanta/inmanta.d /usr/share/inmanta/web-console /etc/profile.d/ /usr/share/doc/inmanta-oss
 
-RUN apt-get -y update \
-    && apt-get -y install git \
-                          libffi8 \
-                          libffi-dev \
-                          which \
-                          gcc \
-                          cargo \
-                          openssl \
-    && apt-get clean
-
 # Copy files from buildcontext
 COPY product/LICENSE /usr/share/doc/inmanta-oss/
 COPY inmanta-core/misc/inmanta.cfg /etc/inmanta/
 COPY inmanta-core/misc/inmanta-workon-register.sh /etc/
 COPY inmanta-web-console-*.tgz /usr/share/inmanta/web-console/
 RUN <<EOF
+# Install packages
+apt-get -y update
+apt-get -y install git \
+                   libffi8 \
+                   libffi-dev \
+                   which \
+                   gcc \
+                   cargo \
+                   openssl
+apt-get clean
 # Create venv
 python${PYTHON_VERSION_INMANTA_VENV} -m venv /opt/inmanta
 # Install build dependencies
