@@ -59,27 +59,26 @@ image_tags = [
 registry_username_env = "GITLAB_REGISTRY_USERNAME"
 registry_password_env = "GITLAB_REGISTRY_PASSWORD"
 
-# This can be commented out when the native image is fully tested/stabilized.
-#[tool.irt.publish.native_docker_image.next]
-#image_registry = "ghcr.io"
-#image_repository = "inmanta"
-#image_name = "orchestrator"
-#image_tags = [
-#    "{version}-rc-ng",
-#]
-#registry_username_env = "GITHUB_REGISTRY_USERNAME"
-#registry_password_env = "GITHUB_REGISTRY_PASSWORD"
-#
-#[tool.irt.publish.native_docker_image.stable]
-#image_registry = "ghcr.io"
-#image_repository = "inmanta"
-#image_name = "orchestrator"
-#image_tags = [
-#    "latest-ng",
-#    "{version}-ng",
-#]
-#registry_username_env = "GITHUB_REGISTRY_USERNAME"
-#registry_password_env = "GITHUB_REGISTRY_PASSWORD"
+[tool.irt.publish.native_docker_image.next]
+image_registry = "ghcr.io"
+image_repository = "inmanta"
+image_name = "orchestrator"
+image_tags = [
+    "{version}-rc-ng",
+]
+registry_username_env = "GITHUB_REGISTRY_USERNAME"
+registry_password_env = "GITHUB_REGISTRY_PASSWORD"
+
+[tool.irt.publish.native_docker_image.stable]
+image_registry = "ghcr.io"
+image_repository = "inmanta"
+image_name = "orchestrator"
+image_tags = [
+    "latest-ng",
+    "{version}-ng",
+]
+registry_username_env = "GITHUB_REGISTRY_USERNAME"
+registry_password_env = "GITHUB_REGISTRY_PASSWORD"
 
 [tool.irt.dependencies.extensions]
 inmanta-ui = "https://github.com/inmanta/inmanta-ui"
