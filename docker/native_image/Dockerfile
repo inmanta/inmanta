@@ -35,7 +35,6 @@ COPY product/LICENSE /usr/share/doc/inmanta-oss/
 COPY inmanta-core/misc/inmanta.cfg /etc/inmanta/
 COPY inmanta-core/misc/inmanta-workon-register.sh /etc/
 COPY inmanta-web-console-*.tgz /usr/share/inmanta/web-console/
-RUN python${PYTHON_VERSION_INMANTA_VENV} -m venv /opt/inmanta
 RUN <<EOF
 # Create venv
 python${PYTHON_VERSION_INMANTA_VENV} -m venv /opt/inmanta
@@ -67,10 +66,7 @@ useradd -r -g inmanta -u 999 -d /var/lib/inmanta -s /bin/bash -c "Account used b
 # Make sure that the inmanta-workon-register.sh script is sourced when a bash shell is started
 echo "source /etc/inmanta-workon-register.sh" >> /etc/bash.bashrc
 # Make the inmanta user the owner of the state and log directory
-for path in /var/lib/inmanta /var/log/inmanta
-do
-  chown -R inmanta:inmanta "${path}"
-done
+chown -R inmanta:inmanta /var/lib/inmanta /var/log/inmanta
 EOF
 
 # Run the container using the inmanta user and group
