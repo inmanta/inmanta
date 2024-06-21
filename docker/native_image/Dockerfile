@@ -60,9 +60,9 @@ EXTENSION_EOF
 tar -xf /usr/share/inmanta/web-console/inmanta-web-console-*.tgz --strip-components=2 --directory /usr/share/inmanta/web-console
 rm -f /usr/share/inmanta/web-console/inmanta-web-console-*.tgz
 # Create inmanta group
-groupadd -r -g 999 inmanta
+groupadd -r -g 995 inmanta
 # Create inmanta user
-useradd -r -g inmanta -u 999 -d /var/lib/inmanta -s /bin/bash -c "Account used by the Inmanta daemons" inmanta
+useradd -r -g inmanta -u 997 -d /var/lib/inmanta -s /bin/bash -c "Account used by the Inmanta daemons" inmanta
 # Make sure that the inmanta-workon-register.sh script is sourced when a bash shell is started
 echo "source /etc/inmanta-workon-register.sh" >> /etc/bash.bashrc
 # Make the inmanta user the owner of the state and log directory
