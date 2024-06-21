@@ -40,14 +40,14 @@ RUN <<EOF
 # Create venv
 python${PYTHON_VERSION_INMANTA_VENV} -m venv /opt/inmanta
 # Install build dependencies
-/opt/inmanta/bin/pip install -U wheel setuptools pip
+/opt/inmanta/bin/pip install --no-cache-dir -U wheel setuptools pip
 # Install product
 if [ "${BUILD_TYPE}" == "stable" ]; then
     PIP_ARGS=""
 else
     PIP_ARGS="--pre"
 fi
-/opt/inmanta/bin/pip install ${PIP_ARGS} ${PRODUCT_VERSION_CONSTRAINT_FOR_PIP}
+/opt/inmanta/bin/pip install --no-cache-dir ${PIP_ARGS} ${PRODUCT_VERSION_CONSTRAINT_FOR_PIP}
 # Install files required by compiler
 /opt/inmanta/bin/python -m inmanta.app
 # Add symlinks to venv binaries in /usr/bin
