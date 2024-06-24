@@ -47,8 +47,10 @@ apt-get clean
 # Create venv
 python${PYTHON_VERSION_INMANTA_VENV} -m venv /opt/inmanta
 # Install build dependencies
+# Disable the cache directory to prevent making the image bigger than required.
 /opt/inmanta/bin/pip install --no-cache-dir -U wheel setuptools pip
 # Install product
+# Disable the cache directory to prevent making the image bigger than required.
 if [ "${BUILD_TYPE}" == "stable" ]; then
     PIP_ARGS=""
 else
