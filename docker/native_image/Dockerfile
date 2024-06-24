@@ -28,11 +28,11 @@ ENV INMANTA_CONFIG_LOG_DIR="/var/log/inmanta"
 ENV INMANTA_SERVER_ENABLED_EXTENSIONS="ui"
 
 # Create inmanta directories
-RUN mkdir -p /var/lib/inmanta /var/log/inmanta /etc/inmanta/inmanta.d /usr/share/inmanta/web-console /etc/profile.d/ /usr/share/doc/inmanta-oss
+RUN mkdir -p /var/lib/inmanta /var/log/inmanta /etc/inmanta/inmanta.d /usr/share/inmanta/web-console /usr/share/doc/inmanta-oss
 
 # Copy files from buildcontext
 COPY product/LICENSE /usr/share/doc/inmanta-oss/
-COPY inmanta-core/misc/inmanta-workon-register.sh /etc/
+COPY inmanta-core/misc/inmanta-workon-register.sh /usr/bin/
 COPY inmanta-web-console-*.tgz /usr/share/inmanta/web-console/
 RUN <<EOF
 # Install packages
@@ -56,7 +56,8 @@ python${PYTHON_VERSION_INMANTA_VENV} -m venv /opt/inmanta
 # Install files required by compiler
 /opt/inmanta/bin/python -m inmanta.app
 # Add symlinks to venv binaries in /usr/bin
-ln -s /opt/inmanta/bin/inmanta /usr/bin/inmanta && ln -s /opt/inmanta/bin/inmanta-cli /usr/bin/inmanta-cli
+ln -s /opt/inmanta/bin/inmanta /usr/bin/inmanta
+ln -s /opt/inmanta/bin/inmanta-cli /usr/bin/inmanta-cli
 # Install web-console
 tar -xf /usr/share/inmanta/web-console/inmanta-web-console-*.tgz --strip-components=2 --directory /usr/share/inmanta/web-console
 rm -f /usr/share/inmanta/web-console/inmanta-web-console-*.tgz
@@ -65,7 +66,7 @@ groupadd -r -g 995 inmanta
 # Create inmanta user
 useradd -r -g inmanta -u 997 -d /var/lib/inmanta -s /bin/bash -c "Account used by the Inmanta daemons" inmanta
 # Make sure that the inmanta-workon-register.sh script is sourced when a bash shell is started
-echo "source /etc/inmanta-workon-register.sh" >> /etc/bash.bashrc
+echo "source /usr/bin/inmanta-workon-register.sh" >> /etc/bash.bashrc
 # Make the inmanta user the owner of the state and log directory
 chown -R inmanta:inmanta /var/lib/inmanta /var/log/inmanta
 EOF
