@@ -22,6 +22,7 @@ LABEL com.inmanta.build-date=$BUILD_DATE
 # file of the RPM. Here we make sure we use the values from the inmanta.cfg file.
 ENV INMANTA_CONFIG_DEPLOY_INTERVAL="600"
 ENV INMANTA_CONFIG_REPAIR_INTERVAL="86400"
+ENV INMANTA_SERVER_BIND_PORT="8888"
 ENV INMANTA_CONFIG_STATE_DIR="/var/lib/inmanta"
 ENV INMANTA_CONFIG_LOG_DIR="/var/log/inmanta"
 ENV INMANTA_SERVER_ENABLED_EXTENSIONS="ui"
