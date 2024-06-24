@@ -3,4 +3,4 @@ description: Add support to build native docker containers.
 issue-nr: 2014
 issue-repo: irt
 change-type: minor
-destination-branches: [master]
+destination-branches: [master, iso7]
