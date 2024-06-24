@@ -51,12 +51,7 @@ python${PYTHON_VERSION_INMANTA_VENV} -m venv /opt/inmanta
 /opt/inmanta/bin/pip install --no-cache-dir -U wheel setuptools pip
 # Install product
 # Disable the cache directory to prevent making the image bigger than required.
-if [ "${BUILD_TYPE}" == "stable" ]; then
-    PIP_ARGS=""
-else
-    PIP_ARGS="--pre"
-fi
-/opt/inmanta/bin/pip install --no-cache-dir ${PIP_ARGS} ${PRODUCT_VERSION_CONSTRAINT_FOR_PIP}
+/opt/inmanta/bin/pip install --no-cache-dir ${PRODUCT_VERSION_CONSTRAINT_FOR_PIP}
 # Install files required by compiler
 /opt/inmanta/bin/python -m inmanta.app
 # Add symlinks to venv binaries in /usr/bin
