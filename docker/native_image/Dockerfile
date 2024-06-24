@@ -75,6 +75,9 @@ USER inmanta:inmanta
 # Document default exposed port
 EXPOSE 8888
 
+# Make sure data is stored in a volume
+VOLUME  ["/var/log/inmanta", "/var/lib/inmanta/"]
+
 # Change the workdir to the HOME directory of the inmanta user
 WORKDIR /var/lib/inmanta
 
