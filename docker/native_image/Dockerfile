@@ -17,12 +17,20 @@ LABEL com.inmanta.description="Inmanta OSS (OSS-${BUILD_TYPE})"
 LABEL com.inmanta.build-type=$BUILD_TYPE
 LABEL com.inmanta.build-date=$BUILD_DATE
 
+# Set the deploy and repair interval for backwards compatibility reasons.
+# Their actual default values differ from the values set in the inmanta.cfg
+# file of the RPM. Here we make sure we use the values from the inmanta.cfg file.
+ENV INMANTA_CONFIG_DEPLOY_INTERVAL="600"
+ENV INMANTA_CONFIG_REPAIR_INTERVAL="86400"
+ENV INMANTA_CONFIG_STATE_DIR="/var/lib/inmanta"
+ENV INMANTA_CONFIG_LOG_DIR="/var/log/inmanta"
+ENV INMANTA_SERVER_ENABLED_EXTENSIONS="ui"
+
 # Create inmanta directories
 RUN mkdir -p /var/lib/inmanta /var/log/inmanta /etc/inmanta/inmanta.d /usr/share/inmanta/web-console /etc/profile.d/ /usr/share/doc/inmanta-oss
 
 # Copy files from buildcontext
 COPY product/LICENSE /usr/share/doc/inmanta-oss/
-COPY inmanta-core/misc/inmanta.cfg /etc/inmanta/
 COPY inmanta-core/misc/inmanta-workon-register.sh /etc/
 COPY inmanta-web-console-*.tgz /usr/share/inmanta/web-console/
 RUN <<EOF
@@ -51,11 +59,6 @@ fi
 /opt/inmanta/bin/python -m inmanta.app
 # Add symlinks to venv binaries in /usr/bin
 ln -s /opt/inmanta/bin/inmanta /usr/bin/inmanta && ln -s /opt/inmanta/bin/inmanta-cli /usr/bin/inmanta-cli
-# Install inmanta config files
-cat <<EXTENSION_EOF > /etc/inmanta/inmanta.d/extensions.cfg
-[server]
-enabled_extensions=ui
-EXTENSION_EOF
 # Install web-console
 tar -xf /usr/share/inmanta/web-console/inmanta-web-console-*.tgz --strip-components=2 --directory /usr/share/inmanta/web-console
 rm -f /usr/share/inmanta/web-console/inmanta-web-console-*.tgz
