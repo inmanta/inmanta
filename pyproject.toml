@@ -49,6 +49,16 @@ image_tags = [
 registry_username_env = "GITHUB_REGISTRY_USERNAME"
 registry_password_env = "GITHUB_REGISTRY_PASSWORD"
 
+[tool.irt.publish.native_docker_image.dev]
+image_registry = "code.inmanta.com:4567"
+image_repository = "solutions/containers"
+image_name = "orchestrator"
+image_tags = [
+    "dev-ng",
+]
+registry_username_env = "GITLAB_REGISTRY_USERNAME"
+registry_password_env = "GITLAB_REGISTRY_PASSWORD"
+
 [tool.irt.dependencies.extensions]
 inmanta-ui = "https://github.com/inmanta/inmanta-ui"
 
@@ -69,7 +79,12 @@ python_version = "python3.11"
 el8 = []
 
 [tool.irt.build.docker_image]
-build_context_path = "docker/"
+build_context_path = "docker/legacy_image/"
+dockerfile_path = "Dockerfile"
+product_package_venv = "/opt/inmanta/"
+
+[tool.irt.build.native_docker_image]
+build_context_path = "docker/native_image/"
 dockerfile_path = "Dockerfile"
 product_package_venv = "/opt/inmanta/"
 
