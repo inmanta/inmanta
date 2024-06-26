@@ -30,11 +30,10 @@ ENV INMANTA_SERVER_ENABLED_EXTENSIONS="ui"
 # Create inmanta directories
 RUN mkdir -p /var/lib/inmanta /var/log/inmanta /etc/inmanta/inmanta.d /usr/share/inmanta/web-console /usr/share/doc/inmanta-oss
 
-# Copy files from buildcontext
-COPY product/LICENSE /usr/share/doc/inmanta-oss/
-COPY inmanta-core/misc/inmanta-workon-register.sh /usr/bin/
-COPY inmanta-web-console-*.tgz /usr/share/inmanta/web-console/
-RUN <<EOF
+RUN --mount=type=bind,target=/inmanta_build_dir <<EOF
+# Copy files from build directory
+cp /inmanta_build_dir/product/LICENSE /usr/share/doc/inmanta-oss/
+cp /inmanta_build_dir/inmanta-core/misc/inmanta-workon-register.sh /usr/bin/
 # Install packages
 apt-get -y update
 apt-get -y install git \
@@ -51,16 +50,21 @@ python${PYTHON_VERSION_INMANTA_VENV} -m venv /opt/inmanta
 # Disable the cache directory to prevent making the image bigger than required.
 /opt/inmanta/bin/pip install --no-cache-dir -U wheel setuptools pip
 # Install product
+if [ -e /inmanta_build_dir/product/requirements.txt ]; then
+    # Take product constraint file into account to allow repeatable builds.
+    MIN_C_OPTION="-c /inmanta_build_dir/product/requirements.txt"
+else
+    MIN_C_OPTION=""
+fi
 # Disable the cache directory to prevent making the image bigger than required.
-/opt/inmanta/bin/pip install --no-cache-dir ${PRODUCT_VERSION_CONSTRAINT_FOR_PIP}
+/opt/inmanta/bin/pip install --no-cache-dir ${MIN_C_OPTION} ${PRODUCT_VERSION_CONSTRAINT_FOR_PIP}
 # Install files required by compiler
 /opt/inmanta/bin/python -m inmanta.app
 # Add symlinks to venv binaries in /usr/bin
 ln -s /opt/inmanta/bin/inmanta /usr/bin/inmanta
 ln -s /opt/inmanta/bin/inmanta-cli /usr/bin/inmanta-cli
 # Install web-console
-tar -xf /usr/share/inmanta/web-console/inmanta-web-console-*.tgz --strip-components=2 --directory /usr/share/inmanta/web-console
-rm -f /usr/share/inmanta/web-console/inmanta-web-console-*.tgz
+tar -xf /inmanta_build_dir/inmanta-web-console-*.tgz --strip-components=2 --directory /usr/share/inmanta/web-console
 # Create inmanta group
 groupadd -r -g 995 inmanta
 # Create inmanta user
