@@ -88,4 +88,4 @@ VOLUME  ["/var/log/inmanta", "/var/lib/inmanta/"]
 WORKDIR /var/lib/inmanta
 
 ENTRYPOINT ["/usr/bin/inmanta"]
-CMD ["--log-file", "/var/log/inmanta/server.log", "--log-file-level", "2", "--timed-logs", "server", "--db-wait-time", "15"]
+CMD ["--log-file", "/var/log/inmanta/server.log", "--log-file-level", "INFO", "--timed-logs", "server", "--db-wait-time", "15"]
