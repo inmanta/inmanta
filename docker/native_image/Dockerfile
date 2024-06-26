@@ -29,7 +29,7 @@ ENV INMANTA_CONFIG_LOG_DIR="/var/log/inmanta"
 ENV INMANTA_SERVER_ENABLED_EXTENSIONS="ui"
 
 # Create inmanta directories
-RUN mkdir -p /var/lib/inmanta /var/log/inmanta /etc/inmanta/inmanta.d /usr/share/inmanta/web-console /usr/share/doc/inmanta-oss
+RUN mkdir -p /var/lib/inmanta /var/log/inmanta /usr/share/inmanta/web-console /usr/share/doc/inmanta-oss
 
 RUN --mount=type=bind,target=/inmanta_build_dir <<EOF
 # Copy files from build directory
