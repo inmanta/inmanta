@@ -1,0 +1,6 @@
+---
+description: Pin the uid and gid of the legacy container to a fixed value.
+issue-nr: 7674
+issue-repo: inmanta-core
+change-type: patch
+destination-branches: [master, iso7, iso6]
