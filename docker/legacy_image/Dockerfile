@@ -13,10 +13,10 @@ USER 0
 # Install required packages and setup ssh
 RUN yum install -y yum-utils openssh-server git sudo nc
 
-# Create inmanta group
-RUN groupadd -r -g 995 inmanta
-# Create inmanta user
-RUN useradd -r -g inmanta -G wheel -u 997 -d /var/lib/inmanta -s /usr/bin/bash -c "Account used by the Inmanta daemons" inmanta
+# Create the Inmanta user and group and pin the uid and gid to a specific value.
+# We do this here, because otherwise the RPM will create the user and group instead.
+RUN groupadd -r -g 995 inmanta && \
+    useradd -r -g inmanta -G wheel -u 997 -d /var/lib/inmanta -s /usr/bin/bash -c "Account used by the Inmanta daemons" inmanta
 
 # Installing iso from rpm
 ARG BUILD_TYPE
