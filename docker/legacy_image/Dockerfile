@@ -13,6 +13,11 @@ USER 0
 # Install required packages and setup ssh
 RUN yum install -y yum-utils openssh-server git sudo nc
 
+# Create the Inmanta user and group and pin the uid and gid to a specific value.
+# We do this here, because otherwise the RPM will create the user and group instead.
+RUN groupadd -r -g 995 inmanta && \
+    useradd -r -g inmanta -G wheel -u 997 -d /var/lib/inmanta -s /usr/bin/bash -c "Account used by the Inmanta daemons" inmanta
+
 # Installing iso from rpm
 ARG BUILD_TYPE
 ARG EL_VERSION=8
@@ -33,8 +38,6 @@ COPY resources/profile /etc/profile.d/inmanta.sh
 
 # Change the default shell of the inmanta user, to use a script loading env var from a file first
 RUN echo "%wheel ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers && \
-	usermod -aG wheel inmanta && \
-	usermod -s /usr/bin/bash inmanta && \
 	chmod 755 /container-entrypoint-with-env && \
 	chown root:root /container-entrypoint-with-env
 
