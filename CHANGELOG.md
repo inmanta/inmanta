@@ -1,3 +1,79 @@
+# Release 2024.3 (2024-07-05)
+
+## Upgrade notes
+
+- Ensure the database is backed up before executing an upgrade.
+
+## Inmanta-core: release 13.0.0 (2024-07-05)
+
+### New features
+
+- Compiler: Allow indexes on nullable attributes ([#7204](https://github.com/inmanta/inmanta-core/issues/7204))
+- Add support to configure the logging framework using a configuration file. ([inmanta/inmanta-core#7271](https://github.com/inmanta/inmanta-core/issues/7271))
+- Added support for forking agent executor ([#7524](https://github.com/inmanta/inmanta-core/issues/7524))
+
+### Improvements
+
+- Add support to the `GET /api/v2/discovered` endpoint to filter the discovered resources on whether they are managed or not.
+ ([#6779](https://github.com/inmanta/inmanta-core/issues/6779))
+- Remove the venv of an auto-started agent when its environment is deleted or cleared or when its project is deleted. ([inmanta/inmanta-core#7043](https://github.com/inmanta/inmanta-core/issues/7043))
+- Raise a warning if JIT is enabled on the PostgreSQL database as this might result in poor query performance.
+- Module release tool: do not write internal field `version_tag` to `setup.cfg`.
+- Improve support for four-digit version on 'inmanta module release' command. If the 'use_four_digit' is set to 'True' in the module's metadata, the version will be bumped to a 4 digit format after a release. ([#7521](https://github.com/inmanta/inmanta-core/issues/7521))
+- Remove references to `std::*` resources from the documentation ([#7563](https://github.com/inmanta/inmanta-core/issues/7563))
+- Fix compiler handling of list constructors in plugin calls ([#7792](https://github.com/inmanta/inmanta-core/issues/7792))
+- Display a banner in the docs that notifies the user when the build belongs to an old major iso version. ([inmanta/infra-tickets#201](https://github.com/inmanta/infra-tickets/issues/201))
+- The server now also cleans up zombie processes, which is convenient when running in a container
+- Update auth to be able to authenticate against a provided JWT
+- Extend dict_path library, allow to resolve the wild cards of a wild dict path for a specific container.
+
+### Upgrade notes
+
+- The ``export`` command will now look for resource sets marked for deletion in the ``INMANTA_REMOVED_RESOURCE_SET_ID`` environment variable (As a space-separated list of sets to remove) in addition to the ones passed via the ``--delete-resource-set`` parameter.
+ ([inmanta/lsm#736](https://github.com/inmanta/lsm/issues/736))
+- The default retention time of the internal metrics store ('environment_metrics_retention') is reduced from one year to two weeks ([#7676](https://github.com/inmanta/inmanta-core/issues/7676))
+- Handlers can now access the agent via 'inmanta.agent.executor.AgentInstance' instead of `inmanta.agent.agent.AgentInstance`. If you have developed a handler using `self._agent` to access agent internals, it may break.
+
+### Bug fixes
+
+- Fix race condition where exporting a file might fail if a file with the same content was uploaded between the file existence check in the database and the export itself.
+ ([#7531](https://github.com/inmanta/inmanta-core/issues/7531))
+- Fix bug that makes the endpoints to clear or delete an environment fail with the error message `(39, 'Directory not empty')`
+
+## Inmanta-ui: release 5.1.3 (2024-07-05)
+
+No changelog entries.
+
+## Web-console: release 1.16.3 (2024-07-05)
+
+No changelog entries.
+
+
+## Web-console: release 1.16.2 (2024-07-05)
+
+### New features
+
+- Editing, Creating instances can now be done using a JSON editor. ([#5763](https://github.com/inmanta/web-console/issues/5763))
+
+### Improvements
+
+- Add functionality to filter instances through labels in the summary Pie Chart in Service Inventory ([#5710](https://github.com/inmanta/web-console/issues/5710))
+- Improve the placement of the tooltip in the Resource Discovery page. ([#5730](https://github.com/inmanta/web-console/issues/5730))
+- Update charts library to v7.3.0 to fix deprecation warnings ([#5756](https://github.com/inmanta/web-console/issues/5756))
+- Refactor Authentication to simplify the flow and make it more maintainable and adjustable for new authentication providers ([#5759](https://github.com/inmanta/web-console/issues/5759))
+- Allow the user to copy either the UUID or the identifier of an instance. ([#5764](https://github.com/inmanta/web-console/issues/5764))
+- Add column for managed resources in the Resource Discovery page. ([#5765](https://github.com/inmanta/web-console/issues/5765))
+- Add JWT authentication method to the application ([#5818](https://github.com/inmanta/web-console/issues/5818))
+- Align the casing of the table headings in the discovered resource page.
+
+### Bug fixes
+
+- Update the filtering in the form to get Inter-service-relations. ([#5766](https://github.com/inmanta/web-console/issues/5766))
+- Update the form to support editing deep nested embedded entities which have RW attributes in their attributes. ([#5792](https://github.com/inmanta/web-console/issues/5792))
+- Update copy id/service_identifier icon to not be grayed out. ([#5827](https://github.com/inmanta/web-console/issues/5827))
+- Fix the uri to managed resources on the discovery page. ([#5846](https://github.com/inmanta/web-console/issues/5846))
+
+
 # Release 2024.2.1 (2024-05-24)
 
 ## Upgrade notes

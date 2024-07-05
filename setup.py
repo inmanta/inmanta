@@ -2,7 +2,7 @@ from setuptools import setup
 
 
 setup(
-    version="2024.2.1",
+    version="2024.3",
     python_requires=">=3.11",  # also update classifiers
     # Meta data
     name="inmanta",
@@ -26,8 +26,8 @@ setup(
         "Documentation": "https://docs.inmanta.com/community/latest/",
     },
     install_requires=[
-        "inmanta-core==12.1.0",
-        "inmanta-ui==5.1.1",
+        "inmanta-core==13.0.0",
+        "inmanta-ui==5.1.3",
     ],
     # explicitly declare packages so setuptools does not attempt auto discovery
     packages=[],

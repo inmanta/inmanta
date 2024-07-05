@@ -13,6 +13,11 @@ centos_versions = [ 9, 8,]
 python_version = "python3.11"
 
 [tool.irt.build.docker_image]
+build_context_path = "docker/legacy_image/"
+product_package_venv = "/opt/inmanta/"
+
+[tool.irt.build.native_docker_image]
+build_context_path = "docker/native_image/"
 product_package_venv = "/opt/inmanta/"
 
 [tool.irt.publish.python]
@@ -60,6 +65,14 @@ image_tags = [ "latest", "{version}",]
 registry_username_env = "GITHUB_REGISTRY_USERNAME"
 registry_password_env = "GITHUB_REGISTRY_PASSWORD"
 
+[tool.irt.publish.native_docker_image.dev]
+image_registry = "code.inmanta.com:4567"
+image_repository = "solutions/containers"
+image_name = "orchestrator"
+image_tags = [ "dev-ng",]
+registry_username_env = "GITLAB_REGISTRY_USERNAME"
+registry_password_env = "GITLAB_REGISTRY_PASSWORD"
+
 [tool.irt.dependencies.npm.web-console]
 repo = "https://github.com/inmanta/web-console"
-version = "==1.16.1"
+version = "==1.16.3"
