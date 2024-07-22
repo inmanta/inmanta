@@ -1,3 +1,25 @@
+# Release 2024.3.1 (2024-07-22)
+
+## Upgrade notes
+
+- Ensure the database is backed up before executing an upgrade.
+
+## Inmanta-core: release 13.0.1 (2024-07-22)
+
+### Upgrade notes
+
+- If you had previously constrained `setuptools<71` in your project's `requirements.txt`, you may now drop the constraint
+
+### Bug fixes
+
+- Addressed breaking change in setuptools (core Python library)
+
+## inmanta-ui: release 5.1.3
+This component has had no new releases since the last product version.
+## web-console: release 1.16.3
+This component has had no new releases since the last product version.
+
+
 # Release 2024.3 (2024-07-05)
 
 ## Upgrade notes
