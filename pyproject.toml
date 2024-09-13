@@ -63,8 +63,8 @@ registry_password_env = "GITLAB_REGISTRY_PASSWORD"
 inmanta-ui = "https://github.com/inmanta/inmanta-ui"
 
 [tool.irt.documentation.publish]
-dev_release_path = "/srv/www/docs/community/{version}.dev"
-stable_release_path = "/srv/www/docs/community/{version}"
+dev_release_path = "/srv/www/docs/community/dev"
+stable_release_path = "/srv/www/docs/community/latest"
 post_publish_hook_remote = "~/post_publish_hook.py"
 
 [tool.irt.additional-lock-files.inmanta-core]
