@@ -127,6 +127,9 @@ fi
 find %{venv}/bin/ -type f | xargs sed -i "s|%{buildroot}||g"
 find %{venv} -name RECORD | xargs sed -i "s|%{buildroot}||g"
 
+# Remove the shebang on the first line
+sed -i "1d" %{venv}/lib/python3.11/site-packages/google/protobuf/internal/_parameterized.py
+
 # Fix path in pyvenv.cfg file
 sed -i "s|%{buildroot}||g" %{venv}/pyvenv.cfg
 
