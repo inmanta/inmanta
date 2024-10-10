@@ -109,4 +109,4 @@ registry_password_env = "GITLAB_REGISTRY_PASSWORD"
 
 [tool.irt.dependencies.npm.web-console]
 repo = "https://github.com/inmanta/web-console"
-version = "~=2.0.0.0rc"
+version = "==2.0.0"
