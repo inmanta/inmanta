@@ -1,3 +1,73 @@
+# Release 2024.4 (2024-10-10)
+
+## Upgrade notes
+
+- Ensure the database is backed up before executing an upgrade.
+
+## Inmanta-core: release 14.0.0 (2024-10-10)
+
+### New features
+
+- Added a 'receive_events' attribute to resources. It allows you to control which resources get events from their dependencies, i.e. wether or not they need to be redeployed after a dependency deploys. See the `std::Resource` documentation for more details. ([#8012](https://github.com/inmanta/inmanta-core/issues/8012))
+- Removed built-in io in favor of the more flexible mitogen module.
+- Added telemetry support for tracing calls through the orchestrator.
+
+### Improvements
+
+- Include the documentation of modules composing a product into the documentation of the product when they contain a README.md file.
+ ([inmanta/irt#2026](https://github.com/inmanta/irt/issues/2026))
+- Update the endpoints returning discovered resource (`GET /api/v2/discovered/<discovered_resource_id>` and `GET /api/v2/discovered`) to include a link to the resource responsible for the discovery.
+ ([#7528](https://github.com/inmanta/inmanta-core/issues/7528))
+- Provide the exception that caused a resource load to fail in the deployment logs.
+- Don't push fact refresh requests to the agent for undeployable resources. ([#7777](https://github.com/inmanta/inmanta-core/issues/7777))
+- The retention policy of items in the agent cache can be set via the `evict_after_creation` and `evict_after_last_access` parameters.
+
+- Update module documentation landing page
+
+### Upgrade notes
+
+- Agent cache retention policy parameter `timeout` is now an alias for the `evict_after_creation` parameter.
+
+- Trace log level is no longer formatted as level 3 but as TRACE
+
+### Deprecation notes
+
+- Removed the 'inmanta module do' command ([#7913](https://github.com/inmanta/inmanta-core/issues/7913))
+- Agent cache retention policy parameters `for_version` and `timeout` are deprecated. The `evict_after_creation` and `evict_after_last_access` parameters should be used instead.
+
+
+### Bug fixes
+
+- Compiler: fixed a rare occurrence of nondeterministic execution order ([#5145](https://github.com/inmanta/inmanta-core/issues/5145))
+- Prevent the deletion of a project if this project contains one or multiple environments attached to it. ([inmanta/inmanta-core#7556](https://github.com/inmanta/inmanta-core/issues/7556))
+- Fixed race condition where newly started agent may take 22 seconds to respond ([#7831](https://github.com/inmanta/inmanta-core/issues/7831))
+- Don't export a new version if the compile fails, even if there are Unknown parameters
+
+## Inmanta-ui: release 5.1.4 (2024-10-10)
+
+No changelog entries.
+
+## Web-console: release 2.0.0 (2024-10-10)
+
+### Improvements
+
+- Deploying Instance in the Composer saves the coordinates of the instance as metadata ([#5273](https://github.com/inmanta/web-console/issues/5273))
+- From now on changing sorting on paginated Views resets pagination ([#5684](https://github.com/inmanta/web-console/issues/5684))
+- First part of the Service inventory rework. Add skeleton structure for the Instance Details page. ([#5778](https://github.com/inmanta/web-console/issues/5778))
+- Add the documentation tab to the Instance Details page. ([#5779](https://github.com/inmanta/web-console/issues/5779))
+- Add the Attributes tab to the Instance Details page. ([#5780](https://github.com/inmanta/web-console/issues/5780))
+- Improve the labels of Inter-Service Relation input fields ([#5922](https://github.com/inmanta/web-console/issues/5922))
+
+### Bug fixes
+
+- Resolve bug when JSON-editor is invalid on initial render. ([#5892](https://github.com/inmanta/web-console/issues/5892))
+
+### Other notes
+
+- Resolve security alert on micromatch by updating dependency
+- Resolve security alert on webpack and path-to-regexp by updating dependency
+
+
 # Release 2024.3.1 (2024-07-22)
 
 ## Upgrade notes
