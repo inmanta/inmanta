@@ -1,4 +1,4 @@
 ---
 description: Remove unused .ci files
 change-type: patch
-destination-branches: [master, iso7]
+destination-branches: [master]
