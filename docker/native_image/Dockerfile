@@ -88,7 +88,7 @@ VOLUME  ["/var/log/inmanta", "/var/lib/inmanta/"]
 WORKDIR /var/lib/inmanta
 
 # Configure a healthcheck which validates that the api is responsive
-HEALTHCHECK --interval=10s --timeout=3s --start-period=30s --start-interval=5s --retries=3 \
+HEALTHCHECK --interval=10s --timeout=3s --start-period=5m --start-interval=5s --retries=3 \
     CMD /opt/inmanta/bin/python -c "from inmanta.protocol import SyncClient; r = SyncClient('client').get_server_status(); assert r.code == 200 and {s['name']: s for s in r.result['data']['slices']}['core.database']['status']['connected'], str(r.result)"
 
 ENTRYPOINT ["/usr/bin/inmanta"]
