@@ -89,7 +89,7 @@ WORKDIR /var/lib/inmanta
 
 # Configure a healthcheck which validates that the api is responsive
 HEALTHCHECK --interval=10s --timeout=3s --start-period=30s --start-interval=5s --retries=3 \
-    CMD curl -fs http://${INMANTA_SERVER_BIND_ADDRESS}:${INMANTA_SERVER_BIND_PORT}/api/v1/serverstatus
+    CMD /opt/inmanta/bin/python -c "from inmanta.protocol import SyncClient; r = SyncClient('client').get_server_status(); assert r.code == 200 and {s['name']: s for s in r.result['data']['slices']}['core.database']['status']['connected'], str(r.result)"
 
 ENTRYPOINT ["/usr/bin/inmanta"]
 CMD ["--log-file", "/var/log/inmanta/server.log", "--log-file-level", "INFO", "--timed-logs", "server", "--db-wait-time", "15"]
