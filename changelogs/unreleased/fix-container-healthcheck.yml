@@ -1,0 +1,4 @@
+---
+description: Fix container healthcheck when server config is modified by file
+change-type: patch
+destination-branches: [master]
