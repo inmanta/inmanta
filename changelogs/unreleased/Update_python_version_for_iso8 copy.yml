@@ -1,0 +1,4 @@
+description: Update python lower bound to 3.12 for ISO8
+change-type: major
+destination-branches: [master]  
+  

@@ -3,7 +3,7 @@ from setuptools import setup
 
 setup(
     version="2024.4.1",
-    python_requires=">=3.11",  # also update classifiers
+    python_requires=">=3.12",  # also update classifiers
     # Meta data
     name="inmanta",
     description="Inmanta deployment tool",
