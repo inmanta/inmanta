@@ -81,17 +81,12 @@ Obsoletes: python3-inmanta-core
 Summary:        The configuration and service files to start the Inmanta server
 Requires:       inmanta-oss = %{version}-%{release}
 Obsoletes:      python3-inmanta-server
-
-%package -n inmanta-oss-agent
-Summary:        The configuration and service files to start the Inmanta agent
-Requires:       inmanta-oss = %{version}-%{release}
-Obsoletes:      python3-inmanta-agent
+Obsoletes:      inmanta-oss-agent
 
 %description
 
 %description -n inmanta-oss-server
 
-%description -n inmanta-oss-agent
 
 %prep
 %setup -q -n inmanta-%{sourceversion_egg}
@@ -128,8 +123,8 @@ find %{venv}/bin/ -type f | xargs sed -i "s|%{buildroot}||g"
 find %{venv} -name RECORD | xargs sed -i "s|%{buildroot}||g"
 
 # Remove the shebang on the first line
-if [ -e "%{venv}/lib/python3.11/site-packages/google/protobuf/internal/_parameterized.py" ]; then
-  sed -i "1d" %{venv}/lib/python3.11/site-packages/google/protobuf/internal/_parameterized.py
+if [ -e "%{venv}/lib/python%{python_version}/site-packages/google/protobuf/internal/_parameterized.py" ]; then
+  sed -i "1d" %{venv}/lib/python%{python_version}/site-packages/google/protobuf/internal/_parameterized.py
 fi
 
 # Fix path in pyvenv.cfg file
@@ -164,11 +159,9 @@ EOF
 
 # Setup systemd
 mkdir -p %{buildroot}%{_unitdir}
-install -p -m 644 inmanta_core/misc/inmanta-agent.service $RPM_BUILD_ROOT%{_unitdir}/inmanta-agent.service
 install -p -m 644 inmanta_core/misc/inmanta-server.service $RPM_BUILD_ROOT%{_unitdir}/inmanta-server.service
 mkdir -p %{buildroot}/etc/sysconfig
 touch %{buildroot}/etc/sysconfig/inmanta-server
-touch %{buildroot}/etc/sysconfig/inmanta-agent
 
 
 # Install web-console
@@ -196,15 +189,12 @@ rm -rf %{buildroot}
 %config(noreplace) %attr(-, root, root)/etc/inmanta/inmanta.d/extensions.cfg
 %config(noreplace) %attr(-, root, root)/etc/logrotate.d/inmanta
 %config(noreplace) %attr(-, root, root)/etc/sysconfig/inmanta-server
-%config(noreplace) %attr(-, root, root)/etc/sysconfig/inmanta-agent
 
 %files -n inmanta-oss-server
 /usr/share/inmanta/web-console
 %{_sysconfdir}/profile.d/inmanta-workon-register.sh
 %attr(-,root,root) %{_unitdir}/inmanta-server.service
 
-%files -n inmanta-oss-agent
-%attr(-,root,root) %{_unitdir}/inmanta-agent.service
 
 # The save_service_state() and the restore_service_state() macros
 # are required to make sure that the service state (enable/disabled,
@@ -231,12 +221,6 @@ if [ -e "%{inmanta_rpm_state_dir}/%{1}_active" ] && ! systemctl is-active -q %{1
 fi \
 rm -f "%{inmanta_rpm_state_dir}/%{1}_enabled" "%{inmanta_rpm_state_dir}/%{1}_active"
 
-%pre -n inmanta-oss-agent
-%save_service_state inmanta-agent
-
-%post -n inmanta-oss-agent
-%systemd_post inmanta-agent.service
-
 # Rename the venv used by the agent when its python version is
 # out-of-date with the python version of the running process.
 python_version=$(basename $(readlink /opt/inmanta/bin/python3))
@@ -245,14 +229,6 @@ if [ -e "${agent_venv_dir}/bin" ] && [ ! -e "${agent_venv_dir}/bin/${python_vers
   mv "${agent_venv_dir}" "${agent_venv_dir}.rpmsave_$(date +'%%Y%%m%%d_%%H%%M%%S')"
 fi
 
-%preun -n inmanta-oss-agent
-%systemd_preun inmanta-agent.service
-
-%postun -n inmanta-oss-agent
-%systemd_postun_with_restart inmanta-agent.service
-
-%posttrans -n inmanta-oss-agent
-%restore_service_state inmanta-agent
 
 %pre -n inmanta-oss-server
 %save_service_state inmanta-server
@@ -264,24 +240,6 @@ fi
 if [ -e "/etc/inmanta/server.cfg" ]; then
   mv /etc/inmanta/server.cfg /etc/inmanta/inmanta.d/
 fi
-
-# Rename all compiler venvs for which the python version is out-of-date
-# with the python version of the server venv.
-python_version=$(basename $(readlink /opt/inmanta/bin/python3))
-for server_env in /var/lib/inmanta/server/environments/*; do
-  compiler_venv_dir="${server_env}/.env"
-  if [ -e "${compiler_venv_dir}/bin" ] && [ ! -e "${compiler_venv_dir}/bin/${python_version}" ]; then
-    mv "${compiler_venv_dir}" "${compiler_venv_dir}.rpmsave_$(date +'%%Y%%m%%d_%%H%%M%%S')"
-  fi
-done
-# Rename all (autostarted) agent venvs for which the python version is
-# out-of-date with the python version of the server venv.
-for server_env in /var/lib/inmanta/*; do
-  agent_venv_dir="${server_env}/agent/env"
-  if [ -e "${agent_venv_dir}/bin" ] && [ ! -e "${agent_venv_dir}/bin/${python_version}" ]; then
-    mv "${agent_venv_dir}" "${agent_venv_dir}.rpmsave_$(date +'%%Y%%m%%d_%%H%%M%%S')"
-  fi
-done
 
 %preun -n inmanta-oss-server
 %systemd_preun inmanta-server.service
@@ -300,6 +258,9 @@ getent passwd inmanta >/dev/null || \
 exit
 
 %changelog
+* Fri Nov 29 2024 Wouter De Borger <wouter.deborger@inmanta.com> - 2024.5
+- Remove inmanta-service-orchestrator-agent
+
 * Tue Nov 29 2022 Sander Van Balen <sander.vanbalen@inmanta.com> - 2022.4
 - Added which as a dependency
 
