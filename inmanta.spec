@@ -221,14 +221,6 @@ if [ -e "%{inmanta_rpm_state_dir}/%{1}_active" ] && ! systemctl is-active -q %{1
 fi \
 rm -f "%{inmanta_rpm_state_dir}/%{1}_enabled" "%{inmanta_rpm_state_dir}/%{1}_active"
 
-# Rename the venv used by the agent when its python version is
-# out-of-date with the python version of the running process.
-python_version=$(basename $(readlink /opt/inmanta/bin/python3))
-agent_venv_dir="/var/lib/inmanta/agent/env"
-if [ -e "${agent_venv_dir}/bin" ] && [ ! -e "${agent_venv_dir}/bin/${python_version}" ]; then
-  mv "${agent_venv_dir}" "${agent_venv_dir}.rpmsave_$(date +'%%Y%%m%%d_%%H%%M%%S')"
-fi
-
 
 %pre -n inmanta-oss-server
 %save_service_state inmanta-server
