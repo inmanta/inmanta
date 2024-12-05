@@ -91,5 +91,5 @@ WORKDIR /var/lib/inmanta
 HEALTHCHECK --interval=10s --timeout=3s --start-period=5m --start-interval=5s --retries=3 \
     CMD /opt/inmanta/bin/python -c "from inmanta import config as c, protocol as p; c.Config.load_config(config_dir='/etc/inmanta/inmanta.d'); r = p.SyncClient('client').get_server_status(); assert r.code == 200 and {s['name']: s for s in r.result['data']['slices']}['core.database']['status']['connected'], str(r.result)"
 
-ENTRYPOINT ["/usr/bin/inmanta"]
+ENTRYPOINT ["/usr/bin/tini", "--", "/usr/bin/inmanta"]
 CMD ["--log-file", "/var/log/inmanta/server.log", "--log-file-level", "INFO", "--timed-logs", "server", "--db-wait-time", "15"]
