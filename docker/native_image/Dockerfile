@@ -42,7 +42,8 @@ apt-get -y install git \
                    which \
                    gcc \
                    cargo \
-                   openssl
+                   openssl \
+                   tini
 apt-get clean
 # Create venv
 python${PYTHON_VERSION_INMANTA_VENV} -m venv /opt/inmanta
