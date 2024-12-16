@@ -1,0 +1,7 @@
+description: Supported PostgreSQL version is now version 16.
+issue-nr: 8464
+issue-repo: inmanta-core
+change-type: major
+destination-branches: [master]
+sections:
+  upgrade-note: "{{description}}"
