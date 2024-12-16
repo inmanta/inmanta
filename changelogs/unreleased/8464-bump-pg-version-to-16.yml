@@ -4,4 +4,4 @@ issue-repo: inmanta-core
 change-type: major
 destination-branches: [master]
 sections:
-  feature: "{{description}}"
+  upgrade-note: "{{description}}"
