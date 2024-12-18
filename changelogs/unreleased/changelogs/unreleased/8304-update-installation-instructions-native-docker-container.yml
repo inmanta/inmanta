@@ -1,0 +1,6 @@
+description: Update installation instructions for new native docker container
+issue-nr: 8304
+change-type: patch
+destination-branches: [master]
+sections:
+    upgrade-note: "server options --wait-for-host and --wait-for-port are now ignored. They are now provided in env variables"
