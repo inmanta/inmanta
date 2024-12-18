@@ -5,4 +5,4 @@ destination-branches: [master]
 sections:
   - upgrade-note: >
       The new native docker container introduces a number of changes, including these breaking changes:
-        - Server options --wait-for-host and --wait-for-port are now ignored. They are now provided in env variables.
+        - Server options --wait-for-host and --wait-for-port are deprecated and will be ignored.
