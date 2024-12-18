@@ -6,3 +6,4 @@ sections:
   - upgrade-note: >
       The new native docker container introduces a number of changes, including these breaking changes:
         - Server options --wait-for-host and --wait-for-port are deprecated and will be ignored.
+        - Providing environment variables in /etc/inmanta/env is not supported anymore.
