@@ -1,3 +1,3 @@
 description: Add option to pass pip index to rpm build
 change-type: patch
-destination-branches: [master, iso8]
+destination-branches: [master]
