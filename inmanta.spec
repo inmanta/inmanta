@@ -7,6 +7,7 @@
 # * web_console_version: Fully qualified version web-console NPM package (version number + build_tag)
 # * python_version: Create an RPM containing a venv for this python version. Only pass
 #                   the version number. For example: "3.6", "3.9", etc.
+# * pip_index: PIP index for package build
 
 %define undotted_python_version %(v=%{python_version}; echo "${v//\./}")
 %define venv %{buildroot}/opt/inmanta
@@ -109,15 +110,17 @@ export CFLAGS=$(pkg-config --cflags-only-I openssl11)
 export LDFLAGS=$(pkg-config --libs-only-L openssl11)
 %endif
 
+pre_opt=$([ -z "%{?buildid}" ] && echo "--pre" || echo "")
+find_links_opt=$([ -d "dependencies" ] && echo "--find-links dependencies" || echo "")
+index_url_opt=$([ -z "%{?pip_index}" ] && echo "--no-index" || echo '--index-url %{pip_index}')
+requirements_file="dependencies/requirements.txt"
+requirements_opt=$([ -f "${requirements_file}" ] && echo "-c ${requirements_file}" || echo "")
+
 rm -rf %{buildroot}
 mkdir -p %{buildroot}/opt/inmanta
 %{__python3} -m venv --symlinks %{venv}
-%{_p3} -m pip install -U --no-index --find-links dependencies wheel setuptools pip
-if [ -z "%{?buildid}" ]; then
-  %{_p3} -m pip install --no-index --find-links dependencies .
-else
-  %{_p3} -m pip install --pre --no-index --find-links dependencies .
-fi
+%{_p3} -m pip install -U ${index_url_opt} ${find_links_opt} ${requirements_opt} wheel setuptools pip
+%{_p3} -m pip install ${pre_opt} ${index_url_opt} ${find_links_opt} ${requirements_opt} .
 %{_p3} -m inmanta.app
 
 # Use the correct python for bycompiling
