@@ -5,6 +5,6 @@ change-type: patch
 destination-branches: [master]
 sections:
   upgrade-note: >
-    The image inmanta/orchestrator:8 introduces a number of changes, including these breaking changes:
+    The image inmanta/orchestrator:2025.1 introduces a number of changes, including these breaking changes:
       - Server options --wait-for-host and --wait-for-port are deprecated and will be ignored.
       - Providing environment variables in /etc/inmanta/env is not supported anymore.
