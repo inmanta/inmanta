@@ -30,7 +30,7 @@ ENV INMANTA_SERVER_ENABLED_EXTENSIONS="ui"
 
 RUN --mount=type=bind,target=/inmanta_build_dir <<EOF
 # Create required directories
-mkdir -p /var/lib/inmanta /var/log/inmanta /usr/share/inmanta/web-console /usr/share/doc/inmanta-oss /etc/inmanta/{inmanta.d,logging}
+mkdir -p /var/lib/inmanta /var/log/inmanta /usr/share/inmanta/web-console /usr/share/doc/inmanta-oss /etc/inmanta/inmanta.d /etc/inmanta/logging
 # Copy files from build directory
 cp /inmanta_build_dir/product/LICENSE /usr/share/doc/inmanta-oss/
 cp /inmanta_build_dir/inmanta-core/misc/inmanta-workon-register.sh /usr/bin/
