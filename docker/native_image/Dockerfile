@@ -38,7 +38,7 @@ cp /inmanta_build_dir/inmanta-core/misc/inmanta-workon-register.sh /usr/bin/
 cp /inmanta_build_dir/inmanta-core/misc/server_log_container.yml /etc/inmanta/logging/server.yml
 cat <<EOF >/etc/inmanta/inmanta.d/logging.cfg
 [logging]
-server = server.yml
+server = /etc/inmanta/logging/server.yml
 EOF
 # Install packages
 apt-get -y update
