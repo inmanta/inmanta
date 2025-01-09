@@ -36,10 +36,10 @@ cp /inmanta_build_dir/product/LICENSE /usr/share/doc/inmanta-oss/
 cp /inmanta_build_dir/inmanta-core/misc/inmanta-workon-register.sh /usr/bin/
 # Add logging configuration
 cp /inmanta_build_dir/inmanta-core/misc/server_log_container.yml /etc/inmanta/logging/server.yml
-cat <<EOF >/etc/inmanta/inmanta.d/logging.cfg
+cat <<EOF2 >/etc/inmanta/inmanta.d/logging.cfg
 [logging]
 server = /etc/inmanta/logging/server.yml
-EOF
+EOF2
 # Install packages
 apt-get -y update
 apt-get -y install git \
