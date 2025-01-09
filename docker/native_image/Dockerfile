@@ -30,10 +30,16 @@ ENV INMANTA_SERVER_ENABLED_EXTENSIONS="ui"
 
 RUN --mount=type=bind,target=/inmanta_build_dir <<EOF
 # Create required directories
-mkdir -p /var/lib/inmanta /var/log/inmanta /usr/share/inmanta/web-console /usr/share/doc/inmanta-oss
+mkdir -p /var/lib/inmanta /var/log/inmanta /usr/share/inmanta/web-console /usr/share/doc/inmanta-oss /etc/inmanta/{inmanta.d,logging}
 # Copy files from build directory
 cp /inmanta_build_dir/product/LICENSE /usr/share/doc/inmanta-oss/
 cp /inmanta_build_dir/inmanta-core/misc/inmanta-workon-register.sh /usr/bin/
+# Add logging configuration
+cp /inmanta_build_dir/inmanta-core/misc/server_log_container.yml /etc/inmanta/logging/server.yml
+cat <<EOF >/etc/inmanta/inmanta.d/logging.cfg
+[logging]
+server = server.yml
+EOF
 # Install packages
 apt-get -y update
 apt-get -y install git \
