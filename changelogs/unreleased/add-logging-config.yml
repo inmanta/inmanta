@@ -4,3 +4,5 @@ issue-nr: 527
 issue-repo: inmanta-service-orchestrator
 change-type: patch
 destination-branches: [master]
+sections:
+  upgrade-note: "The orchestrator docker image now writes the Inmanta server logs to both stdout and to /var/log/inmanta/server.log by default."
