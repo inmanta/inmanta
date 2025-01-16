@@ -1,2 +1,0 @@
-pipeline_template: ci/inmanta-oss/Jenkinsfile-rpm
-repo_name: inmanta

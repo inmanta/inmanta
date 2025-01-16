@@ -30,10 +30,16 @@ ENV INMANTA_SERVER_ENABLED_EXTENSIONS="ui"
 
 RUN --mount=type=bind,target=/inmanta_build_dir <<EOF
 # Create required directories
-mkdir -p /var/lib/inmanta /var/log/inmanta /usr/share/inmanta/web-console /usr/share/doc/inmanta-oss
+mkdir -p /var/lib/inmanta /var/log/inmanta /usr/share/inmanta/web-console /usr/share/doc/inmanta-oss /etc/inmanta/inmanta.d /etc/inmanta/logging
 # Copy files from build directory
 cp /inmanta_build_dir/product/LICENSE /usr/share/doc/inmanta-oss/
 cp /inmanta_build_dir/inmanta-core/misc/inmanta-workon-register.sh /usr/bin/
+# Add logging configuration
+cp /inmanta_build_dir/inmanta-core/misc/server_log_container.yml /etc/inmanta/logging/server.yml
+cat <<EOF2 >/etc/inmanta/inmanta.d/logging.cfg
+[logging]
+server = /etc/inmanta/logging/server.yml
+EOF2
 # Install packages
 apt-get -y update
 apt-get -y install git \
@@ -42,7 +48,8 @@ apt-get -y install git \
                    which \
                    gcc \
                    cargo \
-                   openssl
+                   openssl \
+                   tini
 apt-get clean
 # Create venv
 python${PYTHON_VERSION_INMANTA_VENV} -m venv /opt/inmanta
@@ -87,5 +94,9 @@ VOLUME  ["/var/log/inmanta", "/var/lib/inmanta/"]
 # Change the workdir to the HOME directory of the inmanta user
 WORKDIR /var/lib/inmanta
 
-ENTRYPOINT ["/usr/bin/inmanta"]
+# Configure a healthcheck which validates that the api is responsive
+HEALTHCHECK --interval=10s --timeout=3s --start-period=5m --start-interval=5s --retries=3 \
+    CMD /opt/inmanta/bin/python -c "from inmanta import config as c, protocol as p; c.Config.load_config(config_dir='/etc/inmanta/inmanta.d'); r = p.SyncClient('client').get_server_status(); assert r.code == 200 and {s['name']: s for s in r.result['data']['slices']}['core.database']['status']['connected'], str(r.result)"
+
+ENTRYPOINT ["/usr/bin/tini", "--", "/usr/bin/inmanta"]
 CMD ["--log-file", "/var/log/inmanta/server.log", "--log-file-level", "INFO", "--timed-logs", "server", "--db-wait-time", "15"]
