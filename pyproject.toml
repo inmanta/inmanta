@@ -2,9 +2,6 @@
 release-type = "continuous"
 postgres_version = 16
 
-[tool.irt.version-bump]
-tool = "bumpversion"
-
 [tool.irt.dependencies]
 core-component = "https://github.com/inmanta/inmanta-core"
 
@@ -14,26 +11,7 @@ documentation_repo = "https://github.com/inmanta/inmanta.git"
 module_set_path = "sets/public-docs.yml"
 
 [tool.irt.module_set]
-repository = "https://github.com/inmanta/irt.git"
 path = "sets/public.yml"
-
-[tool.irt.build.python]
-dists = [ "sdist", "wheel",]
-
-[tool.irt.build.rpm]
-centos_versions = [ 9, 8,]
-python_version = "python3.11"
-
-[tool.irt.build.docker_image]
-build_context_path = "docker/legacy_image/"
-dockerfile_path = "Dockerfile"
-product_package_venv = "/opt/inmanta/"
-cloudsmith_api_key_env = "CLOUDSMITH_API_KEY"
-
-[tool.irt.build.native_docker_image]
-build_context_path = "docker/native_image/"
-dockerfile_path = "Dockerfile"
-product_package_venv = "/opt/inmanta/"
 
 [tool.irt.publish.python]
 public = true
@@ -46,8 +24,9 @@ rpm_repo_name_prefix = "inmanta/oss"
 image_registry = "ghcr.io"
 image_repository = "inmanta"
 image_name = "orchestrator"
-image_tags = [ "{version}-rc",]
-add_dev_tag_on_builds_from_master = false
+image_tags = [
+    "{version}-rc",
+]
 registry_username_env = "GITHUB_REGISTRY_USERNAME"
 registry_password_env = "GITHUB_REGISTRY_PASSWORD"
 
@@ -55,8 +34,10 @@ registry_password_env = "GITHUB_REGISTRY_PASSWORD"
 image_registry = "ghcr.io"
 image_repository = "inmanta"
 image_name = "orchestrator"
-image_tags = [ "latest", "{version}",]
-add_dev_tag_on_builds_from_master = false
+image_tags = [
+    "latest",
+    "{version}",
+]
 registry_username_env = "GITHUB_REGISTRY_USERNAME"
 registry_password_env = "GITHUB_REGISTRY_PASSWORD"
 
@@ -97,4 +78,4 @@ product_package_venv = "/opt/inmanta/"
 
 [tool.irt.dependencies.npm.web-console]
 repo = "https://github.com/inmanta/web-console"
-version = "==2.0.0"
+version = "master"
