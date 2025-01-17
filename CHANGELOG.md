@@ -1,3 +1,192 @@
+# Release 2025.1 (2025-01-17)
+
+## General changes
+
+### New features
+
+- Update python lower bound to 3.12 for ISO8
+
+### Upgrade notes
+
+- The image inmanta/orchestrator:2025.1 introduces a number of changes, including these breaking changes:
+  - Server options --wait-for-host and --wait-for-port are deprecated and will be ignored.
+  - Providing environment variables in /etc/inmanta/env is not supported anymore.
+ ([inmanta/inmanta-core#8304](https://github.com/inmanta/inmanta-core/issues/8304))
+- Supported PostgreSQL version is now version 16. ([inmanta/inmanta-core#8464](https://github.com/inmanta/inmanta-core/issues/8464))
+- The orchestrator docker image now writes the Inmanta server logs to both stdout and to /var/log/inmanta/server.log by default. ([inmanta/inmanta-service-orchestrator#527](https://github.com/inmanta/inmanta-service-orchestrator/issues/527))
+- The legacy, RPM based container is no longer available, switch to the native container instead
+- Ensure the database is backed up before executing an upgrade.
+
+## Inmanta-core: release 15.0.0 (2025-01-17)
+
+### New features
+
+- Added SkipResourceForDependencies exception. This exception can be raised by the handler when it wants to skip a resource and retry only when all of its dependencies succeed. See the {py:class}`inmanta.agent.handler.SkipResourceForDependencies` for more details.
+ ([#8340](https://github.com/inmanta/inmanta-core/issues/8340))
+- Added support for fine grained customization of log configuration, see [logging documentation](administrators_doc_logging).
+- Added support for python types in plugin annotations
+
+### Improvements
+
+- Redesign the server on-disk layout. The server will now store its state in the ``<state-dir>/server`` directory.
+
+- Make compiler venv have the python version in the name ([#7732](https://github.com/inmanta/inmanta-core/issues/7732))
+- Update database pool status reporting for the new scheduler ([#8228](https://github.com/inmanta/inmanta-core/issues/8228))
+- Add support for per-component log file ([#8306](https://github.com/inmanta/inmanta-core/issues/8306))
+- Add API endpoint for scheduler self-check ([#8321](https://github.com/inmanta/inmanta-core/issues/8321))
+- Improve the performance of the increment calculation.
+- Added MultiLineFormatter to the stable api
+
+### Upgrade notes
+
+- The on-disk layout of the server has been changed. After upgrade, old files can be cleaned up with the following commands:
+  - old environment files: `rm -rf /var/lib/inmanta/server/environments/`
+  - old agent config files: `rm -rf /var/lib/inmanta/server/agents/`
+  - old agent work folders (all folders formatted as uuids): `find /var/lib/inmanta -maxdepth 1 -regextype grep -regex '.*/[a-f0-9]\{8\}-[a-f0-9]\{4\}-[a-f0-9]\{4\}-[a-f0-9]\{4\}-[a-f0-9]\{12\}' -type d -delete`
+
+- Add support for periodic per-resource deploys and repairs. When ``AUTOSTART_AGENT_REPAIR_INTERVAL``  or ``AUTOSTART_AGENT_DEPLOY_INTERVAL`` are specified as a number (not a cron expression), they are interpreted on a per-resource basis. The timer will trigger after the interval has expired, after the last deploy of each individual resource.
+
+- Previously, a single database connection pool was configured
+via the [database.connection-pool-max-size](#database.connection-pool-max-size) and [database.connection-pool-min-size](#database.connection-pool-min-size) options.
+Now, the new resource scheduler uses an additional database connection pool per environment.
+Please review the following connection pool options and make sure they fit your
+needs. Do keep in mind that these options will apply to all active environments:
+  - For the server: [server.db-connection-pool-max-size](#server.db-connection-pool-max-size), [server.db-connection-pool-min-size](#server.db-connection-pool-min-size), [server.db-connection-timeout](#server.db-connection-timeout).
+    By default, the server pool will be 50% the size of the previous global pool.
+  - For the scheduler: [scheduler.db-connection-pool-max-size](#scheduler.db-connection-pool-max-size), [scheduler.db-connection-pool-min-size](#scheduler.db-connection-pool-min-size), [scheduler.db-connection-timeout](#scheduler.db-connection-timeout).
+    By default, each scheduler pool will be 10% the size of the previous global pool.
+These defaults are tuned to 5 environments per server, if you have more or fewer, please adjust accordingly.
+ ([#8193](https://github.com/inmanta/inmanta-core/issues/8193))
+- All api endpoints reporting deployment status for specific versions of resources have been removed.
+
+| api endpoint | change | alternative |
+| ------------ | ------ | ------------|
+| `/api/v1/resource/<id>` | removal of the status argument and removal of status field from the response | `/api/v2/resource/<id>/` |
+| `/api/v1/version/<id>` | removal of `resources/status` field from the response | `/api/v2/resource` |
+ ([#8196](https://github.com/inmanta/inmanta-core/issues/8196))
+- The deployment status can only be correctly determined for the current moment.
+For this reason the ``deployed`` and ``status`` field has been removed for all but the latest active version.
+
+| api endpoint | change | alternative |
+| ------------ | ------ | ------------|
+| `GET /api/v1/version` | removal of the `deployed` and `result` fields from the response | `GET /api/v2/resource/` |
+| `GET /api/v1/version/<id>` | removal of the `deployed` and `result` fields from the response | `GET /api/v2/resource` |
+| `POST /api/v1/version/<id>` | removal of the `deployed` and `result` fields from the response |  `GET /api/v2/resource` |
+
+| command | change |
+|---------| ------ |
+| `inmanta-cli version release` | removal of the "Deployed" and "# Done" columns from the output and "State" field now reports the same state as the corresponding page in the web-console |
+| `inmanta-cli version list` | removal of the "Deployed" and "# Done" columns from the output and "State" field now reports the same state as the corresponding page in the web-console |
+ ([#8252](https://github.com/inmanta/inmanta-core/issues/8252))
+- Removed the `inmanta deploy` command. ([inmanta/inmanta-core#8612](https://github.com/inmanta/inmanta-core/issues/8612))
+- The agent splay environment settings have been removed. Due to per-resource repair and deploy timers, splaying is no longer required ([#8619](https://github.com/inmanta/inmanta-core/issues/8619))
+- The lowest supported python version was increased to 3.12 ([#8315](https://github.com/inmanta/inmanta-core/issues/8315))
+
+### Deprecation notes
+
+- Remove deprecated `inmanta module commit` command. Please use the `inmanta module release` command instead to perform a release for a module.
+ ([inmanta/irt#1597](https://github.com/inmanta/irt/issues/1597))
+- The `//` syntax for comments is no longer supported. Please use `#` for comments.
+ ([#6972](https://github.com/inmanta/inmanta-core/issues/6972))
+- The following configuration options were removed:
+  - config.agent-map
+  - config.use_autostart_agent_map
+  - config.agent-names
+  - config.agent-get-resource-backoff
+  - unknown_handler.default
+  - server.auto-recompile-wait
+  - config.agent-interval
+  - config.agent-splay
+  - server_rest_transport.port
+
+The following environment settings were removed:
+  - push_on_auto_deploy
+  - agent_trigger_method_on_auto_deploy
+  - environment_agent_trigger_method
+  - autostart_agent_map
+  - autostart_agent_deploy_splay
+  - autostart_agent_repair_splay
+
+The following internal API endpoints were removed:
+  - get_resources_for_agent: `GET /api/v1/resource`
+  - get_code: `GET api/v1/code/<id>`
+  - resource_event: `PUT api/v1/event/<id>`
+  - update_agent_map: `POST api/v2/agentmap`
+  - resource_deploy_done: `POST api/v2/resource/<rvid>/deploy/done`
+  - resource_deploy_start: `POST api/v2/resource/<rvid>/deploy/start`
+
+The following settings are being deprecated:
+  - [database.connection-pool-max-size](#database.connection-pool-max-size) replaced by [server.db-connection-pool-max-size](#server.db-connection-pool-max-size) and [scheduler.db-connection-pool-max-size](#scheduler.db-connection-pool-max-size).
+  - [database.connection-pool-min-size](#database.connection-pool-min-size) replaced by [server.db-connection-pool-min-size](#server.db-connection-pool-min-size) and [scheduler.db-connection-pool-min-size](#scheduler.db-connection-pool-min-size).
+  - [database.connection-timeout](#database.connection-timeout) replaced by [server.db-connection-timeout](#server.db-connection-timeout) and [scheduler.db-connection-timeout](#scheduler.db-connection-timeout).
+ ([inmanta/inmanta-core#8197](https://github.com/inmanta/inmanta-core/issues/8197))
+- Dropped deprecated methods `set_log_level`, `set_log_formatter`, `set_logfile_location` and `get_handler` from `inmanta.logging.InmantaLoggerConfig`. Use the `apply_options` method or a log config file instead.
+ ([#8485](https://github.com/inmanta/inmanta-core/issues/8485))
+
+### Bug fixes
+
+- Fixed pagination metadata when on a page behind the last result, or before the first result (due to filtering) ([#7898](https://github.com/inmanta/inmanta-core/issues/7898))
+- Fix handling of extras in legacy dependency check ([#8405](https://github.com/inmanta/inmanta-core/issues/8405))
+- Don't refresh facts that no longer exist in the latest released model version. ([inmanta/inmanta-core#8456](https://github.com/inmanta/inmanta-core/issues/8456))
+- Fix the typing of agent cache and plugins decorators.
+- Fix clearing of increment cache on environment delete
+
+## Inmanta-ui: release 5.1.5 (2025-01-17)
+
+No changelog entries.
+
+## Web-console: release 2.1.0 (2025-01-17)
+
+### New features
+
+- Complete redesign of the Instance Composer, main focus was to align its general functionalities with regular form, and improve the user experience. This change includes: A right sidebar, to have better access to the form fields of different parts of the instance A left sidebar, from which we can drag and drop embedded entities and existing Inter-Service Relations from the inventory. Inter-Service Relations can only be edited when opened individualy in the Instance Composer. Zooming can now be done with a slider, and two new functionalities have been added. Zoom-to-fit and full-screen mode. ([#5868](https://github.com/inmanta/web-console/issues/5868))
+
+### Improvements
+
+- Implement the Events tab on the Instance details page. ([#5781](https://github.com/inmanta/web-console/issues/5781))
+- Implement the Resource tab on the Instance details page. ([#5782](https://github.com/inmanta/web-console/issues/5782))
+- Add navigation button to Diagnose view from instance details page, add ability to adjust look back property for the diagnose ([#5842](https://github.com/inmanta/web-console/issues/5842))
+- Add a feedback component to the composer to provide user with information about the missing required inter-service relations ([#5870](https://github.com/inmanta/web-console/issues/5870))
+- Simplify the documentation tab when there's only one item available. ([#5916](https://github.com/inmanta/web-console/issues/5916))
+- Align all the input descriptions in the service instance forms ([#5921](https://github.com/inmanta/web-console/issues/5921))
+- Add support for emoji to the Documentation Tab ([#5931](https://github.com/inmanta/web-console/issues/5931))
+- Add button to disable expert mode from the banner ([#5942](https://github.com/inmanta/web-console/issues/5942))
+- Adds discovery uri to the Discovered Resources Page ([#5946](https://github.com/inmanta/web-console/issues/5946))
+- Add screen reader text for empty columns headers to improve accessibility ([#5949](https://github.com/inmanta/web-console/issues/5949))
+- Emphasize terminated instances in the instance details view ([#5951](https://github.com/inmanta/web-console/issues/5951))
+- Create a global modal component for use across the application, to improve performance and reduce code duplication. ([#5965](https://github.com/inmanta/web-console/issues/5965))
+- Unify colors and fonts in the composer entity headers ([#5986](https://github.com/inmanta/web-console/issues/5986))
+- Hide Left sidebar from the Instance Composer when in the view mode ([#5988](https://github.com/inmanta/web-console/issues/5988))
+- Improve information messages in the form in the Instance Composer ([#5990](https://github.com/inmanta/web-console/issues/5990))
+- Move action buttons to the page header, to improve spacing ([#5991](https://github.com/inmanta/web-console/issues/5991))
+- Improve behavior of useEffects in the Instance Composer when related inventories are updated ([#5997](https://github.com/inmanta/web-console/issues/5997))
+- Add highlighting for not connected inter-service relations elements on the canvas in the Instance Composer ([#5998](https://github.com/inmanta/web-console/issues/5998))
+- Support nested status properties in the Status Page ([#6018](https://github.com/inmanta/web-console/issues/6018))
+- Upgrade the Patternfly library to V6. ([#6025](https://github.com/inmanta/web-console/issues/6025))
+- Add identifying attributes to pool of displayed attributes in the body of the composer entities ([#6031](https://github.com/inmanta/web-console/issues/6031))
+- Hide read-only embedded entities from the Canvas in the Instance Composer to make the view cleaner ([#6034](https://github.com/inmanta/web-console/issues/6034))
+- Change the buttons in the Composer Sidebar ([#6035](https://github.com/inmanta/web-console/issues/6035))
+- Instance composer will render all required by default embedded entities in the canvas ([#6037](https://github.com/inmanta/web-console/issues/6037))
+- Improve the display of timestamps in the instance details page. ([#6047](https://github.com/inmanta/web-console/issues/6047))
+- Modify Service Details Page to use direct service instance data for latest version instead latest instance logs ([#6058](https://github.com/inmanta/web-console/issues/6058))
+- Remove the collapsible functionality in the Service Inventory table. The new Instance Details page replaces the content of the collapsible sections. ([#6104](https://github.com/inmanta/web-console/issues/6104))
+- Move progress bar form resource tab to details section ([#5782](https://github.com/inmanta/web-console/issues/5782))
+- Fix spacing and font sizes in status page to improve UI and readability of the view ([#6120](https://github.com/inmanta/web-console/issues/6120))
+- Fix slider display issue in firefox, fix rounding in the highlighter, fix fetching cache issue for composer initial load, fix overflow issue for text list field in composer ([#6124](https://github.com/inmanta/web-console/issues/6124))
+- Move the option to go to the instance details into the row as primary action button. ([#6125](https://github.com/inmanta/web-console/issues/6125))
+- Improve the Documentation tab on the Instance details page when only one documentation section is available. ([#6122](https://github.com/inmanta/web-console/issues/6122))
+- Improve the tags for the versions on the instance details page. ([#6142](https://github.com/inmanta/web-console/issues/6142))
+- Add Infinite query to History section ([#6150](https://github.com/inmanta/web-console/issues/6150))
+- Align colors of labels and fix colors of progress bars
+
+### Bug fixes
+
+- Removing embedded entities in the form wasn't consistently removing the correct item. A unique identifier has been added to the form elements to ensure the correct item is removed. ([#5969](https://github.com/inmanta/web-console/issues/5969))
+- Resolve issue when inter-service relation attribute value is set to null AutoCompleteInput crashes. ([#5993](https://github.com/inmanta/web-console/issues/5993))
+- Fix issue with missing inter-service relations on the canvas ([#6030](https://github.com/inmanta/web-console/issues/6030))
+- Fix issue when toggling embedded entities of the same type in the instance composer ([#6138](https://github.com/inmanta/web-console/issues/6138))
+
+
 # Release 2024.4 (2024-10-10)
 
 ## Upgrade notes
