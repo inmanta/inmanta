@@ -152,8 +152,10 @@ mkdir -p %{buildroot}/etc/inmanta
 mkdir -p %{buildroot}/etc/inmanta/inmanta.d
 mkdir -p %{buildroot}/var/log/inmanta
 mkdir -p %{buildroot}/etc/logrotate.d
+mkdir -p %{buildroot}/etc/inmanta/authorization
 install -p -m 644 inmanta_core/misc/inmanta.cfg %{buildroot}/etc/inmanta/inmanta.cfg
 install -p -m 644 inmanta_core/misc/logrotation_config %{buildroot}/etc/logrotate.d/inmanta
+install -p -m 644 inmanta_core/src/inmanta/protocol/auth/default_policy.rego %{buildroot}/etc/inmanta/authorization/policy.rego
 cat <<EOF > %{buildroot}/etc/inmanta/inmanta.d/extensions.cfg
 [server]
 enabled_extensions=ui
