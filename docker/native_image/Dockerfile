@@ -29,8 +29,9 @@ ENV INMANTA_CONFIG_LOG_DIR="/var/log/inmanta"
 ENV INMANTA_SERVER_ENABLED_EXTENSIONS="ui"
 
 RUN --mount=type=bind,target=/inmanta_build_dir <<EOF
+set -e
 # Create required directories
-mkdir -p /var/lib/inmanta /var/log/inmanta /usr/share/inmanta/web-console /usr/share/doc/inmanta-oss /etc/inmanta/inmanta.d /etc/inmanta/logging
+mkdir -p /var/lib/inmanta /var/log/inmanta /usr/share/inmanta/web-console /usr/share/doc/inmanta-oss /etc/inmanta/inmanta.d /etc/inmanta/logging /etc/inmanta/authorization
 # Copy files from build directory
 cp /inmanta_build_dir/product/LICENSE /usr/share/doc/inmanta-oss/
 cp /inmanta_build_dir/inmanta-core/misc/inmanta-workon-register.sh /usr/bin/
@@ -40,6 +41,8 @@ cat <<EOF2 >/etc/inmanta/inmanta.d/logging.cfg
 [logging]
 server = /etc/inmanta/logging/server.yml
 EOF2
+# Add default authorization policy
+cp /inmanta_build_dir/inmanta-core/src/inmanta/protocol/auth/default_policy.rego /etc/inmanta/authorization/policy.rego
 # Install packages
 apt-get -y update
 apt-get -y install git \
