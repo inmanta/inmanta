@@ -1,3 +1,22 @@
+# Release 2025.1.1 (2025-05-27)
+
+## Upgrade notes
+
+- Please follow the documented [upgrade procedure](https://docs.inmanta.com/community/latest/administrators/upgrading_the_orchestrator.html)
+- Ensure the database is backed up before executing an upgrade.
+
+## Inmanta-core: release 15.0.1 (2025-05-27)
+
+### Other notes
+
+- Bump tornado version to 6.5.1 (CVE-2025-47287)
+
+## inmanta-ui: release 5.1.5
+This component has had no new releases since the last product version.
+## web-console: release 2.1.0
+This component has had no new releases since the last product version.
+
+
 # Release 2025.1 (2025-01-17)
 
 ## General changes
