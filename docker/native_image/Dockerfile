@@ -70,6 +70,8 @@ fi
 /opt/inmanta/bin/pip install --no-cache-dir ${MIN_C_OPTION} ${PRODUCT_VERSION_CONSTRAINT_FOR_PIP}
 # Install files required by compiler
 /opt/inmanta/bin/python -m inmanta.app
+# Add opa binary
+cp /inmanta_build_dir/opa /opt/inmanta/bin/
 # Add symlinks to venv binaries in /usr/bin
 ln -s /opt/inmanta/bin/inmanta /usr/bin/inmanta
 ln -s /opt/inmanta/bin/inmanta-cli /usr/bin/inmanta-cli
