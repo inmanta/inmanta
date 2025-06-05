@@ -72,6 +72,7 @@ fi
 /opt/inmanta/bin/python -m inmanta.app
 # Add opa binary
 cp /inmanta_build_dir/opa /opt/inmanta/bin/
+chmod +x /opt/inmanta/bin/opa
 # Add symlinks to venv binaries in /usr/bin
 ln -s /opt/inmanta/bin/inmanta /usr/bin/inmanta
 ln -s /opt/inmanta/bin/inmanta-cli /usr/bin/inmanta-cli
