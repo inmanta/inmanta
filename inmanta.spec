@@ -34,6 +34,7 @@ URL:            http://inmanta.com
 Source0:        inmanta-%{sourceversion_egg}.tar.gz
 Source1:        dependencies.tar.gz
 Source3:        inmanta-web-console-%{web_console_version}.tgz
+Source4:        opa
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 BuildRequires:  systemd
@@ -135,6 +136,10 @@ sed -i "s|%{buildroot}||g" %{venv}/pyvenv.cfg
 
 # Make sure we use the correct python version and don't have dangeling symlink
 ln -sf /usr/bin/python%{python_version} %{venv}/bin/python3
+
+# Add opa binary
+mv %{SOURCE4} %{venv}/bin/opa
+chmod +x %{venv}/bin/opa
 
 # Put symlinks
 mkdir -p %{buildroot}%{_bindir}
