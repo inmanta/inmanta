@@ -199,6 +199,7 @@ rm -rf %{buildroot}
 %config(noreplace) %attr(-, root, root)/etc/inmanta/inmanta.d/extensions.cfg
 %config(noreplace) %attr(-, root, root)/etc/logrotate.d/inmanta
 %config(noreplace) %attr(-, root, root)/etc/sysconfig/inmanta-server
+%config(noreplace) %attr(-, root, root)/etc/inmanta/authorization/policy.rego
 
 %files -n inmanta-oss-server
 /usr/share/inmanta/web-console

@@ -1,0 +1,4 @@
+---
+description: Ensure that the default policy is not overwritten on upgrade.
+change-type: patch
+destination-branches: [master]
