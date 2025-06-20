@@ -1,0 +1,6 @@
+---
+description: "Use the GET /api/v2/health API endpoint in the health check of the docker container"
+change-type: patch
+destination-branches: [master]
+sections:
+  minor-improvement: "{{description}}"
