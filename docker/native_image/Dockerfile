@@ -29,8 +29,9 @@ ENV INMANTA_CONFIG_LOG_DIR="/var/log/inmanta"
 ENV INMANTA_SERVER_ENABLED_EXTENSIONS="ui"
 
 RUN --mount=type=bind,target=/inmanta_build_dir <<EOF
+set -e
 # Create required directories
-mkdir -p /var/lib/inmanta /var/log/inmanta /usr/share/inmanta/web-console /usr/share/doc/inmanta-oss /etc/inmanta/inmanta.d /etc/inmanta/logging
+mkdir -p /var/lib/inmanta /var/log/inmanta /usr/share/inmanta/web-console /usr/share/doc/inmanta-oss /etc/inmanta/inmanta.d /etc/inmanta/logging /etc/inmanta/authorization
 # Copy files from build directory
 cp /inmanta_build_dir/product/LICENSE /usr/share/doc/inmanta-oss/
 cp /inmanta_build_dir/inmanta-core/misc/inmanta-workon-register.sh /usr/bin/
@@ -40,6 +41,8 @@ cat <<EOF2 >/etc/inmanta/inmanta.d/logging.cfg
 [logging]
 server = /etc/inmanta/logging/server.yml
 EOF2
+# Add default authorization policy
+cp /inmanta_build_dir/inmanta-core/src/inmanta/protocol/auth/default_policy.rego /etc/inmanta/authorization/policy.rego
 # Install packages
 apt-get -y update
 apt-get -y install git \
@@ -67,6 +70,9 @@ fi
 /opt/inmanta/bin/pip install --no-cache-dir ${MIN_C_OPTION} ${PRODUCT_VERSION_CONSTRAINT_FOR_PIP}
 # Install files required by compiler
 /opt/inmanta/bin/python -m inmanta.app
+# Add opa binary
+cp /inmanta_build_dir/opa /opt/inmanta/bin/
+chmod +x /opt/inmanta/bin/opa
 # Add symlinks to venv binaries in /usr/bin
 ln -s /opt/inmanta/bin/inmanta /usr/bin/inmanta
 ln -s /opt/inmanta/bin/inmanta-cli /usr/bin/inmanta-cli
@@ -96,7 +102,7 @@ WORKDIR /var/lib/inmanta
 
 # Configure a healthcheck which validates that the api is responsive
 HEALTHCHECK --interval=10s --timeout=3s --start-period=5m --start-interval=5s --retries=3 \
-    CMD /opt/inmanta/bin/python -c "from inmanta import config as c, protocol as p; c.Config.load_config(config_dir='/etc/inmanta/inmanta.d'); r = p.SyncClient('client').get_server_status(); assert r.code == 200 and {s['name']: s for s in r.result['data']['slices']}['core.database']['status']['connected'], str(r.result)"
+    CMD /opt/inmanta/bin/python -c "from inmanta import config as c, protocol as p; c.Config.load_config(config_dir='/etc/inmanta/inmanta.d'); r = p.SyncClient('client').health(); assert r.code == 200, str(r.result)"
 
 ENTRYPOINT ["/usr/bin/tini", "--", "/usr/bin/inmanta"]
 CMD ["--log-file", "/var/log/inmanta/server.log", "--log-file-level", "INFO", "--timed-logs", "server", "--db-wait-time", "15"]

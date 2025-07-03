@@ -34,6 +34,7 @@ URL:            http://inmanta.com
 Source0:        inmanta-%{sourceversion_egg}.tar.gz
 Source1:        dependencies.tar.gz
 Source3:        inmanta-web-console-%{web_console_version}.tgz
+Source4:        opa
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 BuildRequires:  systemd
@@ -136,6 +137,10 @@ sed -i "s|%{buildroot}||g" %{venv}/pyvenv.cfg
 # Make sure we use the correct python version and don't have dangeling symlink
 ln -sf /usr/bin/python%{python_version} %{venv}/bin/python3
 
+# Add opa binary
+mv %{SOURCE4} %{venv}/bin/opa
+chmod +x %{venv}/bin/opa
+
 # Put symlinks
 mkdir -p %{buildroot}%{_bindir}
 ln -s /opt/inmanta/bin/inmanta %{buildroot}%{_bindir}/inmanta
@@ -152,8 +157,10 @@ mkdir -p %{buildroot}/etc/inmanta
 mkdir -p %{buildroot}/etc/inmanta/inmanta.d
 mkdir -p %{buildroot}/var/log/inmanta
 mkdir -p %{buildroot}/etc/logrotate.d
+mkdir -p %{buildroot}/etc/inmanta/authorization
 install -p -m 644 inmanta_core/misc/inmanta.cfg %{buildroot}/etc/inmanta/inmanta.cfg
 install -p -m 644 inmanta_core/misc/logrotation_config %{buildroot}/etc/logrotate.d/inmanta
+install -p -m 644 inmanta_core/src/inmanta/protocol/auth/default_policy.rego %{buildroot}/etc/inmanta/authorization/policy.rego
 cat <<EOF > %{buildroot}/etc/inmanta/inmanta.d/extensions.cfg
 [server]
 enabled_extensions=ui
@@ -192,6 +199,7 @@ rm -rf %{buildroot}
 %config(noreplace) %attr(-, root, root)/etc/inmanta/inmanta.d/extensions.cfg
 %config(noreplace) %attr(-, root, root)/etc/logrotate.d/inmanta
 %config(noreplace) %attr(-, root, root)/etc/sysconfig/inmanta-server
+%config(noreplace) %attr(-, root, root)/etc/inmanta/authorization/policy.rego
 
 %files -n inmanta-oss-server
 /usr/share/inmanta/web-console
