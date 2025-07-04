@@ -1,0 +1,4 @@
+---
+description: Added default policy to the RPM and docker container.
+change-type: patch
+destination-branches: [master]
