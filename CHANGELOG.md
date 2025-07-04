@@ -1,3 +1,167 @@
+# Release 2025.2 (2025-07-04)
+
+## General changes
+
+### Improvements
+
+- Use the GET /api/v2/health API endpoint in the health check of the docker container
+
+### Upgrade notes
+
+- Please follow the documented [upgrade procedure](https://docs.inmanta.com/community/latest/administrators/upgrading_the_orchestrator.html)
+- Ensure the database is backed up before executing an upgrade.
+
+## Inmanta-core: release 16.0.0 (2025-07-04)
+
+### New features
+
+- Implemented a GraphQL endpoint. Added a query to fetch environments that supports filtering, sorting and paging. ([#8736](https://github.com/inmanta/inmanta-core/issues/8736))
+- Added support for dataclasses in plugins.. See [plugins](module-plugins)
+- Added support for secrets and references in inmanta models. For more information, [see documentation](references)
+
+### Improvements
+
+- Added documentation about unknowns ([#6056](https://github.com/inmanta/inmanta-core/issues/6056))
+- Added support to build sdist of V2 module. ([inmanta/inmanta-core#8111](https://github.com/inmanta/inmanta-core/issues/8111))
+- Add support for native python types in plugins. Plugin developers can now use mypy on inmanta plugins. Union types are now supported as typing annotations in plugins.
+For more information, please refer to the [plugins](module-plugins) documentation.
+ ([#8577](https://github.com/inmanta/inmanta-core/issues/8577))
+- The scheduler and the compiler no longer connect to the server using the `server.bind-address` instead they always use localhost. ([inmanta/inmanta-core#8752](https://github.com/inmanta/inmanta-core/issues/8752))
+- Improve the logging of code loading failures during resource deployment.
+- For partial compile, allow resources to move between resource sets if both sets are being updated ([#9042](https://github.com/inmanta/inmanta-core/issues/9042))
+- Add support for references in dicts or lists in references ([#9220](https://github.com/inmanta/inmanta-core/issues/9220))
+- Added the 'GET /api/v2/health' endpoint.
+- Compiler: support inheritance for dataclass entities. ([#8946](https://github.com/inmanta/inmanta-core/issues/8946))
+- Remove v1 module from getting started documentation
+- Add released field to /api/v2/desiredstate
+- Improve error message on login endpoint about invalid credentials.
+- Vendored pyformance to fix warning about pkg_resources being deprecated ([#9235](https://github.com/inmanta/inmanta-core/issues/9235))
+- Compiler: added the ``inmanta.plugins.allow_reference_values`` function to explicitly allow access to reference values by traversing the model from a plugin. ([#8946](https://github.com/inmanta/inmanta-core/issues/8946))
+- Compiler: allow references in dict attributes. ([#8946](https://github.com/inmanta/inmanta-core/issues/8946))
+- Added default equals implementation to references
+- Log a clear error message if a Resource accidentally inherits from the resource decorator instead of the Resource class. ([inmanta/inmanta-core#8817](https://github.com/inmanta/inmanta-core/issues/8817))
+- Added support for bearer token based auth in openapi documentation.
+- Added support to provide the access token of the `GET /api/v2/docs` endpoint via the `token` query parameter instead of via the Authorization header.
+- Mark parameters in the path of an endpoint using `<param>` instead of `{param}` in the openapi documentation.
+
+### Known Issues
+
+- References are currently not supported inside a resource's list attributes.
+
+### Upgrade notes
+
+- Removed the `POST /api/v1/agent/<id>` API endpoint.
+- Agents will now only attempt to deploy resources if they encountered no errors during code loading. ([#9259](https://github.com/inmanta/inmanta-core/issues/9259))
+- Access control using claim match expressions in no longer supported.
+
+### Deprecation notes
+
+- Removed the resource_action_update endpoint
+
+### Bug fixes
+
+- Make the `get_scheduler_status` endpoint return a 404 if the scheduler is not running. ([inmanta/inmanta-core#8516](https://github.com/inmanta/inmanta-core/issues/8516))
+- Fixed bug that caused code loading problems not to be reported into the resource action log. ([inmanta/inmanta-core#8722](https://github.com/inmanta/inmanta-core/issues/8722))
+- Fix issue where empty versions are not correctly passed to the scheduler ([#8799](https://github.com/inmanta/inmanta-core/issues/8799))
+- Fix pydantic deprecation warning at startup ([#8921](https://github.com/inmanta/inmanta-core/issues/8921))
+- Fix bug where the POST /api/v2/environment_auth endpoint returns a 400 if the server.auth=true config option was set using an environment variable. ([inmanta/inmanta-core#8962](https://github.com/inmanta/inmanta-core/issues/8962))
+- Fix bug where the scheduler is paused by calling the `POST /api/v2/agents/pause` endpoint. ([inmanta/inmanta-core#9081](https://github.com/inmanta/inmanta-core/issues/9081))
+- Compiler: fixed bug where compiler would crash under specific circumstances on calling a plugin that takes a union involving a dataclass as parameter. ([#8946](https://github.com/inmanta/inmanta-core/issues/8946))
+- Only report the desired state as active when the new version is loaded by the scheduler
+- Updated the return type of HandlerAPI.facts from dict[str, object] to dict[str, str] for consistency with HandlerContext.set_dact
+- Fix bug where configuration options with a dot in their section name could not be read from an environment variable. ([inmanta/inmanta-lsm#1995](https://github.com/inmanta/inmanta-lsm/issues/1995))
+- Fixed bug that can cause the Python environment of a executor to be shared across different Inmanta environment. This could result in a corrupt executor environment.
+- Compiler: improved clarity of error reporting related to references. ([#8946](https://github.com/inmanta/inmanta-core/issues/8946))
+- Compiler: implemented more thorough checks for references passed into plugins, and accessed by traversing the model from plugins, so they don't show up where they may not be expected. For more details, see the [documentation](references). ([#8946](https://github.com/inmanta/inmanta-core/issues/8946))
+- Compiler: reference values passed into or accessed from plugins, when explicitly declared, are now passed as proper ``Reference`` objects instead of being wrapped in a ``DynamicProxy``. ([#8946](https://github.com/inmanta/inmanta-core/issues/8946))
+- Compiler: made sure f-strings and old-style string format expressions raise a clear error when attempting to substitute a reference value. ([#8946](https://github.com/inmanta/inmanta-core/issues/8946))
+- Make sure dry-runs load the appropriate handler code for their version
+- Fix bug where starting the agent can result in an error saying that stdout_log is referenced before assignment. This can cause the compiler service to get stuck or trigger the agent deploy timers at incorrect moments. ([inmanta/inmanta-core#9275](https://github.com/inmanta/inmanta-core/issues/9275))
+
+### Other notes
+
+- Adds the following consts to the stable api:
+  - UNDEPLOYABLE_STATES
+  - TRANSIENT_STATES
+  - NOT_DONE_STATES
+  - DONE_STATES
+
+- Removed resource events and logs when resources are marked as undefined or skipped_for_undefined
+and when they are marked as deployed due to known good status
+
+
+## Inmanta-ui: release 5.1.7 (2025-07-04)
+
+### Bug fixes
+
+- Make sure the index.html and config.js file is not cached by the browser.
+- Make sure that requests for `/console/version.json` are not cached by the browser.
+
+
+## Inmanta-ui: release 5.1.6 (2025-04-08)
+
+No changelog entries.
+
+## Web-console: release 3.0.0 (2025-07-04)
+
+### New features
+
+- Replace the collapsible sections in the compile details page with a log viewer. ([#6061](https://github.com/inmanta/web-console/issues/6061))
+- Implementation of a markdown previewer for the instance documentation. ([#6268](https://github.com/inmanta/web-console/issues/6268))
+
+### Improvements
+
+- Replace old modals implementation with Global modal implementation. ([#6130](https://github.com/inmanta/web-console/issues/6130))
+- Replace old Login page implementation with Patternfly Login page. Repair redirects to login page and cover trailing slashes in routes. ([#6131](https://github.com/inmanta/web-console/issues/6131))
+- Improve itemization in Firefox for the status page. ([#6183](https://github.com/inmanta/web-console/issues/6183))
+- Add a way to copy the markdown with escaped newlines. ([#6268](https://github.com/inmanta/web-console/issues/6268))
+- Increase the default page size for the Resources page. ([#6277](https://github.com/inmanta/web-console/issues/6277))
+- Add the query factory to improve the maintenance of the communication with backend. ([#6318](https://github.com/inmanta/web-console/issues/6318))
+- improve inline edit error handling ([#6330](https://github.com/inmanta/web-console/issues/6330))
+- Improve build checks in Jest to fail tests on console.error and console.warn. ([#6347](https://github.com/inmanta/web-console/issues/6347))
+- Remove the old codeHighlighter and replace it with the new CodeEditor component. ([#6359](https://github.com/inmanta/web-console/issues/6359))
+- Include the Json-bigint package in the project. ([#6379](https://github.com/inmanta/web-console/issues/6379))
+- Improve the halting and resuming of environments between the browser tabs ([#6400](https://github.com/inmanta/web-console/issues/6400))
+- Add option to change user password in the user management page ([#6439](https://github.com/inmanta/web-console/issues/6439))
+- Add padding on the right side of the documentation tab to avoid content being overlapped by scrollbar ([#6441](https://github.com/inmanta/web-console/issues/6441))
+- Improve display of errors in the Instance Composer and Compile Details
+
+### Bug fixes
+
+- Fix styling of disabled submit button in the service instance form ([#6237](https://github.com/inmanta/web-console/issues/6237))
+- Allow deleting embedded entities when the minimum is not reached. ([#6333](https://github.com/inmanta/web-console/issues/6333))
+- Enable authentication on documentation links. ([#6335](https://github.com/inmanta/web-console/issues/6335))
+- Generate links for resource IDs using regex, regardless of the version suffix being present or not. ([#6371](https://github.com/inmanta/web-console/issues/6371))
+- Fix the issue where dragging from stencil sidebar in instance composer inter-service relations was not working as expected.
+- Enforce clearing the cookies when the user is not authenticated.
+
+
+## Web-console: release 2.1.1 (2025-04-09)
+
+### Improvements
+
+- Implement darkmode. The user can now enable darkmode in the top right menu. ([#5109](https://github.com/inmanta/web-console/issues/5109))
+- Add the correct name for embedded entities as it's now available in the service model ([#5591](https://github.com/inmanta/web-console/issues/5591))
+- REplace service queries for react Query ([#5975](https://github.com/inmanta/web-console/issues/5975))
+- Change default search in then service inventory to Id ([#5983](https://github.com/inmanta/web-console/issues/5983))
+- extracted error messages from the JSON-editor and Instance composer to reduce code duplication ([#6059](https://github.com/inmanta/web-console/issues/6059))
+- Improve casing of names of instance groups in Instance Composer ([#6155](https://github.com/inmanta/web-console/issues/6155))
+- Improve Query Management for service and service instance queries with replacement of v1 queries with react-query implementation ([#6174](https://github.com/inmanta/web-console/issues/6174))
+- Improve Query Management with removal of duplicate implmentation of react query, now we use reusable hooks to manage queries, headers and base error handling ([#6178](https://github.com/inmanta/web-console/issues/6178))
+- Prevent stretched buttons in header, and enable token tab in the settings for jwt auth. ([#6215](https://github.com/inmanta/web-console/issues/6215))
+- Added V2 query managers for compilation-related features and fixed test assertions in ContinuousWithEnv tests. ([#6223](https://github.com/inmanta/web-console/issues/6223))
+- Upgrade support for mermaid v11 diagrams and enable zooming on svg files in the documentation. ([#6258](https://github.com/inmanta/web-console/issues/6258))
+- Improve overal navigation through the application. ([#5950](https://github.com/inmanta/web-console/issues/5950))
+
+### Bug fixes
+
+- Resolved the issue of cells overlapping in the instance composer ([#6154](https://github.com/inmanta/web-console/issues/6154))
+- Fix handling of rw fields in Instance Composer when in edit mode ([#6176](https://github.com/inmanta/web-console/issues/6176))
+- Fix lack of visibility of default filter for desired state page ([#6206](https://github.com/inmanta/web-console/issues/6206))
+- Fix wrong conversion between JSON editor and regular form ([#6177](https://github.com/inmanta/web-console/issues/6177))
+- Fix bug with visibility of nested fields in input where they are set to null ([#6252](https://github.com/inmanta/web-console/issues/6252))
+
+
 # Release 2025.1.1 (2025-05-27)
 
 ## Upgrade notes
