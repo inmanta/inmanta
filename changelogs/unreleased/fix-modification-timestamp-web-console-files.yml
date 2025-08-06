@@ -1,0 +1,4 @@
+---
+description: "Make sure that the modification timestamps of the web-console files are set to the build timestamp."
+change-type: patch
+destination-branches: [master]
