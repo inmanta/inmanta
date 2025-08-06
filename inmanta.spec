@@ -176,7 +176,7 @@ touch %{buildroot}/etc/sysconfig/inmanta-server
 
 # Install web-console
 mkdir -p %{buildroot}/usr/share/inmanta/web-console
-tar -xf %{SOURCE3} --strip-components=2 --directory %{buildroot}/usr/share/inmanta/web-console
+tar --touch -xf %{SOURCE3} --strip-components=2 --directory %{buildroot}/usr/share/inmanta/web-console
 
 %clean
 rm -rf %{buildroot}

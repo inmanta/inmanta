@@ -77,7 +77,7 @@ chmod +x /opt/inmanta/bin/opa
 ln -s /opt/inmanta/bin/inmanta /usr/bin/inmanta
 ln -s /opt/inmanta/bin/inmanta-cli /usr/bin/inmanta-cli
 # Install web-console
-tar -xf /inmanta_build_dir/inmanta-web-console-*.tgz --strip-components=2 --directory /usr/share/inmanta/web-console
+tar --touch -xf /inmanta_build_dir/inmanta-web-console-*.tgz --strip-components=2 --directory /usr/share/inmanta/web-console
 # Create inmanta group
 groupadd -r -g 995 inmanta
 # Create inmanta user
