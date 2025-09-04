@@ -35,6 +35,8 @@ mkdir -p /var/lib/inmanta /var/log/inmanta /usr/share/inmanta/web-console /usr/s
 # Copy files from build directory
 cp /inmanta_build_dir/product/LICENSE /usr/share/doc/inmanta-oss/
 cp /inmanta_build_dir/inmanta-core/misc/inmanta-workon-register.sh /usr/bin/
+# Add compatibility files
+cp -r /inmanta_build_dir/compatibility /usr/share/inmanta/
 # Add logging configuration
 cp /inmanta_build_dir/inmanta-core/misc/server_log_container.yml /etc/inmanta/logging/server.yml
 cat <<EOF2 >/etc/inmanta/inmanta.d/logging.cfg
