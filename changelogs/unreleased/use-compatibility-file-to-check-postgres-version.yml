@@ -1,0 +1,8 @@
+---
+description: >
+  Update Dockerfile to use the compatibility file to check the PostgreSQL version of the database
+  on server start.
+issue-nr: 9543
+issue-repo: inmanta-core
+change-type: minor
+destination-branches: [master]
