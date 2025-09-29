@@ -27,6 +27,7 @@ ENV INMANTA_SERVER_BIND_ADDRESS="0.0.0.0"
 ENV INMANTA_CONFIG_STATE_DIR="/var/lib/inmanta"
 ENV INMANTA_CONFIG_LOG_DIR="/var/log/inmanta"
 ENV INMANTA_SERVER_ENABLED_EXTENSIONS="ui"
+ENV INMANTA_SERVER_COMPATIBILITY_FILE="/usr/share/inmanta/compatibility/compatibility.json"
 
 RUN --mount=type=bind,target=/inmanta_build_dir <<EOF
 set -e
@@ -107,5 +108,5 @@ HEALTHCHECK --interval=10s --timeout=3s --start-period=5m --start-interval=5s --
     CMD /opt/inmanta/bin/python -c "from inmanta import config as c, protocol as p; c.Config.load_config(config_dir='/etc/inmanta/inmanta.d'); r = p.SyncClient('client').health(); assert r.code == 200, str(r.result)"
 
 ENTRYPOINT ["/usr/bin/tini", "--", "/usr/bin/inmanta"]
-CMD ["--log-file", "/var/log/inmanta/server.log", "--log-file-level", "INFO", "--timed-logs", "server", "--db-wait-time", "15", "--compatibility-file", "/usr/share/inmanta/compatibility/compatibility.json"]
+CMD ["--log-file", "/var/log/inmanta/server.log", "--log-file-level", "INFO", "--timed-logs", "server", "--db-wait-time", "15"]
 
