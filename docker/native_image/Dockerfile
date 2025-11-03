@@ -27,6 +27,7 @@ ENV INMANTA_SERVER_BIND_ADDRESS="0.0.0.0"
 ENV INMANTA_CONFIG_STATE_DIR="/var/lib/inmanta"
 ENV INMANTA_CONFIG_LOG_DIR="/var/log/inmanta"
 ENV INMANTA_SERVER_ENABLED_EXTENSIONS="ui"
+ENV INMANTA_SERVER_COMPATIBILITY_FILE="/usr/share/inmanta/compatibility/compatibility.json"
 
 RUN --mount=type=bind,target=/inmanta_build_dir <<EOF
 set -e
@@ -35,6 +36,8 @@ mkdir -p /var/lib/inmanta /var/log/inmanta /usr/share/inmanta/web-console /usr/s
 # Copy files from build directory
 cp /inmanta_build_dir/product/LICENSE /usr/share/doc/inmanta-oss/
 cp /inmanta_build_dir/inmanta-core/misc/inmanta-workon-register.sh /usr/bin/
+# Add compatibility files
+cp -r /inmanta_build_dir/compatibility /usr/share/inmanta/
 # Add logging configuration
 cp /inmanta_build_dir/inmanta-core/misc/server_log_container.yml /etc/inmanta/logging/server.yml
 cat <<EOF2 >/etc/inmanta/inmanta.d/logging.cfg
@@ -77,7 +80,7 @@ chmod +x /opt/inmanta/bin/opa
 ln -s /opt/inmanta/bin/inmanta /usr/bin/inmanta
 ln -s /opt/inmanta/bin/inmanta-cli /usr/bin/inmanta-cli
 # Install web-console
-tar -xf /inmanta_build_dir/inmanta-web-console-*.tgz --strip-components=2 --directory /usr/share/inmanta/web-console
+tar --touch -xf /inmanta_build_dir/inmanta-web-console-*.tgz --strip-components=2 --directory /usr/share/inmanta/web-console
 # Create inmanta group
 groupadd -r -g 995 inmanta
 # Create inmanta user
@@ -106,3 +109,4 @@ HEALTHCHECK --interval=10s --timeout=3s --start-period=5m --start-interval=5s --
 
 ENTRYPOINT ["/usr/bin/tini", "--", "/usr/bin/inmanta"]
 CMD ["--log-file", "/var/log/inmanta/server.log", "--log-file-level", "INFO", "--timed-logs", "server", "--db-wait-time", "15"]
+

@@ -1,0 +1,8 @@
+---
+description: "Make the `compatibility.json` and `requirements.txt` files available in the `/usr/share/inmanta/compatibility/` directory of the container image."
+issue-nr: 2309
+issue-repo: irt
+change-type: minor
+destination-branches: [master]
+sections:
+  minor-improvement: "{{description}}"
