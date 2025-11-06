@@ -64,6 +64,7 @@ BuildRequires:  openssl-devel >= 1:1.1.1
 Requires:       openssl >= 1:1.1.1
 %endif
 
+# python3.13 is not yet available on RHEL9 by default. Install it from epel.
 BuildRequires:  epel-release
 Requires:       epel-release
 %if "%{#undotted_python_version}" == "2"
