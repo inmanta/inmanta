@@ -64,6 +64,8 @@ BuildRequires:  openssl-devel >= 1:1.1.1
 Requires:       openssl >= 1:1.1.1
 %endif
 
+BuildRequires:  epel-release
+Requires:       epel-release
 %if "%{#undotted_python_version}" == "2"
 BuildRequires:  python%{undotted_python_version}-devel
 Requires:       python%{undotted_python_version}
