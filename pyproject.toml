@@ -1,6 +1,6 @@
 [tool.irt]
 release-type = "continuous"
-postgres_version = 16
+postgres_version = 17
 
 [tool.irt.dependencies]
 core-component = "https://github.com/inmanta/inmanta-core"
