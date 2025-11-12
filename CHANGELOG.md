@@ -1,3 +1,100 @@
+# Release 2025.3 (2025-11-04)
+
+## General changes
+
+### Improvements
+
+- Make the `compatibility.json` and `requirements.txt` files available in the `/usr/share/inmanta/compatibility/` directory of the container image. ([inmanta/irt#2309](https://github.com/inmanta/irt/issues/2309))
+
+### Upgrade notes
+
+- Please follow the documented [upgrade procedure](https://docs.inmanta.com/community/latest/administrators/upgrading_the_orchestrator.html)
+- Ensure the database is backed up before executing an upgrade.
+
+## Inmanta-core: release 17.0.0 (2025-11-04)
+
+### New features
+
+- Added the `inmanta project download` command. This command allows downloading all Inmanta modules, required by a project, in their source format from a Python package repository. ([inmanta/inmanta-core#7820](https://github.com/inmanta/inmanta-core/issues/7820))
+- Added an API endpoint to remove all the Python environments used by the agents in a certain environment. ([inmanta/inmanta-core#9260](https://github.com/inmanta/inmanta-core/issues/9260))
+- Python package constraints set in the requirements.txt file at the project level are now enforced in the virtual environments of the agents.
+ ([#9407](https://github.com/inmanta/inmanta-core/issues/9407))
+- Add a query for resources to the GraphQL endpoint. Add the capability to sort by multiple fields at the same time.
+ ([inmanta/inmanta-core#9531](https://github.com/inmanta/inmanta-core/issues/9531))
+- Added support for policy-based authorization
+- Added the `inmanta module download` command, that allows downloading Inmanta modules in their source format from a Python package repository. ([inmanta/inmanta-core#7820](https://github.com/inmanta/inmanta-core/issues/7820))
+- Added mypy plugin `inmanta.mypy` for the Python client (`inmanta.protocol.Client`).
+- Added support to set environment settings, required by an Inmanta project, in the project.yml file. ([inmanta/inmanta-core#7654](https://github.com/inmanta/inmanta-core/issues/7654))
+
+### Improvements
+
+- Added sections to the environment settings ([#7447](https://github.com/inmanta/inmanta-core/issues/7447))
+- Show Python and PostgreSQL version in serverstatus endpoint
+- Add ``Result.all()`` helper method to easily iterate over results returned by v2 Rest API endpoints that support paging. See [documentation](helper_method_for_paging) for more information.
+ ([#8801](https://github.com/inmanta/inmanta-core/issues/8801))
+- Improve resource action deploy log messages. ([#8812](https://github.com/inmanta/inmanta-core/issues/8812))
+- It is no longer mandatory to backslash escape dots in the identifier when accessing a dict_path list element. ([#8878](https://github.com/inmanta/inmanta-core/issues/8878))
+- A notification is now deleted when the associated compile report is removed. ([inmanta/inmanta-core#9092](https://github.com/inmanta/inmanta-core/issues/9092))
+- Added support for references in lists ([#9112](https://github.com/inmanta/inmanta-core/issues/9112))
+- Python package constraints defined at the product level in the compatibility.json file are now enforced by default during project and agent install. This behavior can be disabled by setting the `server.compatibility_file` option to None.
+ ([#9600](https://github.com/inmanta/inmanta-core/issues/9600))
+- The discovered resources list endpoint now returns resource type, agent and resource id value for the discovered resource.
+- Made ``inmanta project`` install faster and more reliable
+- Added more debug logging to the agent's resource scheduler
+
+### Upgrade notes
+
+- Add a check for the PostgreSQL version of the database on server startup. The server will not start if the PostgreSQL version of the database is not compatible with this version of the orchestrator. Please make sure you update your database if required. The compatible PostgreSQL version can be found in the "Compatibility" page of the Inmanta documentation.
+ ([inmanta/inmanta-core#9543](https://github.com/inmanta/inmanta-core/issues/9543))
+- Modules required for testing in pytest-inmanta snippets should now be explicitly added to the ``requirements.dev.txt`` of the module that requires it, like any other dev dependencies. This was always the recommended approach, but used to work without in some cases because pytest-inmanta would attempt to install the required v1 module.
+
+### Deprecation notes
+
+- V2 endpoint resource_details no longer returns the first_generated_version ([#9066](https://github.com/inmanta/inmanta-core/issues/9066))
+- The order_by used by the GraphQL endpoint now expects a list instead of a single attribute to filter on ([inmanta/inmanta-core#9531](https://github.com/inmanta/inmanta-core/issues/9531))
+- Remove version information from resource returned by the API ([#9570](https://github.com/inmanta/inmanta-core/issues/9570))
+- Dropped ``strict_deps_check`` project option and associated CLI options. Strict dependency checking is now no longer required due to more reliable project installation.
+
+### Bug fixes
+
+- Fixed bug where the resource scheduler might crash when a `skipped_for_undefined` resource is deleted in the same model version where its dependency becomes defined
+- Fixed bug where resources might not be marked as orphans if they are deleted very quickly after their first appearance. This bug only affected the resource list endpoint, it did not cause those resources to remain managed.
+- Compiler: fixed bug where a list comprehension over an Unknown (``[x for x in <unknown>]``) would break the compiler under specific circumstances. List comprehensions now return a list with an unknown in it instead of a flat unknown, when they iterate over an unknown.
+- Remove broken executor venvs when the server starts.
+- Fix bug in Resource.clone, where reference cache was not retained
+
+### Other notes
+
+- Dropped support for deprecated v1 modules
+
+## Inmanta-ui: release 6.0.0 (2025-11-04)
+
+### Bug fixes
+
+- Make sure that the Last-Modified header is set correctly.
+
+## Web-console: release 3.0.1 (2025-11-04)
+
+### New features
+
+- Add support for role management to user management page.
+
+This feature allows to assign and manage user roles directly from the web console.
+
+Note: Role management is only supported when using the database authentication method in combination with the policy-engine authorization provider.
+
+See the [Inmanta documentation](https://docs.inmanta.com/inmanta-service-orchestrator-dev/9/administrators/authorization.html#integration-with-database-authentication) for details on configuring roles and permissions.
+ ([#6440](https://github.com/inmanta/web-console/issues/6440))
+
+### Improvements
+
+- Add highlight to the active menu item. ([#6385](https://github.com/inmanta/web-console/issues/6385))
+- Add support for protected settings in the Environment Settings page ([#6488](https://github.com/inmanta/web-console/issues/6488))
+- Add expand/collapse feature to code editors in desired state attributes. ([#6525](https://github.com/inmanta/web-console/issues/6525))
+- Add a page to view the details of a discovered resource. ([#6562](https://github.com/inmanta/web-console/issues/6562))
+- Add filtering to the discovered resources page. ([#6565](https://github.com/inmanta/web-console/issues/6565))
+
+
 # Release 2025.2 (2025-07-04)
 
 ## General changes
