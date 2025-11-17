@@ -1,0 +1,5 @@
+---
+description: "Remove the dependency on the epel-release package"
+issue-repo: inmanta-core
+change-type: patch
+destination-branches: [master]
