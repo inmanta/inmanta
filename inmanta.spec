@@ -184,6 +184,7 @@ rm -rf %{buildroot}
 %files
 %defattr(-,root,root,-)
 %doc LICENSE
+/opt/inmanta/.gitignore
 /opt/inmanta/bin
 /opt/inmanta/lib
 /opt/inmanta/lib64
