@@ -46,8 +46,8 @@ image_registry = "code.inmanta.com:4567"
 image_repository = "solutions/containers"
 image_name = "orchestrator"
 image_tags = [
-    "dev-ng",
     "dev",
+    "dev-{date}",
 ]
 registry_username_env = "GITLAB_REGISTRY_USERNAME"
 registry_password_env = "GITLAB_REGISTRY_PASSWORD"
