@@ -47,7 +47,7 @@ image_repository = "solutions/containers"
 image_name = "orchestrator"
 image_tags = [
     "dev",
-    "dev-{timestamp}",
+    "dev-{date}",
 ]
 registry_username_env = "GITLAB_REGISTRY_USERNAME"
 registry_password_env = "GITLAB_REGISTRY_PASSWORD"
