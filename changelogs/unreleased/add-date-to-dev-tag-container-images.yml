@@ -1,5 +1,5 @@
 ---
-description: "Release dev container images with a tag that contains a timestamp."
+description: "Release dev container images with a tag that contains a date."
 issue-nr: 2573
 issue-repo: irt
 change-type: patch
