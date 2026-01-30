@@ -1,0 +1,4 @@
+---
+description: "Remove the dependency on the epel-release package"
+change-type: patch
+destination-branches: [master]

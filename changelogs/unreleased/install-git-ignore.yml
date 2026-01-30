@@ -1,0 +1,4 @@
+---
+description: "Install the .gitignore file that is part of the Inmanta venv"
+change-type: patch
+destination-branches: [master]
