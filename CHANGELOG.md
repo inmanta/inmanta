@@ -1,3 +1,72 @@
+# Release 2026.1 (2026-01-30)
+
+## Upgrade notes
+
+- Please follow the documented [upgrade procedure](https://docs.inmanta.com/community/latest/administrators/upgrading_the_orchestrator.html)
+- Ensure the database is backed up before executing an upgrade.
+
+## Inmanta-core: release 18.0.0 (2026-01-30)
+
+### New features
+
+- Add `POST /api/v2/compliance_report` endpoint. ([inmanta/inmanta-core#9871](https://github.com/inmanta/inmanta-core/issues/9871))
+- Added support for report-only resources
+
+### Improvements
+
+- The search tool on the documentation pages now ranks automatically generated documentation last, to prevent that a match on a common term in these pages clutters the search results. ([inmanta/inmanta-core#8022](https://github.com/inmanta/inmanta-core/issues/8022))
+- Add an endpoint to delete a single discovered resource. Add an endpoint to batch delete discovered resources.
+ ([inmanta/inmanta-core#9633](https://github.com/inmanta/inmanta-core/issues/9633))
+- Ensure compatibility with python3.13 ([inmanta/inmanta-core#9650](https://github.com/inmanta/inmanta-core/issues/9650))
+- Improved the container-based installation documentation. ([inmanta/inmanta-core#9729](https://github.com/inmanta/inmanta-core/issues/9729))
+- Added the `server.internal-server-address` config option. ([inmanta/inmanta-core#9761](https://github.com/inmanta/inmanta-core/issues/9761))
+- Added support to the compiler service to start compiles that first perform a clean checkout of the project and recreate the compiler venv. ([inmanta/inmanta-core#9809](https://github.com/inmanta/inmanta-core/issues/9809))
+
+### Upgrade notes
+
+- Discovered resources, for which the discovery_resource_id is not set, will get the value `core::UnknownDiscoveryResource[internal,key=unknown]` for the discovery_resource_id field. Renamed class `inmanta.data.model.DiscoveredResource` to `inmanta.data.model.DiscoveredResourceOutput` and `inmanta.data.model.LinkedDiscoveredResource` to `inmanta.data.model.DiscoveredResourceInput`. ([inmanta/inmanta-core#8004](https://github.com/inmanta/inmanta-core/issues/8004))
+- Remove version attribute and set_version() from inmanta.resources.Resource ([inmanta/inmanta-core#9588](https://github.com/inmanta/inmanta-core/issues/9588))
+- The `requires` field was removed from the project.yml file. Use the requirements.txt file of the project instead. ([inmanta/inmanta-core#9720](https://github.com/inmanta/inmanta-core/issues/9720))
+- Compiler: Unknown values are no longer allowed in Python dataclasses. This is unlikely to affect existing models. ([#9773](https://github.com/inmanta/inmanta-core/issues/9773))
+- non_compliant as been added as an option to the ResourceState enum. Handlers that override the deploy may encounter this new state in the `requires` argument.
+
+- Remove deprecated AttributeNotFound exception. Attempting to access a non-existing attribute on a DynamicProxy object will now raise a plain AttributeError instead of an AttributeNotFound exception.
+
+### Deprecation notes
+
+- Drop inmanta.COMPILER_VERSION field. Drop utils.get_compiler_version(). Remove compiler_version argument from put_version.
+ ([inmanta/inmanta-core#4002](https://github.com/inmanta/inmanta-core/issues/4002))
+
+### Bug fixes
+
+- Compiler: fixed bug where implement conditions evaluated Unknown values as true, deviating from how they are evaluated in if statement conditions
+- Fix issue where using SyncClient() in handlers would leak open files ([#9542](https://github.com/inmanta/inmanta-core/issues/9542))
+- Compiler: Reject Unknown values in Python dataclasses on the plugin boundary ([#9773](https://github.com/inmanta/inmanta-core/issues/9773))
+- Fixed plugins returning a reference to a dataclass with nullable attributes ([#9837](https://github.com/inmanta/inmanta-core/issues/9837))
+- Compiler: in dataclass fields, properly convert internal ``null`` value to Python ``None`` value.
+- Improved type validation error messages for plugin kwargs to be in line with positional arg validation
+- Fixed broken cycle detection in inmanta.util.stable_depth_first function.
+- Corrected an error in the podman-based install documentation about how to start the orchestrator container when the system boots.
+- Fix bug where the server might end up with a partially loaded JWT config if an API call is made to the server while the third-party authentication provider is not up yet.
+
+## Inmanta-ui: release 6.0.1 (2026-01-30)
+
+### Bug fixes
+
+- Fix bug where paths containing 'config.json' incorrectly serve the config.js file. ([inmanta/inmanta-ui#593](https://github.com/inmanta/inmanta-ui/issues/593))
+
+## Web-console: release 3.0.2 (2026-01-30)
+
+### Improvements
+
+- The Composer now supports creating new instances of multiple services at once. ([#6546](https://github.com/inmanta/web-console/issues/6546))
+- The markdown preview now supports diff fenced code blocks. ([#6628](https://github.com/inmanta/web-console/issues/6628))
+
+### Known Issues
+
+- The order API cannot unlink an inter-service relation and delete the target instance of that relation in the same order. A workaround would be to perform this operation using the normal API to modify service instances. ([#6546](https://github.com/inmanta/web-console/issues/6546))
+
+
 # Release 2025.3 (2025-11-04)
 
 ## General changes
