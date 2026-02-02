@@ -1,0 +1,3 @@
+description: Remove config to build and publish RPMs
+change-type: patch
+destination-branches: [master]
