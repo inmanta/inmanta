@@ -1,2 +1,0 @@
-pipeline_template: ci/inmanta-product/Jenkinsfile-check-dependencies
-repo_name: inmanta
