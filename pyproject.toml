@@ -90,6 +90,34 @@ add_dev_tag_on_builds_from_master = false
 registry_username_env = "GITHUB_REGISTRY_USERNAME"
 registry_password_env = "GITHUB_REGISTRY_PASSWORD"
 
+[tool.irt.publish.native_docker_image.dev]
+image_registry = "code.inmanta.com:4567"
+image_repository = "solutions/containers"
+image_name = "orchestrator"
+image_tags = [
+    "dev",
+    "dev-{date}",
+]
+registry_username_env = "GITLAB_REGISTRY_USERNAME"
+registry_password_env = "GITLAB_REGISTRY_PASSWORD"
+
+[tool.irt.dependencies.extensions]
+inmanta-ui = "https://github.com/inmanta/inmanta-ui"
+
+[tool.irt.documentation.publish]
+dev_release_path = "/srv/www/docs/community/dev"
+stable_release_path = "/srv/www/docs/community/latest"
+post_publish_hook_remote = "~/post_publish_hook.py"
+
+[tool.irt.additional-lock-files.inmanta-core]
+repo = "https://github.com/inmanta/inmanta-core"
+files = [ "requirements.txt" ]
+
+[tool.irt.build.native_docker_image]
+build_context_path = "docker/native_image/"
+dockerfile_path = "Dockerfile"
+product_package_venv = "/opt/inmanta/"
+
 [tool.irt.dependencies.npm.web-console]
 repo = "https://github.com/inmanta/web-console"
 version = "==3.0.1"
