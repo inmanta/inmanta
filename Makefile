@@ -169,3 +169,17 @@ upload: ensure-valid-release-type
 			jq -r ".data[].identifier_perm" | \
 			xargs -I pkg_id cloudsmith copy inmanta/oss-stable-staging/pkg_id oss-stable ; \
 	fi ;\
+
+
+# The following 'dummy' steps are here because they are required by the generic extension pipeline
+.PHONY: ci-pep8 ci-mypy ci-test ci-install
+ci-pep8:
+	@echo Skipping ci-pep8 step
+ci-mypy:
+	@echo Skipping ci-mypy step
+ci-test:
+	@echo Skipping ci-test step
+#   Add dummmy empty junit file. (The generic extension pipeline expects this file)
+	touch junit-tests.xml
+ci-install:
+	@echo Skipping ci-install step
