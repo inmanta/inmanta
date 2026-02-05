@@ -180,4 +180,4 @@ ci-mypy:
 ci-test:
 	@echo Skipping ci-test step
 ci-install:
-	uv pip install -e . -c requirements.txt
+	@echo Skipping ci-install step
