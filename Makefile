@@ -179,7 +179,5 @@ ci-mypy:
 	@echo Skipping ci-mypy step
 ci-test:
 	@echo Skipping ci-test step
-#   Add dummmy empty junit file. (The generic extension pipeline expects this file)
-	touch junit-tests.xml
 ci-install:
-	@echo Skipping ci-install step
+	uv pip install -e . -c requirements.txt
