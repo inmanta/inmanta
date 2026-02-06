@@ -1,7 +1,7 @@
 [tool.irt]
 release-type = "continuous"
 postgres_version = 16
-python_version = "python3.13"
+python_version = "python3.12"
 
 [tool.irt.version-bump]
 tool = "bumpversion"
