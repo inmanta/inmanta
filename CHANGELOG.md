@@ -1,3 +1,22 @@
+# Release 2026.1.1 (2026-03-04)
+
+## Upgrade notes
+
+- Please follow the documented [upgrade procedure](https://docs.inmanta.com/community/latest/administrators/upgrading_the_orchestrator.html)
+- Ensure the database is backed up before executing an upgrade.
+
+## Inmanta-core: release 18.0.1 (2026-03-03)
+
+### Bug fixes
+
+- Fix bug in a database migration script that was causing the orchestrator upgrade to version 9 to fail.
+
+## inmanta-ui: release 6.0.1
+This component has had no new releases since the last product version.
+## web-console: release 3.0.2
+This component has had no new releases since the last product version.
+
+
 # Release 2026.1 (2026-01-30)
 
 ## Upgrade notes

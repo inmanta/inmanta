@@ -1,0 +1,6 @@
+---
+description: Cleanup the Makefile
+issue-nr: 2313
+issue-repo: inmanta-lsm
+change-type: patch
+destination-branches: [master]
