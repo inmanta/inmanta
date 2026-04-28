@@ -21,6 +21,9 @@ path = "sets/public.yml"
 [tool.irt.build.python]
 dists = [ "sdist", "wheel",]
 
+[tool.irt.build.rpm]
+centos_versions = []
+
 [tool.irt.build.native_docker_image]
 build_context_path = "docker/native_image/"
 dockerfile_path = "Dockerfile"
@@ -28,6 +31,8 @@ product_package_venv = "/opt/inmanta/"
 
 [tool.irt.publish.python]
 public = true
+
+[tool.irt.publish.rpm]
 
 [tool.irt.dependencies.extensions]
 inmanta-ui = "https://github.com/inmanta/inmanta-ui"
@@ -53,6 +58,8 @@ files = [ "requirements.txt",]
 [tool.irt.build.python.hooks]
 
 [tool.irt.build.python.subprojects]
+
+[tool.irt.build.rpm.enable_repo]
 
 [tool.irt.publish.native_docker_image.dev]
 image_registry = "code.inmanta.com:4567"
@@ -83,4 +90,4 @@ registry_password_env = "GITHUB_REGISTRY_PASSWORD"
 
 [tool.irt.dependencies.npm.web-console]
 repo = "https://github.com/inmanta/web-console"
-version = "==3.0.2"
+version = "==3.1.0"

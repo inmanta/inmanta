@@ -1,3 +1,95 @@
+# Release 2026.2 (2026-04-28)
+
+## Upgrade notes
+
+- Please follow the documented [upgrade procedure](https://docs.inmanta.com/community/latest/administrators/upgrading_the_orchestrator.html)
+- Ensure the database is backed up before executing an upgrade.
+
+## Inmanta-core: release 18.1.0 (2026-04-28)
+
+### New features
+
+- Updated the authentication documentation to cover the generic OIDC provider, including migration guidance from Keycloak and provider-specific setup for Microsoft Entra ID and Authentik.
+
+### Improvements
+
+- Added the resourceSummary query to the GraphQL endpoint. This query returns a summary of the composed state of all resources in the latest processed model version of an environment.
+
+- Add support for GraphQL variables
+- Allow jwt auth config options to be passed in environment variables ([inmanta/inmanta-core#9792](https://github.com/inmanta/inmanta-core/issues/9792))
+- Improve documentation of the server.internal_server_address config option. ([inmanta/inmanta-core#9946](https://github.com/inmanta/inmanta-core/issues/9946))
+- Optimized compiler: expected 10-40% performance improvement depending on the project.
+- Improve documentation: fix typos, update module format to V2, add missing language features, expand architecture page, and add DSL cheat sheet.
+- Added support to the configuration framework to get the full active configuration. ([inmanta/inmanta-support#960](https://github.com/inmanta/inmanta-support/issues/960))
+
+### Bug fixes
+
+- Fix inconsistent duplicate handling in DSL lists: for loops and list constructors no longer incorrectly trim duplicate values.
+- Fix memory leak in longpoll session where timed-out call futures were never removed from the _replies dict.
+- Fixed bug in the virtual environment management of executors that can cause a `No such file or directory` error on the `.inmanta_venv_status` file of a virtual environment. If this bug triggers, it can be worked around by starting a new deployment.
+- Fix UnicodeDecodeError on server-side compiles when the compiler output contains multi-byte UTF-8 characters split across read buffer boundaries
+- Make the AuthJWTConfig class thread-safe. ([inmanta/inmanta-core#10165](https://github.com/inmanta/inmanta-core/issues/10165))
+
+## Inmanta-ui: release 6.1.0 (2026-04-28)
+
+### New features
+
+- Added support for generic OIDC config generation, enabling identity providers like MS Entra ID, Okta, and Auth0 via the new oidc_authority config option.
+
+## Web-console: release 3.1.0 (2026-04-28)
+
+### New features
+
+- Added support to run compile from a clean slate, it is now possible to run a cleanup and recompile. It will reinstall the Inmanta project and its compiler venv. ([#6655](https://github.com/inmanta/web-console/issues/6655))
+- Resources view has been reworked. Split the resource state into its component status fields. 
+The previous single-field state was overloaded because it tried to convey multiple different dimensions of information in a single field. 
+The primary components in the new resource state are a resource's compliance status and its handler operation. 
+Additionally, a resource may be marked as "currently deploying", or blocked as a result of undefined intent.
+This splitting of the resource state into its component dimensions should present a clearer picture of a resource's or handler's health, especially in environments with high activity. 
+E.g. when new intent is pushed for a resource, its previous handler result could still be an indicator of its health, or when a repair is triggered for a resource, one might assume that it is likely still compliant, even if is is currently deploying. 
+Finally, this also ties into the report-only resources that were added recently, because a resource might be non-compliant even if its handler is healthy.
+ ([#6690](https://github.com/inmanta/web-console/issues/6690))
+- A GraphiQL editor has been implemented for testing GraphQL queries against the Console's GraphQL API. 
+The editor is accessible via the "Developer Tools" icon-menu in the header, 
+and provides features such as syntax highlighting, autocompletion, and query history.
+ ([#6711](https://github.com/inmanta/web-console/issues/6711))
+- Added support for generic OIDC authentication providers (e.g. MS Entra ID, Okta, Auth0) alongside the existing Keycloak integration.
+
+### Improvements
+
+- Multi text inputs now support adding the input value by tab or enter key. ([#6033](https://github.com/inmanta/web-console/issues/6033))
+- Improved the visualization of the version-slider on the Diagnose page. ([#6556](https://github.com/inmanta/web-console/issues/6556))
+- It is now possible to create an instance in an alternative state when those are defined in the service model. ([#6665](https://github.com/inmanta/web-console/issues/6665))
+- Users can now download mermaid diagrams rendered in the documentation tab as SVG or PNG files. ([#6812](https://github.com/inmanta/web-console/issues/6812))
+- Added support for a setState button to markdown documentation. 
+The button can be configured using a JSON object in a fenced code block with language `setState`.
+
+Supported configuration options:
+- `displayText` (string, default: "${targetState}") - The text displayed on the button
+- `type` ("primary" | "secondary" | "tertiary" | "link", default: "primary") - The button type
+- `variant` ("danger" | "warning", optional) - The button variant
+- `targetState` (string, required) - The target state to transfer to when clicked
+- `isInline` (boolean | "true", default: false) - Whether the button should be inline
+- `isSmall` (boolean | "true", default: false) - Whether the button should be small
+
+Example:
+````setState
+{"displayText":"Apply Changes","type":"secondary","variant":"danger","targetState":"desired-state","isInline":true}
+```` 
+
+
+### Bug fixes
+
+- Pressing enter in the project name field under create environment will now correctly create, set and filter project names. ([#6530](https://github.com/inmanta/web-console/issues/6530))
+- Attribute rows of an instance view are now only clickable when they have an associated action available ([#6652](https://github.com/inmanta/web-console/issues/6652))
+- Notifications on export failure of compiles now clear properly ([#6660](https://github.com/inmanta/web-console/issues/6660))
+- Fixed an issue where rendering a diagram inside a closed collapsible would give an error or empty render. ([#6728](https://github.com/inmanta/web-console/issues/6728))
+
+### Other notes
+
+- The setState button can't execute the transfer from the Markdown Previewer page. It requires the context of the Instance Details page.
+
+
 # Release 2026.1.1 (2026-03-04)
 
 ## Upgrade notes

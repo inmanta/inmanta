@@ -1,0 +1,3 @@
+description: Add dedicated product python version.
+change-type: patch
+destination-branches: [master]
