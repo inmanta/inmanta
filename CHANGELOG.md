@@ -1,3 +1,33 @@
+# Release 2026.3 (2026-05-13)
+
+## Upgrade notes
+
+- Please follow the documented [upgrade procedure](https://docs.inmanta.com/community/latest/administrators/upgrading_the_orchestrator.html)
+- Ensure the database is backed up before executing an upgrade.
+
+## Inmanta-core: release 18.1.1 (2026-05-13)
+
+### Bug fixes
+
+- Fix bug where the totalCount field on the resources query of GraphQL was not filtering on environment. ([#10352](https://github.com/inmanta/inmanta-core/issues/10352))
+
+## Inmanta-ui: release 6.1.1 (2026-05-13)
+
+No changelog entries.
+
+## Web-console: release 3.1.1 (2026-05-13)
+
+### Improvements
+
+- Automatically add embedded entities that are required by a service when adding a new entity on the canvas. ([#6837](https://github.com/inmanta/web-console/issues/6837))
+- Empty optional values are now submitted as `null` to the API instead of an empty string/array/object.
+
+### Bug fixes
+
+- Fixed a layout shift causing progress bars in the resources view to resize when pagination controls changed. ([#6833](https://github.com/inmanta/web-console/issues/6833))
+- Bugfix for optional embedded entities in the service instance form, ensuring that they are not automatically added when they are optional, even when they contain required nested attributes.
+
+
 # Release 2026.2 (2026-04-28)
 
 ## Upgrade notes
