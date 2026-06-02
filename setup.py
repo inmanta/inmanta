@@ -26,7 +26,7 @@ setup(
         "Documentation": "https://docs.inmanta.com/community/latest/",
     },
     install_requires=[
-        "inmanta-core~=18.1.2.0rc",
+        "inmanta-core==18.1.2",
         "inmanta-ui==6.1.1",
     ],
     # explicitly declare packages so setuptools does not attempt auto discovery
