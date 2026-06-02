@@ -1,3 +1,33 @@
+# Release 2026.3.1 (2026-06-02)
+
+## Upgrade notes
+
+- Please follow the documented [upgrade procedure](https://docs.inmanta.com/community/latest/administrators/upgrading_the_orchestrator.html)
+- Ensure the database is backed up before executing an upgrade.
+
+## Inmanta-core: release 18.1.2 (2026-06-02)
+
+### Bug fixes
+
+- Fixed the bug where all the agents of the different environments used the same state directory. This bug can cause a "no such file or directory" error on the .inmanta_venv_status file of an agent which prevents resources from being deployed.
+
+## inmanta-ui: release 6.1.1
+This component has had no new releases since the last product version.
+## Web-console: release 3.1.2 (2026-06-02)
+
+### New features
+
+- "Add support for `web_order` and `web_default_open` attribute annotations on the Service Instance Details documentation tab. 
+Sections can now be sorted by `web_order` (use `-1` or omit to keep declaration order), multiple sections can be open simultaneously, 
+and `web_default_open: true` expands a section on first render."
+
+
+### Improvements
+
+- Relations in the composer can now be expanded and collapsed.
+- Hide the Markdown Previewer button on the Documentation tab when viewing older versions of a service instance. ([#6880](https://github.com/inmanta/web-console/issues/6880))
+
+
 # Release 2026.3 (2026-05-13)
 
 ## Upgrade notes
