@@ -3,7 +3,7 @@
 # * A checkout of the inmanta-core repository in a directory called inmanta-core.
 # * A checkout of the product repository in a directory called product
 ARG PYTHON_VERSION_INMANTA_VENV
-FROM python:${PYTHON_VERSION_INMANTA_VENV}-bookworm
+FROM python:${PYTHON_VERSION_INMANTA_VENV}
 
 ARG PYTHON_VERSION_INMANTA_VENV
 ARG VERSION
