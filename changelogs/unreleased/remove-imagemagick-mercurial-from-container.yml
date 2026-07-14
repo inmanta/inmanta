@@ -1,0 +1,4 @@
+---
+description: "Remove imagemagick and mercurial (and their orphaned dependencies) from the container. They are inherited from the python base image but not used, and only add attack surface."
+change-type: patch
+destination-branches: [master]

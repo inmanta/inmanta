@@ -58,6 +58,10 @@ apt-get -y install git \
                    cargo \
                    openssl \
                    tini
+# Remove packages that the python base image (buildpack-deps) ships but that we do not use, to
+# reduce the container's attack surface. --auto-remove also drops their now-orphaned dependencies
+# (imagemagick's image libraries: libheif, openexr, libde265, ...).
+apt-get purge -y --auto-remove imagemagick libmagickcore-dev libmagickwand-dev mercurial
 apt-get clean
 # Create venv
 python${PYTHON_VERSION_INMANTA_VENV} -m venv /opt/inmanta
