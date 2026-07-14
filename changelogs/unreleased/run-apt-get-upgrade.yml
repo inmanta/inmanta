@@ -1,0 +1,4 @@
+---
+description: "Run `apt-get upgrade` to install the latest security fixes."
+change-type: patch
+destination-branches: [master, iso9, iso8]
