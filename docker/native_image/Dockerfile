@@ -48,6 +48,8 @@ EOF2
 cp /inmanta_build_dir/inmanta-core/src/inmanta/protocol/auth/default_policy.rego /etc/inmanta/authorization/policy.rego
 # Install packages
 apt-get -y update
+# Apply latest (security) fixes
+apt-get -y upgrade
 apt-get -y install git \
                    libffi8 \
                    libffi-dev \
