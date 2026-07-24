@@ -3,7 +3,7 @@
 # * A checkout of the inmanta-core repository in a directory called inmanta-core.
 # * A checkout of the product repository in a directory called product
 ARG PYTHON_VERSION_INMANTA_VENV
-FROM python:${PYTHON_VERSION_INMANTA_VENV}-bookworm
+FROM python:${PYTHON_VERSION_INMANTA_VENV}
 
 ARG PYTHON_VERSION_INMANTA_VENV
 ARG VERSION
@@ -48,6 +48,8 @@ EOF2
 cp /inmanta_build_dir/inmanta-core/src/inmanta/protocol/auth/default_policy.rego /etc/inmanta/authorization/policy.rego
 # Install packages
 apt-get -y update
+# Apply latest (security) fixes
+apt-get -y upgrade
 apt-get -y install git \
                    libffi8 \
                    libffi-dev \
