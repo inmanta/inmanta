@@ -1,3 +1,134 @@
+# Release 2026.4 (2026-07-24)
+
+## Upgrade notes
+
+- Please follow the documented [upgrade procedure](https://docs.inmanta.com/community/latest/administrators/upgrading_the_orchestrator.html)
+- Ensure the database is backed up before executing an upgrade.
+
+## Inmanta-core: release 19.0.0 (2026-07-24)
+
+### New features
+
+- Added a database singleton lock so at most one Inmanta server can be active on a given database. It is enabled by default and configurable via the new ``database.singleton_lock`` and ``database.singleton_lock_wait_time`` options. A second server on the same database refuses to start, and a server that loses the lock (for example after a database failover) shuts down.
+
+- Added a POST /api/v2/login/renew endpoint that lets an authenticated client exchange its current, still-valid session token for a fresh one with a new expiry, without re-entering a password. The login and renew responses now report expires_in so clients can renew before the session expires; the web console uses this to keep an active database or break-glass session alive.
+
+- At startup the server now verifies for every environment that the project state on its local filesystem was produced by that environment's latest compile (this can be false after a failover to another server or a wiped state directory). If not, it automatically requests an update and recompile to converge the local state.
+
+- environment_create_token now accepts an optional expire parameter: the lifetime of the created token in seconds. When not set, the expiry configured on the signing configuration applies, as before. The expiry is reflected in the token registry (environment_token_list).
+ ([#5643](https://github.com/inmanta/inmanta-core/issues/5643))
+- Added a token registry so user-created API tokens can be listed and individually revoked without rotating the signing key. Non-idempotent tokens now carry a jti claim and are recorded in a new token table, and are rejected once revoked; idempotent, service and legacy tokens keep their stateless, signature-only validation. New environment_token_list and environment_token_revoke API endpoints expose the registry.
+
+- Agent-server communication now uses a persistent websocket connection instead of longpoll/heartbeat, reducing latency and resource usage.
+
+
+### Improvements
+
+- The `inmanta module release` command now uses the changelog entries of the released version as the message of the release tag, instead of the generic "auto tag by module tool" message. ([inmanta/inmanta-core#7893](https://github.com/inmanta/inmanta-core/issues/7893))
+- Add a `modelVersion` filter to the `resources` GraphQL query to fetch the resources present in a specific version of the model, instead of the latest released version.
+
+- Documented concurrency control (the current_version parameter) in the LSM API documentation
+- Passwords are normalized to Unicode NFKC before hashing and verifying, so a password containing non-ASCII characters verifies regardless of how it was typed. Existing password hashes keep working and are transparently re-hashed to the normalized form on the next successful login.
+
+
+### Upgrade notes
+
+- Version of opa was bumped to v1.18.2
+- Tokens created via environment_create_token (API, web console or inmanta-cli token create) without an explicit idempotent argument are now revocable by default: they carry a jti claim, are tracked in the token registry, differ on every call, and expire according to the signing configuration's expire setting. Automation that relies on reproducible, non-expiring tokens must pass idempotent=true explicitly.
+ ([#10571](https://github.com/inmanta/inmanta-core/issues/10571))
+
+### Deprecation notes
+
+- Removed the ``last_failover`` field from the Agent API model. Removed the ``sid`` parameter from the ``get_state`` and ``get_resource`` API methods. Removed the ``heartbeat`` and ``heartbeat_reply`` API endpoints.
+
+
+### Bug fixes
+
+- Raise a clear error when resource id components contain invalid characters. ([#10342](https://github.com/inmanta/inmanta-core/issues/10342))
+- Fix bug where an update of the configured repository URL of an Inmanta project would not be reflected in the project checkout of the compiler service. ([inmanta/inmanta-core#6](https://github.com/inmanta/inmanta-core/issues/6))
+- Fix two agent executor cleanup issues: idle executors were no longer cleaned up after the agent reconnected to the server (leaking executor processes), and regularly used executors were rebuilt more often than the configured retention time, adding avoidable deployment latency.
+
+- Fix broken link to Podman GitHub issue comment in the installation documentation.
+- Fixed bug where the scheduler would stop processing new model versions if the database has been running in read-only mode.
+- Fix a race condition (rare outside of testing) where a notification arriving during agent shutdown could resurrect a worker, causing "AssertionError: Joining worker that is not stopped".
+- Run git non-interactively during server-side compiles so that a failing checkout of a repository requiring authentication reports the real authentication error instead of the confusing "could not read Username for '...': No such device or address".
+
+
+## Inmanta-core: release 18.1.3 (2026-06-19)
+
+### Improvements
+
+- Recreate the executor venvs when the version of glibc on the host has changed.
+
+### Upgrade notes
+
+- Version of opa was bumped to v1.17.1
+
+## Inmanta-ui: release 6.2.0 (2026-07-24)
+
+### New features
+
+- The config.js served to the web-console now advertises a fallback to the database authentication method (localFallback) for the oidc and jwt auth methods. It is only enabled when the new web-ui.oidc_local_fallback option is set and the database authentication method is actually usable (a signing config and at least one database user exist).
+
+## Web-console: release 4.0.0 (2026-07-24)
+
+### New features
+
+- The Environment overview page has been removed, and the Environment Dashboard will now be the default when loading the application. 
+The last selected environment is stored in local storage so the application will by default load that environmnent when the id is not provided in the URL. 
+When no environment is available to load, the user will be redirected to the create environment page.
+The main menu in the application header now also contains a search box to quickly find and switch to an environment.
+ ([#6935](https://github.com/inmanta/web-console/issues/6935))
+- Added a "Manage projects" option to the environment selector menu, opening a modal that lists all projects and allows deletion of projects that have no environments. ([#6936](https://github.com/inmanta/web-console/issues/6936))
+- Service instance forms can now be split into named tabs through annotations. A web_tabs catalog on the service entity defines the tabs (key, label, order, default, optional icon), and a web_tab annotation on a top-level attribute or relation assigns it to a tab; unassigned fields land on the default tab. ([#7012](https://github.com/inmanta/web-console/issues/7012))
+- Add an orphaned filter to the Resources page status filter.
+
+### Improvements
+
+- Users can now search for specific versions in the compare tab of a service instance attributes. ([#6143](https://github.com/inmanta/web-console/issues/6143))
+- Added sorting on the resources page. It is now possible to sort by compound state and deployment status. ([#6505](https://github.com/inmanta/web-console/issues/6505))
+- The Agents page filters have been moved into a side panel drawer, opened from a filter toggle button that shows the number of active filters, consistent with the Resources page. ([#6774](https://github.com/inmanta/web-console/issues/6774))
+- The Events page filters have been moved into a side panel drawer, opened from a filter toggle button that shows the number of active filters, and the events table now scrolls within its own region instead of growing the page. ([#6776](https://github.com/inmanta/web-console/issues/6776))
+- The Parameters page filters (name, source, last updated) have been moved from the inline toolbar into a side-panel drawer, matching the Resources page. ([#6777](https://github.com/inmanta/web-console/issues/6777))
+- The Desired State page filters have been migrated to a side panel drawer, matching the pattern already used by the Resources page.
+- Added a dedicated JSON editor (Monaco) for dictionary fields in service instance forms, replacing the plain text input. ([#6836](https://github.com/inmanta/web-console/issues/6836))
+- The "Clear filter" button in the resource page filter panel has been replaced with a "Reset Filters" button that restores the default !orphaned filter.
+- Facts table now displays the updated column as a relative date with a full timestamp tooltip. ([#6892](https://github.com/inmanta/web-console/issues/6892))
+- The set state and expert set state actions on a service instance now let you provide a custom message that is sent with the state transfer. ([#6931](https://github.com/inmanta/web-console/issues/6931))
+- Facts table rows now present each value according to its content - JSON, XML, and other long or multi-line values can be expanded inline into a read-only, formatted code editor with copy and download controls, while short text values can be copied directly from the row. ([#6934](https://github.com/inmanta/web-console/issues/6934))
+- Compound state popovers and legend tooltips on the Resources page now show human-readable labels (e.g. "Not Blocked", "Last Handler Run") instead of raw status keys. ([#6957](https://github.com/inmanta/web-console/issues/6957))
+- The version selects in the compare view of the Service Instance Details page now display the creation date of each version. ([#6958](https://github.com/inmanta/web-console/issues/6958))
+- The "purged" and "isDeploying" Switch filters on the Resources page have been replaced with the ToggleButtonGroup for boolean filters, adding include/exclude support. ([#6970](https://github.com/inmanta/web-console/issues/6970))
+- The deploying spinner label on the Resources page is now clickable when resources are deploying, toggling the isDeploying filter on and off. ([#6993](https://github.com/inmanta/web-console/issues/6993))
+- The orphaned, deploying, and purged resource status filters now use check and cross icons to indicate include versus exclude. ([#6995](https://github.com/inmanta/web-console/issues/6995))
+- Optional boolean attributes in the service instance form are now shown as a True/False toggle group (with no selection representing the unset value) instead of radio buttons. ([#6996](https://github.com/inmanta/web-console/issues/6996))
+- Service instance form suggestions now support "label/value pairs", showing a human-friendly label while submitting the underlying value. ([#7008](https://github.com/inmanta/web-console/issues/7008))
+- Service instance form suggestions can now use ${entity_type}, ${identifying_attribute} and ${instance_id} variables in the suggested values parameter name, resolved from the current form's identity. ([#7009](https://github.com/inmanta/web-console/issues/7009))
+- In the attribute comparison view, the version dropdown now aligns each version's timestamp in a column and renders it as smaller, subtler text. ([#7044](https://github.com/inmanta/web-console/issues/7044))
+- Attribute values and order details shown as formatted JSON/XML now offer a "Copy raw value" action that copies the original, un-formatted string behind the pretty-printed view. ([#7045](https://github.com/inmanta/web-console/issues/7045))
+- The parameters table and the resource details facts table now present each value according to its content - JSON, XML, and other long or multi-line values can be expanded inline into a read-only, formatted code editor with copy and download controls, while short text values can be copied directly from the row, matching the facts table. ([#7048](https://github.com/inmanta/web-console/issues/7048))
+- The create environment form now shows the Repository field before the Branch field, and both fields have a tooltip with an example value. ([#7072](https://github.com/inmanta/web-console/issues/7072))
+- Add a different color for the acknowledged status in the order progress bar, add a link to the service instance in the order details row, display the instance display value instead of the raw id, and expand the matching row when clicking on a dependency in the order details rows. ([#7073](https://github.com/inmanta/web-console/issues/7073))
+- Automatically renew the database login session before it expires, so active users are no longer logged out mid-session when the session token reaches its (default one hour) lifetime.
+- Added a database login fallback for OIDC and JWT authentication. When enabled and the identity provider is unavailable, an admin can sign in with a local database account and manage users and roles as with database authentication.
+
+### Deprecation notes
+
+- Showing unmodified resources on the Compliance Check and Desired State Compare pages is no longer possible in the web-console. ([#6929](https://github.com/inmanta/web-console/issues/6929))
+
+### Bug fixes
+
+- Fixed an issue where JSON and code editors were not adapting their content color when switching theme without a page reload. ([#6948](https://github.com/inmanta/web-console/issues/6948))
+- Fixed an issue where the discovery resource URI was not correctly generated, leading to failed API calls in certain scenarios. ([#6963](https://github.com/inmanta/web-console/issues/6963))
+- The notification badge no longer flashes from a disabled to an active state on initial load. ([#7025](https://github.com/inmanta/web-console/issues/7025))
+- Service instance form selects with numeric enum options now sort by value instead of alphabetically (5, 6, ... 128 instead of 10, 128, ... 5), and long option lists are now scrollable. ([#7037](https://github.com/inmanta/web-console/issues/7037))
+- Made the expand/collapse chevron directions consistent across the console. ([#7046](https://github.com/inmanta/web-console/issues/7046))
+- The expert and destroy action toggles no longer stay highlighted behind the confirmation modal once it opens.
+The confirmation modal no longer closes when a click starts inside it and is released on the backdrop.
+ ([#7047](https://github.com/inmanta/web-console/issues/7047))
+- Deleting an environment no longer briefly shows a blank or errored dashboard; the console now navigates directly to a remaining environment (or the Create Environment page when none are left). ([#7058](https://github.com/inmanta/web-console/issues/7058))
+
+
 # Release 2026.3.1 (2026-06-02)
 
 ## Upgrade notes
