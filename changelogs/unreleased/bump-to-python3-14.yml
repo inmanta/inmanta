@@ -1,0 +1,8 @@
+---
+description: "The supported Python version is now 3.14"
+issue-nr: 10590
+issue-repo: inmanta-core
+change-type: major
+destination-branches: [master]
+sections:
+  upgrade-note: "{{description}}"
