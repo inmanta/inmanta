@@ -1,7 +1,7 @@
 [tool.irt]
 release-type = "continuous"
 postgres_version = 16
-python_version = "python3.13"
+python_version = "python3.14"
 
 [tool.irt.version-bump]
 tool = "bumpversion"
@@ -90,4 +90,4 @@ registry_password_env = "GITHUB_REGISTRY_PASSWORD"
 
 [tool.irt.dependencies.npm.web-console]
 repo = "https://github.com/inmanta/web-console"
-version = "==4.0.0"
+version = "==4.1.0"

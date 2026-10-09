@@ -1,0 +1,5 @@
+pipeline_template: ci/inmanta-product/Jenkinsfile-security-updates
+repo_name: inmanta
+build_types:
+  dev: fail
+  stable: report
