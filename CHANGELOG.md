@@ -1,3 +1,157 @@
+# Release 2027.1 (2026-10-09)
+
+## General changes
+
+### Upgrade notes
+
+- The supported Python version is now 3.14 ([inmanta/inmanta-core#10590](https://github.com/inmanta/inmanta-core/issues/10590))
+- Please follow the documented [upgrade procedure](https://docs.inmanta.com/community/latest/administrators/upgrading_the_orchestrator.html)
+- Ensure the database is backed up before executing an upgrade.
+
+## Inmanta-core: release 20.0.0 (2026-10-09)
+
+### Improvements
+
+- Add the `POST /api/v2/dryrun_filtered` endpoint, which runs a dryrun on the resources matching a resource filter (the same filter as the GraphQL `resources` query, e.g. agent or resource type). ([#10840](https://github.com/inmanta/inmanta-core/issues/10840))
+- Added `modelVersion` as an output field of the resources query on GraphQL
+- Added the `server.max-request-body-size` config option to configure the maximum size of a request body accepted by the server. It defaults to 100MiB.
+- Add a `deploy_filtered` REST endpoint that triggers a deploy or repair on the resources matching a resource filter (same filter as the GraphQL `resources` query, e.g. agent or resource type), including targeting a single resource with a sufficiently specific filter.
+- Stop retaining the traceback of an UnsetException that the compiler reschedules, removing about a fifth of the cyclic garbage a compile produces
+- A dryrun triggered with `POST /api/v2/dryrun_filtered` stores the resource filter it was triggered with. `GET /api/v2/dryrun/<version>` and `GET /api/v2/dryrun/<version>/<report_id>` return it as `resource_filter`. ([#10604](https://github.com/inmanta/inmanta-core/issues/10604))
+- Relax the cyclic GC thresholds for the duration of a compile, cutting compile time by 8% to 29% depending on the model. The youngest generation threshold defaults to 1000000 and can be tuned with compiler.gc_gen0_threshold, which bounds the extra memory held while collection is deferred
+- A method definition can now use `object` as a type annotation wherever `Any` was already allowed, i.e. on a method that sets `strict_typing=False`.
+- Speed up the parser AST cache by replacing persistent_id with a pickle dispatch table, roughly halving cache writes and cutting cache reads by up to 60% on large module sets
+
+### Upgrade notes
+
+- - The mechanism to transport and install code on the agents has been reworked. Please make sure to run a full
+  compile after upgrading the orchestrator.
+- The deprecated 'agent_install_dependency_modules' setting in the project.yml file has been removed.
+
+- Bump opa version to v1.21.1
+- The `redeploy_failed_on_export` environment setting now defaults to false. ([#10591](https://github.com/inmanta/inmanta-core/issues/10591))
+- Updated the default access policy: Downloading a support archive now requires the user to be global admin.
+
+### Bug fixes
+
+- - A top level directory of a module's python package whose name merely starts with 'model', 'files' or 'templates'
+  (e.g. 'models') was incorrectly treated as non-python content. The python files in such a directory are now part of
+  the module, both for the compiler and on the agent.
+
+- Fix bug where a resource can be considered as updated across model versions although its attribute set has not changed.
+ ([#10622](https://github.com/inmanta/inmanta-core/issues/10622))
+- Fixed a bug in the cleanup of a deleted model version, where the information the orchestrator kept about the inmanta modules it used was left behind.
+ ([#10778](https://github.com/inmanta/inmanta-core/issues/10778))
+- Fixed bug that can cause a resource to be deployed while it transitively depends on a blocked resource.
+- Use appropriate return codes for deploy, dry-run and resource scheduler status endpoints when the scheduler can not be reached. The endpoints now return 409 Conflict when the environment is halted and 503 Service Unavailable when the scheduler is otherwise unreachable. Both previously returned 404 Not Found.
+- The server now terminates with exit code 5 instead of exit code 0 when it shuts down because it lost the database singleton lock.
+
+- Fix bug that prevented the request-timeout config option of a *_rest_transport section from being increased.
+- Fixed the resolution of attributes and default values for an entity that inherits the same attribute via multiple parents. The inheritance hierarchy is now traversed depth-first and from left to right, and the first definition found for the attribute is used.
+- Fix bug where a server-side compile failed because the Inmanta project and its modules were missing from the compiler venv whenever the compiler service created a new compiler venv, for example because the Python version of the Inmanta server changed.
+
+
+## Inmanta-ui: release 6.2.1 (2026-10-09)
+
+### Improvements
+
+- Removed the dedicated /console/version.json route and its test references. The web-console no longer generates version.json (it dropped the update banner that used it), and the file, when present, is already served by the general static-file handler, so the special route was redundant. ([#6482](https://github.com/inmanta/inmanta-ui/issues/6482))
+
+## Web-console: release 4.1.0 (2026-10-09)
+
+### New features
+
+- Added a "Service" tab to the Resources page filter drawer. It narrows the resource list to a chosen service entity and, optionally, a specific instance, with an "include owned services" switch to also match the resources of the services that instance owns.
+ ([#6506](https://github.com/inmanta/web-console/issues/6506))
+- Form fields can now suggest values from a live GraphQL query via a new "graphql" web_suggested_values flavor, projecting each result node into the suggestion dropdown with jsonpath label/value paths. ([#7010](https://github.com/inmanta/web-console/issues/7010))
+- A field's suggested values can depend on another field through ${form.<path>}/${self.<path>} references; the dependent field re-queries its suggestions when the source changes. Dependency cycles and missing references surface as model errors. ([#7011](https://github.com/inmanta/web-console/issues/7011))
+- Transfers that carry a `web_confirm` annotation now show that text as the confirmation prompt for set-state and delete actions, instead of the default message. ([#7092](https://github.com/inmanta/web-console/issues/7092))
+- A set-state transfer in the Actions dropdown now renders as a labelled, iconed, styled menu item driven by the transfer's `web_button_label` / `web_icon` / `web_button_type` / `web_button_variant` annotations, instead of the raw target-state name. ([#7093](https://github.com/inmanta/web-console/issues/7093))
+- A lifecycle state now renders its `web_label` / `web_icon` / `web_description` annotations wherever its badge appears (instance state column, history timeline, catalog lifecycle table), instead of just the raw state name. ([#7094](https://github.com/inmanta/web-console/issues/7094))
+- An `api_set_state` transfer flagged `web_advanced_state` now collapses out of the primary Actions-dropdown list into a secondary "Advanced" disclosure, one click away, instead of always showing in the main Set-state group. ([#7095](https://github.com/inmanta/web-console/issues/7095))
+- The documentation-tab `setState` markdown button now defaults its label, icon, type and variant from the transfer's `web_button_label` / `web_icon` / `web_button_type` / `web_button_variant` annotations (an explicit codeblock value still wins), shows the transfer's `web_confirm` prompt, and is disabled while viewing a historical instance version. ([#7096](https://github.com/inmanta/web-console/issues/7096))
+- Replacing the dashboard that provides better insights into the system's performance and status. ([#7135](https://github.com/inmanta/web-console/issues/7135))
+- The Resources page now has a single Deploy split button in place of the separate Deploy and Repair buttons. Deploy runs an incremental deploy on the resources matching the active filter (or the whole environment when no filter is set); the button's menu adds Repair, a full deploy that re-checks every matched resource. Before running, a confirmation dialog lets you choose between the filtered set and the whole environment, shows how many resources each one covers, and won't let you confirm an empty set. Orphaned resources, which are no longer part of any released version, are left out.
+ ([#7240](https://github.com/inmanta/web-console/issues/7240))
+- You can now deploy or repair a single resource directly from its Resource Details page. A new Deploy split button runs an incremental deploy by default, with Repair (a full deploy) available from its menu.
+ ([#7241](https://github.com/inmanta/web-console/issues/7241))
+- The service instance details page now has a Deploy split button beside the Actions menu. Deploy runs an incremental deploy on the resources of that instance; the button's menu adds Repair, a full deploy. When the instance's service can own other services, the confirmation dialog offers a second scope that extends the action to the owned services as well.
+ ([#7242](https://github.com/inmanta/web-console/issues/7242))
+- The Desired State tab now shows where reference-backed values come from, labels their argument types, and has a Structured / JSON toggle for the raw payload. ([#7355](https://github.com/inmanta/web-console/issues/7355))
+- Show where reference-backed values come from on the versioned resource page and the resource history tab. ([#7357](https://github.com/inmanta/web-console/issues/7357))
+- A fact reference in the desired state now links to the Facts tab of the resource it reads from. ([#7359](https://github.com/inmanta/web-console/issues/7359))
+- Added an Actions dropdown to the Agents page for pausing/resuming all agents at once, controlling their on-resume behavior while the environment is halted, and removing all agent venvs (asynchronous, confirmed via a modal since it can take a while to complete). ([#6539](https://github.com/inmanta/web-console/issues/6539))
+
+### Improvements
+
+- The inter-service relation autocomplete in the service instance form now debounces its search. It refetches matching instances 500ms after you stop typing instead of on every keystroke, which cuts the number of requests while filtering. ([#5157](https://github.com/inmanta/web-console/issues/5157))
+- Link each dry run and version compare diff entry to the corresponding resource details page. ([#6052](https://github.com/inmanta/web-console/issues/6052))
+- The breadcrumbs and page title now stay in view while scrolling. Only the page content below them scrolls. ([#6132](https://github.com/inmanta/web-console/issues/6132))
+- Removed the banner asking users to hard-reload for a new web-console version. The console is already served with cache-control and ETag headers, so browsers revalidate and stay in sync on their own, making the banner redundant. Also dropped the unused build step that generated version.json for it.
+ ([#6482](https://github.com/inmanta/web-console/issues/6482))
+- Migrated the Compile Reports page filters from an inline toolbar widget to a side-panel drawer, with a toolbar button showing the active filter count.
+Migrated the Resource Details log tab filters to the same side-panel drawer pattern.
+ ([#6775](https://github.com/inmanta/web-console/issues/6775))
+- The Service Inventory page filters (state, id/service identity, attribute sets, deleted) have been moved from the inline toolbar into a side-panel drawer, opened from a filter toggle button that shows the number of active filters, matching the Resources page. ([#6779](https://github.com/inmanta/web-console/issues/6779))
+- The Facts page filters (name, resource id) have been moved from the inline toolbar into a side-panel drawer, opened from a filter toggle button that shows the number of active filters, matching the Resources page. ([#6780](https://github.com/inmanta/web-console/issues/6780))
+- Add hints to the resource type, value and agent filters explaining that they match on any resource containing the entered text. ([#6823](https://github.com/inmanta/web-console/issues/6823))
+- An unrecognised `web_*` key on a lifecycle state or transfer annotation now logs a dev-console warning (with a "Did you mean" suggestion for likely typos), as a best-effort typo aid. Dev builds only, no user-facing UI change - the annotation is still passed through and ignored keys are skipped silently. ([#7097](https://github.com/inmanta/web-console/issues/7097))
+- Added a reusable UnitInputField component for entering quantities (sizes, data rates, durations) with a unit, while the underlying attribute stays a plain int/float. ([#7131](https://github.com/inmanta/web-console/issues/7131))
+- The instance details Attributes table now renders values annotated with web_presentation "unit" in their auto-selected display unit, with the raw value and API unit shown in a tooltip. ([#7132](https://github.com/inmanta/web-console/issues/7132))
+- Attributes annotated with web_presentation "unit" now render the UnitInputField in Create/Edit/Duplicate instance forms and the Composer, instead of a plain number field. ([#7133](https://github.com/inmanta/web-console/issues/7133))
+- The repository URL and branch fields on the environment settings page now appear in the same order as the create environment form, and show the same help tooltips. ([#7263](https://github.com/inmanta/web-console/issues/7263))
+- Text typed in a list field of the service instance form is now added as a chip when the field loses focus. ([#7365](https://github.com/inmanta/web-console/issues/7365))
+- The JSON editor for dict fields in the service instance form can now be resized. ([#7366](https://github.com/inmanta/web-console/issues/7366))
+- Make the Deploy and Repair tooltips specific to the page they are on. ([#7367](https://github.com/inmanta/web-console/issues/7367))
+- The service inventory header shows the service description and clickable instance counts instead of a donut chart. ([#7414](https://github.com/inmanta/web-console/issues/7414))
+- Clicking a highlighted segment in the resource summary bars now removes its filter.
+ ([#7415](https://github.com/inmanta/web-console/issues/7415))
+- Copy buttons in tables and attribute lists now only show when you hover the row. ([#7426](https://github.com/inmanta/web-console/issues/7426))
+- Restyled the documentation tab and its Mermaid diagrams with PatternFly, in light and dark theme. ([#7430](https://github.com/inmanta/web-console/issues/7430))
+- Items of a list in the service instance form are now titled by their key attribute values instead of their index.
+- Poll /api/v2/health to show the header status icon as red when it reports an unhealthy server. ([#7026](https://github.com/inmanta/web-console/issues/7026))
+- The browser page title now shows the product name reported by the server status (e.g. "Inmanta Service Orchestrator") instead of "Web Console".
+- A form tab that holds a single embedded relation now renders that relation directly on the tab: its description, "Add" action and items sit in the tab body instead of behind an expandable group, so there is nothing to expand before the sub-form shows. Tabs with anything else keep the expandable group they had.
+
+- The token expiry's custom amount/unit entry now uses the shared UnitInputField, so an invalid or out-of-range custom expiry shows an inline error instead of silently being treated as "no expiry".
+
+### Bug fixes
+
+- Fix crash in the attributes editor when switching to a version without the selected attribute set. ([#6659](https://github.com/inmanta/web-console/issues/6659))
+- The instance composer selection halo now scales with the shape at every zoom level, so its ring and action icons stay glued to the entity and the ring follows the card outline.
+The composer zoom toolbar no longer overlaps the instance details form.
+ ([#6877](https://github.com/inmanta/web-console/issues/6877))
+- Selecting a suggestion in a service instance form field now returns keyboard focus to that field, so tab navigation continues from there instead of resetting to the top of the page. ([#7042](https://github.com/inmanta/web-console/issues/7042))
+- Fixed the resource status bars on the Resources page rendering taller in their empty state than when they contain resources. ([#7128](https://github.com/inmanta/web-console/issues/7128))
+- On the Compliance check page, the dry run dropdown now lines up with the filter fields next to it instead of sitting a bit taller. ([#7129](https://github.com/inmanta/web-console/issues/7129))
+- The Compile Reports, Resource Manager and Orchestration Engine dashboard cards now color their title icon to match the environment health row's healthy/attention scheme, instead of a fixed color regardless of the actual status. ([#7215](https://github.com/inmanta/web-console/issues/7215))
+- The paginated tables (Resources, Service Inventory, Agents and others) now keep the page you were on when you return to them, for example with the browser back button, instead of jumping back to the first page. ([#7218](https://github.com/inmanta/web-console/issues/7218))
+- Replaced the PatternFly spinner in continuously-visible status indicators (deploying resources, in-progress compiles, in-progress orders, running dry runs) with a transform-only spinner, cutting its sustained CPU usage from roughly 33% to 4% of a core per spinner. ([#7228](https://github.com/inmanta/web-console/issues/7228))
+- Pressing Tab in a service instance list field now commits the pending text and moves keyboard focus on to the next input, instead of trapping focus on the field. ([#7235](https://github.com/inmanta/web-console/issues/7235))
+- The diagnose page now shows the compile error message(s), type, category and location for a rejected validation, instead of requiring the user to inspect the full traceback. ([#7247](https://github.com/inmanta/web-console/issues/7247))
+- On the Service Inventory page and the Resource Logs tab the filter toolbar and drawer now stay in view while the table scrolls, instead of scrolling away with the results. ([#7276](https://github.com/inmanta/web-console/issues/7276))
+- A field whose suggested values depend on another, not-yet-filled field is no longer disabled. The input stays editable so free typing is always allowed, and a neutral hint explains that suggestions are waiting on the other field or that it has no options. Changing a source field also no longer clears the dependent fields that referenced it. A warning is shown when a kept value is no longer among the suggested values, or when the annotation is broken or the suggestions request fails. ([#7277](https://github.com/inmanta/web-console/issues/7277))
+- Number and integer input fields no longer change their value when you scroll the mouse wheel over them while focused; the wheel now scrolls the page instead. ([#7314](https://github.com/inmanta/web-console/issues/7314))
+- Give html, body and
+- Sorting the orders table no longer reloads the whole page. The orders query now keeps the
+previous results on screen while the next sort loads, matching the other list views.
+
+- Icons in labels now line up with the label text and have the same size. ([#7385](https://github.com/inmanta/web-console/issues/7385))
+- Service pages now show an error with a Retry button when the service fails to load.
+
+### Other notes
+
+- Extracted the repeated Drawer, DrawerContent and DrawerContentBody boilerplate on pages with a
+filter panel into a single shared FilterDrawer component, and switched the Resources filter widget
+to the shared FilterDrawerPanelContent so it matches the other filter widgets.
+ ([#7207](https://github.com/inmanta/web-console/issues/7207))
+- Removed dead code and unused dependencies across the console: orphaned components and barrel
+files, unused exports, types and enums, stale test mocks and fixtures, a number of build and
+lint dependencies that were no longer referenced, and the react-dropzone dependency whose types
+PatternFly already provides through its own bundled copy.
+ ([#7342](https://github.com/inmanta/web-console/issues/7342))
+
+
 # Release 2026.4 (2026-07-24)
 
 ## Upgrade notes
