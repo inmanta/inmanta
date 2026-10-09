@@ -1,0 +1,3 @@
+description: Add the CI config for the nightly security-updates scan of the container images.
+change-type: patch
+destination-branches: [master]
