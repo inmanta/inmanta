@@ -1,3 +1,66 @@
+# Release 2027.2 (2026-10-22)
+
+## Upgrade notes
+
+- Please follow the documented [upgrade procedure](https://docs.inmanta.com/community/latest/administrators/upgrading_the_orchestrator.html)
+- Ensure the database is backed up before executing an upgrade.
+
+## Inmanta-core: release 20.1.0 (2026-10-22)
+
+### Improvements
+
+- `POST /api/v2/dryrun_filtered` accepts a `context` JSON object, which is stored with the dryrun. `GET /api/v2/dryrun/<version>` and `GET /api/v2/dryrun/<version>/<report_id>` return it as `context`.
+
+### Upgrade notes
+
+- Bump OPA version to v1.21.3
+- The `POST /api/v2/dryrun_filtered` endpoint now returns an object with the `id` of the dryrun and the `model` version it runs on, instead of the id alone.
+
+- - If the project uses modules installed in editable mode, partial exports will fail after
+  the upgrade until a full export is done. Run a full export right after the upgrade.
+
+
+### Bug fixes
+
+- Store the default of every environment setting when the server starts or an environment is created, instead of on the first read. ([#6086](https://github.com/inmanta/inmanta-core/issues/6086))
+- Fix the rejection of access tokens from an external identity provider with an "invalid jti claim" error.
+- Fix paging in the Inmanta API client. When iterating over a paged API endpoint using Result.all() or Result.all_sync(), the client only sent its authentication token and TLS settings with the request for the first page. As such, fetching any subsequent page failed against a server with authentication or SSL enabled. ([#10924](https://github.com/inmanta/inmanta-core/issues/10924))
+
+## Inmanta-ui: release 6.2.2 (2026-10-22)
+
+No changelog entries.
+
+## Web-console: release 4.2.0 (2026-10-22)
+
+### New features
+
+- Compliance Check reports now show the scope a dry run covered and can re-run it, and resource diffs are more compact.
+ ([#7243](https://github.com/inmanta/web-console/issues/7243))
+- The Deploy button menu now has Dry run, which previews a deploy against a version you select.
+ ([#7266](https://github.com/inmanta/web-console/issues/7266))
+- The create, edit and duplicate instance forms now mark the attributes the orchestrator rejected.
+
+### Improvements
+
+- Sorting resources on deploying now puts the deploying resources at the top.
+ ([#7436](https://github.com/inmanta/web-console/issues/7436))
+- Reference chains now expand to their full depth. ([#7437](https://github.com/inmanta/web-console/issues/7437))
+- The Actions menu on the Desired State page now has Dry run, for any version.
+ ([#7480](https://github.com/inmanta/web-console/issues/7480))
+- Ship a CycloneDX SBOM of the web-console dependencies in the npm package.
+
+### Bug fixes
+
+- Fixed a "404 Not Found" error page when opening the details page of a resource whose id contains a newline, such as an `exec::Run` with a multi-line command.
+
+
+## Web-console: release 4.1.1 (2026-10-22)
+
+### Bug fixes
+
+- State label icons no longer flicker when switching pages. ([#7539](https://github.com/inmanta/web-console/issues/7539))
+
+
 # Release 2027.1 (2026-10-09)
 
 ## General changes
